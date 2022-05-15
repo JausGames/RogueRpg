@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1605426010408349847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1605426010408349841}
+  - component: {fileID: 6424887467681999032}
+  - component: {fileID: 8247656370879328197}
+  m_Layer: 0
+  m_Name: StageGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1605426010408349841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605426010408349847}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1605426010786072190}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &6424887467681999032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605426010408349847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.06666667
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!114 &8247656370879328197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605426010408349847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f57e77d3a84e58548bfa9eb57688536f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surface: {fileID: 6424887467681999032}
+  roomPrefabs:
+  - {fileID: 8714519180634354003, guid: 6d244134e9184be4b8fea81e4812ea81, type: 3}
+  - {fileID: 8714519180634354003, guid: 608fe2e4c28ca034f82723cb7e5f04d0, type: 3}
+  - {fileID: 8714519180634354003, guid: 007bcf4709b828240b26a009d885d34a, type: 3}
+  - {fileID: 8714519180634354003, guid: 428e5d46fbc3d804bbf11598ca943ec4, type: 3}
+  - {fileID: 8714519180634354003, guid: eb7215315e6944a4e836be5e571d1718, type: 3}
+  - {fileID: 8714519180634354003, guid: 059a2c5a88d254f468ede1e6b9ded757, type: 3}
+  - {fileID: 8714519180634354003, guid: f323ad4facade4c41ab5f1c6ae9ad869, type: 3}
+  - {fileID: 8714519180634354003, guid: 3d70ed14b8ea25b4c977c48b1b646936, type: 3}
+  - {fileID: 8714519180634354003, guid: c7d60cdacbf82884c96c3a1e49f4c6e8, type: 3}
+  - {fileID: 8714519180634354003, guid: 56a8e85c28a916746b55ed1899521a00, type: 3}
+  - {fileID: 8714519180634354003, guid: 65e85d48373f0f749b56080d15413e96, type: 3}
+  - {fileID: 8714519180634354003, guid: 64a5eafc716ff91498d3a0453c116892, type: 3}
+  - {fileID: 8714519180634354003, guid: 46720919b6243da47851c52befc8cb3d, type: 3}
+  - {fileID: 8714519180634354003, guid: f6bdd8c53592a2f499eb491a20df709c, type: 3}
+  - {fileID: 8714519180634354003, guid: 7733e48e3bcb43543a5d2fdf87608395, type: 3}
+  roomCount: 10
+  buildOnce: 0
+  stage: {fileID: 6938262549458408222}
+--- !u!1 &1605426010786072188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1605426010786072190}
+  - component: {fileID: 6938262549458408222}
+  m_Layer: 0
+  m_Name: Stage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1605426010786072190
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605426010786072188}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1605426010408349841}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6938262549458408222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605426010786072188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d31b124e2995cac4b89e4d2b203e5e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomList: []
+  startGO: {fileID: 0}
+  endGO: {fileID: 0}

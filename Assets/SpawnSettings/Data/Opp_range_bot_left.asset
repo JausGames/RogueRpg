@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48b8ca19217774e46a6c72e9c5365a5c, type: 3}
+  m_Name: Opp_range_bot_left
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 6566044273373363422, guid: 11e4fac40bcf7af4cac2f474c88a551d, type: 3}
+  position: {x: -6, y: 0, z: -5}
+  rotation: {x: 0, y: 0, z: 0, w: 0}
