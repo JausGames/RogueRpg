@@ -200,7 +200,7 @@ public class Minion : Hitable
         {
             var dropRateRND = UnityEngine.Random.Range(0f, 1f);
 
-            if (dropRateRND < CombatData.DropRate)
+            if (dropRateRND < CombatData.DropRate + 0.9f)
             {
                 var GO = Instantiate(Resources.Load<GameObject>("Prefabs/Pickables/PickableContainer"), transform.position, Quaternion.identity);
                 var pickables = Resources.LoadAll<Pickable>("Prefabs/Pickables/Presets");
@@ -229,7 +229,7 @@ public class Minion : Hitable
                     }
                 }
 
-                var prtcRenderer = GO.GetComponent<ParticleSystemRenderer>();
+                var prtcRenderer = container.Particle.GetComponent<ParticleSystemRenderer>();
                 var mat = new Material(prtcRenderer.material);
                 mat.mainTexture = container.Item.Texture;
                 prtcRenderer.material = mat;

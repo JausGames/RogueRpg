@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  particle: {fileID: 4992145389407817463}
 --- !u!1 &7866907756770201233
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Gold Coin
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 0b6437d3d69a18441aaaed2c667d6e2c, type: 3}
+  texture: {fileID: 2800000, guid: 0b6437d3d69a18441aaaed2c667d6e2c, type: 3}
   rate: 10

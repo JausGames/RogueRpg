@@ -5,6 +5,7 @@ using UnityEngine;
 public class PickableContainer : MonoBehaviour
 {
     [SerializeField] Pickable item;
+    [SerializeField] ParticleSystem particle;
 
     public Pickable Item
     {
@@ -15,4 +16,6 @@ public class PickableContainer : MonoBehaviour
             item.Container = gameObject;
         }
     }
+
+    public ParticleSystem Particle { get => particle; set => particle = value; }
 }

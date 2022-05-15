@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] PlayerAnimatorController animator;
     private float lastTimeNoLook;
     [SerializeField] private Transform cameraContainer;
+    private float lastTimeLook;
 
     public bool CanStop { get => canStop; set => canStop = value; }
     public Rigidbody Body { get => body; set => body = value; }
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
             var baseRot = cameraContainer.rotation;
             cameraContainer.Rotate(transform.up * lookAngle * .2f);
             cameraContainer.rotation = Quaternion.Lerp(baseRot, cameraContainer.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
+            lastTimeLook = Time.time;
         }
         else
         {
@@ -86,17 +88,24 @@ public class PlayerController : MonoBehaviour
         }
 
         var angle = Vector3.SignedAngle(transform.forward, v3Move, transform.up);
-        if (move.magnitude > 0.05f && Mathf.Abs(angle) > 15f)
+        if (move.magnitude > 0.05f)
         {
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);
             // transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
-            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(0.1f));
+            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.3f);
         }
         else
         {
             //lastTimeNoLook = Time.time;
             body.angularVelocity /= 10f;
+        }
+        if(Time.time - lastTimeLook > .5f)
+        {
+            var resetAngle = Vector3.SignedAngle(cameraContainer.forward, transform.forward, transform.up);
+            var baseRot = cameraContainer.rotation;
+            cameraContainer.Rotate(transform.up * resetAngle * .2f);
+            cameraContainer.rotation = Quaternion.Lerp(baseRot, cameraContainer.rotation, Mathf.Min(Time.time - lastTimeLook - .5f, 1f) * 0.1f);
         }
 
         updateArmyEvent.Invoke();
