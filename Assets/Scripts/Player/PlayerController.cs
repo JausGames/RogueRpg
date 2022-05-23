@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);
             // transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
-            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.3f);
+            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.7f);
         }
         else
         {

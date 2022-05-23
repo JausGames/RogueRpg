@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.VFX;
 using UnityEngine.Events;
 
 abstract public class Hitable : MonoBehaviour
@@ -64,7 +65,8 @@ abstract public class Hitable : MonoBehaviour
         if (rolling)
             return;
         animator.GetHit();
-        Instantiate(hitVfx, transform.position + Vector3.up, Quaternion.Euler(transform.position.x - attackData.knockback.origin.x, transform.position.y - attackData.knockback.origin.y, transform.position.z - attackData.knockback.origin.z), null);
+        var vfxGo = Instantiate(hitVfx, transform.position + Vector3.up, Quaternion.Euler(transform.position.x - attackData.knockback.origin.x, transform.position.y - attackData.knockback.origin.y, transform.position.z - attackData.knockback.origin.z), null);
+        Destroy(vfxGo, 6f);
         if (combatData.Health == 0f) return;
         var damageWithArmor = Mathf.Min(attackData.damage - combatData.PhysicArmor);
         combatData.Health = Mathf.Max(combatData.Health - damageWithArmor, 0f);
@@ -102,6 +104,7 @@ abstract public class Hitable : MonoBehaviour
 
     private void GetBlock()
     {
+        Debug.Log("Hitable, GetBlock : trigger");
         animator.GetBlock();
     }
 

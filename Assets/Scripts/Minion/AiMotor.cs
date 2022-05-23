@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class AiMotor : MonoBehaviour
 {
-    UnityEvent destinationReached = new UnityEvent();
+    UnityEvent destinationReachedOrUnreachable = new UnityEvent();
     [SerializeField] Rigidbody body;
     [SerializeField] Vector3 destination = Vector3.zero;
     [SerializeField] Vector3[] bounding = new Vector3[4];
@@ -14,6 +14,8 @@ public class AiMotor : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float breakForce;
     [SerializeField] float toleranceRadius;
+    [SerializeField] float maxTravelTime = 2f;
+    [SerializeField] float currentTravelTime = 0f;
 
     public float Acceleration { get => acceleration; set => acceleration = value; }
     public float Speed { get => speed; set => speed = value; }
@@ -22,18 +24,20 @@ public class AiMotor : MonoBehaviour
         get => destination; 
         set
         {
+            currentTravelTime = Time.time;
             destination = ClampDestination(value);
         }
     }
     public Rigidbody Body { get => body; set => body = value; }
     public Vector3[] Bounding { get => bounding; set => bounding = value; }
-    public UnityEvent DestinationReached { get => destinationReached; set => destinationReached = value; }
+    public UnityEvent DestinationReached { get => destinationReachedOrUnreachable; set => destinationReachedOrUnreachable = value; }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         if (destination != Vector3.zero)
         {
+            if (Time.time - currentTravelTime > maxTravelTime) destinationReachedOrUnreachable.Invoke();
             var dir = (destination - transform.position).normalized;
             if ((destination - transform.position).magnitude < toleranceRadius)
             { 
@@ -41,7 +45,7 @@ public class AiMotor : MonoBehaviour
                 if(body.velocity.magnitude < .05f)
                 {
                     body.velocity = Vector3.zero;
-                    destinationReached.Invoke();
+                    destinationReachedOrUnreachable.Invoke();
                 }
                 //var ag = GetComponent<NavMeshAgent>().path.
             }

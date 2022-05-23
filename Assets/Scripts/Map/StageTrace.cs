@@ -6,10 +6,12 @@ using UnityEngine;
 public static class StageTrace
 {
     static string trace;
+    static public bool enable = false;
     static int nb;
     static string dir = "D:\\Unity\\_trace";
     static public void Trace(string trace)
     {
+        if (!enable) return;
 #if UNITY_EDITOR
         StageTrace.trace += "\n" + trace;
 
@@ -18,7 +20,7 @@ public static class StageTrace
     }
     static public void CreateTrace()
     {
-
+        if (!enable) return;
 #if UNITY_EDITOR
         StageTrace.trace += "---------- START TRACE : " + Time.time + " ----------";
         nb = DirCount(new DirectoryInfo(dir));

@@ -32,6 +32,7 @@ public class StageGenerator : MonoBehaviour
     RoomSpotData endData = null;
 
     [SerializeField] int pathLenght = 10;
+    [SerializeField] bool traceEnabled = false;
     [SerializeField] private int minRoom = 25;
     [SerializeField] Stage stage;
 
@@ -219,7 +220,7 @@ public class StageGenerator : MonoBehaviour
 
     void Awake()
     {
-
+        StageTrace.enable = traceEnabled;
 #if UNITY_EDITOR
         Debug.unityLogger.logEnabled = true;
 #else

@@ -37,12 +37,23 @@ public class PlayerInput : MonoBehaviour
     public void OnLook(CallbackContext context)
     {
         if (motor == null) return;
+        if (!Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         var look = context.ReadValue<Vector2>();
         motor.SetLook(look);
     }
     public void OnMouseLook(CallbackContext context)
     {
         if (motor == null) return;
+        if(Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         var look = (Vector3) context.ReadValue<Vector2>();
         look.z = 20f;
         var lookPos = Camera.main.ScreenToWorldPoint(look);
