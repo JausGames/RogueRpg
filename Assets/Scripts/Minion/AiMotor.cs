@@ -16,6 +16,7 @@ public class AiMotor : MonoBehaviour
     [SerializeField] float toleranceRadius;
     [SerializeField] float maxTravelTime = 2f;
     [SerializeField] float currentTravelTime = 0f;
+    [SerializeField] bool isActive = true;
 
     public float Acceleration { get => acceleration; set => acceleration = value; }
     public float Speed { get => speed; set => speed = value; }
@@ -31,10 +32,12 @@ public class AiMotor : MonoBehaviour
     public Rigidbody Body { get => body; set => body = value; }
     public Vector3[] Bounding { get => bounding; set => bounding = value; }
     public UnityEvent DestinationReached { get => destinationReachedOrUnreachable; set => destinationReachedOrUnreachable = value; }
+    public bool IsActive { get => isActive; set => isActive = value; }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!isActive) return;
         if (destination != Vector3.zero)
         {
             if (Time.time - currentTravelTime > maxTravelTime) destinationReachedOrUnreachable.Invoke();

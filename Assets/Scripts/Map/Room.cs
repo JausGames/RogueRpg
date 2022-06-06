@@ -95,6 +95,7 @@ public class Room : MonoBehaviour
 
         foreach (Minion min in sleepingOpponent)
         {
+            //min.StopMotion(true);
             min.Moving = canMove;
             min.Motor.enabled = true;
         }

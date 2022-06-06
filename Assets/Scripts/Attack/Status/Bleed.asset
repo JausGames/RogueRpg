@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53bb90b48e14a044db7a4cbacbe1dab1, type: 3}
   m_Name: Bleed
   m_EditorClassIdentifier: 
+  onStatusEnd:
+    m_PersistentCalls:
+      m_Calls: []
   type: 2
   length: 4
   frequency: 0.8
-  particle: {fileID: 6114543394495586889, guid: 599a4aa934593164387fd587fc484d49,
+  particle: {fileID: 3177673595057747396, guid: d0ee53bc2029f7d428d29b416710a970,
     type: 3}

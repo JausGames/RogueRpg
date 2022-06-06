@@ -36,6 +36,11 @@ public class Minion : Hitable
     [SerializeField] Player owner;
     [SerializeField] Vector3 randomDestination;
     [SerializeField] AiMotor motor;
+    [Header("Timers")]
+    [SerializeField] bool waitToAttack = false;
+    [SerializeField] float attackTimer;
+    [SerializeField] bool waitToMove = false;
+    [SerializeField] float moveTimer;
 
     [HideInInspector]
 
@@ -59,11 +64,31 @@ public class Minion : Hitable
             motor.DestinationReached.AddListener(delegate { randomDestination = transform.position; });
         }
         randomDestination = transform.position;
+        //StopMotion(false);
     }
-
+    public override void GetHit(AttackData attackData)
+    {
+        base.GetHit(attackData);
+        waitToAttack = false;
+        waitToMove = false;
+    }
     private void Update()
     {
-        if (!Moving) return;
+        if(waitToAttack && attackTimer + .5f < Time.time && !frozen)
+        {
+            Attack(null);
+            moveTimer = Time.time;
+            waitToMove = true;
+            waitToAttack = false;
+        }
+        if (waitToMove && moveTimer + .3f < Time.time && !frozen)
+        {
+            Moving = true;
+            waitToMove = false;
+        }
+
+        if (!Moving || waitToAttack || frozen) return;
+
         var cols = Physics.OverlapSphere(transform.position, combatData.HitRange, enemyLayer);
 
         if (cols.Length > 0)
@@ -111,7 +136,9 @@ public class Minion : Hitable
                 var rot = (cols[0].transform.position - transform.position).x * Vector3.right + (cols[0].transform.position - transform.position).z * Vector3.forward;
                 SetRotation(rot.normalized);
             }
-            Attack(null);
+            motor.Destination = transform.position;
+            attackTimer = Time.time;
+            waitToAttack = true;
         }
         else if (cols.Length == 0)
         {
@@ -183,6 +210,7 @@ public class Minion : Hitable
     }
     public override void Attack(Hitable victim)
     {
+        if (!moving) return;
         Attacking = false;
         combatData.Attack(transform, hitPoint, enemyLayer, friendLayer);
     }
@@ -252,14 +280,20 @@ public class Minion : Hitable
     }
     public override void StopMotion(bool isMoving)
     {
+        if (frozen) return;
         if(isMoving)
         {
-            moving = true;
+            animator.PlayAnimation(true);
+            Moving = true;
+            frozen = false;
+            motor.IsActive = true;
         }
         else
         {
-            moving = false;
+            animator.PlayAnimation(false);
+            Moving = false;
             motor.Body.velocity = Vector3.zero;
+            motor.IsActive = false;
         }
     }
 }

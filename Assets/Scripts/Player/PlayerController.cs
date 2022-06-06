@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private float lastTimeNoLook;
     [SerializeField] private Transform cameraContainer;
     private float lastTimeLook;
+    private bool rotateWithLook;
 
     public bool CanStop { get => canStop; set => canStop = value; }
     public Rigidbody Body { get => body; set => body = value; }
@@ -87,9 +88,17 @@ public class PlayerController : MonoBehaviour
             body.velocity /= 10f;
         }
 
-        var angle = Vector3.SignedAngle(transform.forward, v3Move, transform.up);
-        if (move.magnitude > 0.05f)
+        if (move.magnitude > 0.05f && !rotateWithLook)
         {
+            var angle = Vector3.SignedAngle(transform.forward, v3Move, transform.up);
+            var baseRot = transform.rotation;
+            transform.Rotate(transform.up * angle * .2f);
+            // transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
+            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.7f);
+        }
+        else if(look.magnitude > 0.05f && rotateWithLook)
+        {
+            var angle = Vector3.SignedAngle(transform.forward, Camera.main.transform.forward, transform.up);
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);
             // transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
@@ -100,6 +109,7 @@ public class PlayerController : MonoBehaviour
             //lastTimeNoLook = Time.time;
             body.angularVelocity /= 10f;
         }
+
         if(Time.time - lastTimeLook > .5f)
         {
             var resetAngle = Vector3.SignedAngle(cameraContainer.forward, transform.forward, transform.up);
@@ -111,6 +121,11 @@ public class PlayerController : MonoBehaviour
         updateArmyEvent.Invoke();
 
         UpdateAnimator();
+    }
+
+    public void RotateWithLook(bool value)
+    {
+        rotateWithLook = value;
     }
 
     internal void StopMotion(bool isMoving)

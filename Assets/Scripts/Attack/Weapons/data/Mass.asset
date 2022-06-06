@@ -18,4 +18,5 @@ MonoBehaviour:
     force: 2
     time: 0.3
   coolDown: 1
+  nextHit: 0
   comboable: 1

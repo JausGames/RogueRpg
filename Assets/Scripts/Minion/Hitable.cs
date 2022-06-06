@@ -9,7 +9,9 @@ abstract public class Hitable : MonoBehaviour
 {
     public UnityEvent dieEvent;
     [SerializeField] protected bool moving = false;
+    [SerializeField] protected bool frozen = false;
     [SerializeField] protected bool blocking = false;
+    [SerializeField] protected Shield blockingShield;
     [SerializeField] protected bool rolling = false;
     [SerializeField] protected CombatData combatData;
     [SerializeField] protected List<Status> currentStatusList = new List<Status>();
@@ -21,6 +23,7 @@ abstract public class Hitable : MonoBehaviour
 
     public bool Moving { get => moving; set => moving = value; }
     public CombatData CombatData { get => combatData; set => combatData = value; }
+    public bool Frozen { get => frozen; set => frozen = value; }
 
     abstract public void Attack(Hitable victim);
 
@@ -48,6 +51,7 @@ abstract public class Hitable : MonoBehaviour
     virtual public void GetHit(float damage)
     {
         if (combatData.Health == 0f) return;
+        Debug.Log("Hitable, GetHit : trigger");
         var damageWithArmor = Mathf.Min(damage - combatData.PhysicArmor);
         combatData.Health = Mathf.Max(combatData.Health - damageWithArmor, 0f);
 
@@ -55,12 +59,29 @@ abstract public class Hitable : MonoBehaviour
             Die(Vector3.zero);
     }
 
+    virtual public void SetIsMoving(bool v)
+    {
+        
+    }
+
+    virtual public void SetRolling(bool v)
+    {
+        rolling = v;
+    }
+
     virtual public void GetHit(AttackData attackData)
     {
         if (blocking)
         {
-            attackData.origin.GetBlock();
-            return;
+            var angle = Vector3.Angle(transform.forward, attackData.origin.transform.position - transform.position);
+
+            Debug.Log("Hitable, GetHit : Try Block, angle =  " + angle);
+            if (angle < 30f)
+            {
+                attackData.origin.GetBlock();
+                return;
+            }
+
         }
         if (rolling)
             return;
@@ -76,12 +97,7 @@ abstract public class Hitable : MonoBehaviour
         {
             if (!ContainStatus(attackData.statusList[i]))
             {
-                var newStatus = new Status(attackData.statusList[i]);
-
-                currentStatusList.Add(newStatus);
-                newStatus.onStatusEnd.AddListener(delegate {
-                    currentStatusList.Remove(newStatus);
-                });
+                AddStatus(attackData.statusList[i]);
             }
         }
         var force = Vector3.zero;
@@ -90,19 +106,25 @@ abstract public class Hitable : MonoBehaviour
             force = (this.transform.position - attackData.knockback.origin).normalized * attackData.knockback.force;
             //this.GetComponent<Rigidbody>().AddForce(force, ForceMode.VelocityChange);
 
-            var newStatus = new Status(Status.Type.Knock, attackData.knockback.time);
-            newStatus.Force = force;
-            currentStatusList.Add(newStatus);
-            newStatus.onStatusEnd.AddListener(delegate {
-                currentStatusList.Remove(newStatus);
-            });
+            AddStatus(new Status(Status.Type.Knock, attackData.knockback.time, force));
         }
 
         if (combatData.Health == 0f)
             Die(force);
     }
 
-    private void GetBlock()
+    public void AddStatus(Status it)
+    {
+        var newStatus = new Status(it);
+
+        currentStatusList.Add(newStatus);
+        newStatus.onStatusEnd.AddListener(delegate
+        {
+            currentStatusList.Remove(newStatus);
+        });
+    }
+
+    public void GetBlock()
     {
         Debug.Log("Hitable, GetBlock : trigger");
         animator.GetBlock();
@@ -129,6 +151,10 @@ abstract public class Hitable : MonoBehaviour
         }
 
         ObjsBetweenThisAndCamera = newObjs;
+    }
+    virtual public void SetBlocking(bool value)
+    {
+        blocking = value;
     }
 
     public void Push(Vector3 force)
@@ -192,7 +218,7 @@ abstract public class Hitable : MonoBehaviour
         ApplyStatus();
     }
 
-    public virtual void StopMotion(bool isMoving) { }
+    public virtual void StopMotion(bool isMoving) {}
          
     virtual public void AddBonus(Bonus bonus)
     {

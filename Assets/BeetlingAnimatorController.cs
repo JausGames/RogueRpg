@@ -9,4 +9,9 @@ public class BeetlingAnimatorController : AnimatorController
     {
         animator.SetFloat("Speed", velocity);
     }
+
+    internal void PlayAnimation(bool v)
+    {
+        animator.enabled = v;
+    }
 }

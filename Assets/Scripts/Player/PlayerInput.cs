@@ -85,8 +85,8 @@ public class PlayerInput : MonoBehaviour
         if (player == null) return;
         var isPerformed = context.performed;
         var isCanc = context.canceled;
-        if (isPerformed) player.SetBlocking(true);
-        else if (isCanc) player.SetBlocking(false);
+        if (isPerformed) player.StartBlocking(true);
+        else if (isCanc) player.StartBlocking(false);
     }
     public void OnRoll(CallbackContext context)
     {

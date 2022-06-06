@@ -97,7 +97,7 @@ PrefabInstance:
     - target: {fileID: 4229908006521760277, guid: 5cfab249de9d9a0468a7d70dfd7151c4,
         type: 3}
       propertyPath: combatData.speed
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4229908006521760277, guid: 5cfab249de9d9a0468a7d70dfd7151c4,
         type: 3}

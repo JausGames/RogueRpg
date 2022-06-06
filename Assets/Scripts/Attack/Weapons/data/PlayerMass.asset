@@ -17,5 +17,6 @@ MonoBehaviour:
   knockBack:
     force: 6
     time: 0.5
-  coolDown: 1
+  coolDown: 0.2
+  nextHit: 0
   comboable: 1

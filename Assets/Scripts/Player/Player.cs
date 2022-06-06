@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class Player : Hitable
 {
+
+    [Header("Rolling")]
+    private float lastRoll;
+    private float rollCooldown = 0.3f;
+
+    [Header("Reste")]
     Army army;
     PlayerCombat combat;
     PlayerController motor;
@@ -69,6 +75,10 @@ public class Player : Hitable
     {
         wallet.onAmountChange -= UpdateWalletUi;
     }
+    public override void SetIsMoving(bool v)
+    {
+        motor.IsMoving = v;
+    }
     private void Update()
     {
         mapUi.SetPlayerPosition(transform.position.x / GridSettings.gridSize.x, transform.position.z / GridSettings.gridSize.y);
@@ -87,24 +97,42 @@ public class Player : Hitable
                 }
             }
         }
-        HideElementsBetween();
+        //HideElementsBetween();
     }
 
-    public void SetBlocking(bool value)
+    public void StartBlocking(bool value)
     {
+        Debug.Log("Player, SetBlocking : shield on ? " + value);
         animator.SetBlocking(value);
+    }
+    override public void SetBlocking(bool value)
+    {
+        Debug.Log("Player, SetBlocking : shield on ? " + value);
+        if(!value)
+            animator.SetBlocking(value);
         blocking = value;
+        motor.RotateWithLook(value);
+        blockingShield.IsActive = value;
     }
 
     public void StartRolling()
     {
-        animator.Roll();
+        SetBlocking(false);
+        animator.Roll(true);
     }
-    public void SetRolling(bool value)
+    public void StartRollingMovement()
+    {
+        AddStatus(new Status(Status.Type.Rolling, .3f, transform.forward * combatData.Speed));
+        SetIsMoving(false);
+    }
+    override public void SetRolling(bool value)
     {
         Debug.Log("Player, SetRolling : value = " + value);
         rolling = value;
-        if (value) Push(transform.forward * 5f);
+    }
+    public void StopRolling()
+    {
+        animator.Roll(false);
     }
 
     void Start()
@@ -139,6 +167,7 @@ public class Player : Hitable
 
     public override void Attack(Hitable victim)
     {
+        SetBlocking(false);
         combat.Attack();
     }
 
@@ -175,12 +204,12 @@ public class Player : Hitable
     protected override void ApplyStatus()
     {
         base.ApplyStatus();
-        motor.IsMoving = true;
+        /*motor.IsMoving = true;
         for (int i = 0; i < currentStatusList.Count; i++)
         {
             if (currentStatusList[i].StatusType == Status.Type.Knock)
                 motor.IsMoving = false;
-        }
+        }*/
 
     }
 }
