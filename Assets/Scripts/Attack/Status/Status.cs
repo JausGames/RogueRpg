@@ -30,6 +30,35 @@ public class Status : ScriptableObject
         this.particle = status.particle;
         this.force = status.force;
     }
+
+    internal void RemoveStatusFromHitable(Hitable hitable)
+    {
+        if (type == Type.Freeze)
+        {
+            hitable.Frozen = false;
+            hitable.StopMotion(true);
+        }
+        if (type == Type.Knock)
+        {
+            hitable.StopMotion(true);
+            hitable.SetIsMoving(true);
+            //hitable.GetComponent<Rigidbody>().isKinematic = true;
+            //hitable.GetComponent<NavMeshAgent>().enabled = true;
+        }
+        if (type == Type.Rolling)
+        {
+            hitable.SetIsMoving(true);
+            //hitable.GetComponent<Rigidbody>().isKinematic = true;
+            //hitable.GetComponent<NavMeshAgent>().enabled = true;
+        }
+        if (type == Type.Bleed)
+        {
+        }
+        onStatusEnd.Invoke();
+        Destroy(this);
+        return;
+    }
+
     public Status(Type type, float length, Vector3 force)
     {
 
@@ -51,30 +80,7 @@ public class Status : ScriptableObject
         if (startTime == 0) { startTime = Time.time; lastApplication = type == Type.Freeze ? 0f : startTime - frequency; }
         else if (startTime + length < Time.time)
         {
-            if (type == Type.Freeze)
-            {
-                hitable.Frozen = false;
-                hitable.StopMotion(true);
-            }
-            if (type == Type.Knock)
-            {
-                hitable.StopMotion(true);
-                hitable.SetIsMoving(true);
-                //hitable.GetComponent<Rigidbody>().isKinematic = true;
-                //hitable.GetComponent<NavMeshAgent>().enabled = true;
-            }
-            if (type == Type.Rolling)
-            {
-                hitable.SetIsMoving(true);
-                //hitable.GetComponent<Rigidbody>().isKinematic = true;
-                //hitable.GetComponent<NavMeshAgent>().enabled = true;
-            }
-            if(type == Type.Bleed)
-            {
-            }
-            onStatusEnd.Invoke();
-            Destroy(this);
-            return;
+            RemoveStatusFromHitable(hitable);
         }
 
         switch (type)

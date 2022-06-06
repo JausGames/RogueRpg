@@ -24,6 +24,7 @@ abstract public class Hitable : MonoBehaviour
     public bool Moving { get => moving; set => moving = value; }
     public CombatData CombatData { get => combatData; set => combatData = value; }
     public bool Frozen { get => frozen; set => frozen = value; }
+    public List<Status> CurrentStatusList { get => currentStatusList; set => currentStatusList = value; }
 
     abstract public void Attack(Hitable victim);
 

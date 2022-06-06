@@ -6,8 +6,8 @@ using UnityEngine;
 public class AnimatorController : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
-    bool waitToBlock = false;
-    bool waitToRoll = false;
+    [SerializeField] bool waitToBlock = false;
+    [SerializeField] bool waitToRoll = false;
 
     public Animator Animator { get => animator; set => animator = value; }
 
@@ -83,11 +83,17 @@ public class AnimatorController : MonoBehaviour
     internal void Roll(bool value)
     {
         //Fetch the current Animation clip information for the base layer
-        var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
+        var m_CurrentClipInfoBaseLayer = animator.GetCurrentAnimatorClipInfo(0);
+        var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
         //Access the current length of the clip
-        var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
+        Debug.Log("AnimatorController, SetRolling : clip name = " + m_CurrentClipInfoRollLayer[0].clip.name);
+
         //Access the Animation clip name
-        if (value && !(m_CurrentClipInfo[0].clip.name.Contains("Idle") || m_CurrentClipInfo[0].clip.name.Contains("Walk")))
+        if (value && !(m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Idle") 
+            || m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Walk") 
+            //|| !m_CurrentClipInfoRollLayer[0].clip.name.Contains("Roll")
+            )
+            )
         {
             waitToRoll = true;
             return;
@@ -95,6 +101,6 @@ public class AnimatorController : MonoBehaviour
 
         Debug.Log("AnimatorController, SetBlocking : on ? " + value);
         if(value)animator.SetTrigger("Roll");
-        animator.SetLayerWeight(3, value ? 1f : 0f);
+        animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
     }
 }

@@ -73,7 +73,7 @@ public class PlayerInput : MonoBehaviour
     public void OnAttack(CallbackContext context)
     {
         if (player == null) return;
-        attack = context.performed;
+        attack = !context.canceled;
         if(attack) player.Attack(null);
     }
     public void KeepAttacking()

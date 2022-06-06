@@ -32,7 +32,7 @@ public class Minion : Hitable
     [SerializeField] public Transform hitPoint;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask friendLayer;
-    [SerializeField] new public BeetlingAnimatorController animator;
+    [SerializeField] new public EnnemyAnimatorController animator;
     [SerializeField] Player owner;
     [SerializeField] Vector3 randomDestination;
     [SerializeField] AiMotor motor;

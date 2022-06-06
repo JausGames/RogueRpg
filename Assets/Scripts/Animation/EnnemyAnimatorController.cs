@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BeetlingAnimatorController : AnimatorController
+public class EnnemyAnimatorController : AnimatorController
 {
     internal void SetController(float velocity)
     {

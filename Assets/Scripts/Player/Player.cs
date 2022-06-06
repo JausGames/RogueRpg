@@ -122,7 +122,7 @@ public class Player : Hitable
     }
     public void StartRollingMovement()
     {
-        AddStatus(new Status(Status.Type.Rolling, .3f, transform.forward * combatData.Speed));
+        AddStatus(new Status(Status.Type.Rolling, .8f, transform.forward * combatData.Speed));
         SetIsMoving(false);
     }
     override public void SetRolling(bool value)

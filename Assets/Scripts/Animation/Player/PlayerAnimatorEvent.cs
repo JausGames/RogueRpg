@@ -8,7 +8,7 @@ public class PlayerAnimatorEvent : MonoBehaviour
     
     public void StartRollingMovement()
     {
-        player.StartRollingMovement();
+        //player.StartRollingMovement();
     }
     public void StartRolling()
     {
