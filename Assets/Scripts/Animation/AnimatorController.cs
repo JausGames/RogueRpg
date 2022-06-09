@@ -96,9 +96,9 @@ public class AnimatorController : MonoBehaviour
             // check if base layer is on an animation that accept transition (IDLE or WALK)
             !(m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Idle") 
             || m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Walk"))
-            ||
+
             // check if roll layer is on an animation that accept transition (IDLE)
-            !m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
+            || !m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
             )
         {
             Debug.Log("AnimatorController, Roll : wait to roll");
@@ -108,6 +108,6 @@ public class AnimatorController : MonoBehaviour
 
         Debug.Log("AnimatorController, Roll : " + value);
         if(value)animator.SetTrigger("Roll");
-        if(value) animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
+        animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
     }
 }
