@@ -6035,8 +6035,8 @@ MonoBehaviour:
       m_Calls: []
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
-  speed: 5
-  maxSpeed: 8
+  speed: 6
+  maxSpeed: 10
   isMoving: 1
   canStop: 1
   body: {fileID: 1983496309}
@@ -6079,6 +6079,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 694364262}
+  waitToBlock: 0
+  waitToRoll: 0
 --- !u!114 &2052894713 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 347646644138351171, guid: 9bde2186875e33744ae603cadefef4b4,

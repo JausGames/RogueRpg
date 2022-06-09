@@ -17,7 +17,7 @@ public class AnimatorController : MonoBehaviour
         {
 
             var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
-            var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
+            //var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
             if (m_CurrentClipInfo[0].clip.name.Contains("Idle") || m_CurrentClipInfo[0].clip.name.Contains("Walk"))
             {
                 waitToBlock = false;
@@ -30,11 +30,12 @@ public class AnimatorController : MonoBehaviour
         {
 
             var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
-            var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
-            if (m_CurrentClipInfo[0].clip.name.Contains("Idle")
+            var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
+            //var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
+            if ((m_CurrentClipInfo[0].clip.name.Contains("Idle")
             || m_CurrentClipInfo[0].clip.name.Contains("Walk")
             || m_CurrentClipInfo[0].clip.name.Contains("GetHit")
-            || m_CurrentClipInfo[0].clip.name.Contains("GetBlock"))
+            ) && m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
             {
                 waitToRoll = false;
 
@@ -67,7 +68,9 @@ public class AnimatorController : MonoBehaviour
         //Access the current length of the clip
         var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
         //Access the Animation clip name
-        if (value && !(m_CurrentClipInfo[0].clip.name.Contains("Idle") 
+        if (value &&
+        // check if base layer is on an animation that accept transition (IDLE, WALK, GETHIT, GETBLOCK)
+            !(m_CurrentClipInfo[0].clip.name.Contains("Idle") 
             || m_CurrentClipInfo[0].clip.name.Contains("Walk") 
             || m_CurrentClipInfo[0].clip.name.Contains("GetHit") 
             || m_CurrentClipInfo[0].clip.name.Contains("GetBlock")))
@@ -86,21 +89,25 @@ public class AnimatorController : MonoBehaviour
         var m_CurrentClipInfoBaseLayer = animator.GetCurrentAnimatorClipInfo(0);
         var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
         //Access the current length of the clip
-        Debug.Log("AnimatorController, SetRolling : clip name = " + m_CurrentClipInfoRollLayer[0].clip.name);
+        Debug.Log("AnimatorController, Roll : clip name = " + m_CurrentClipInfoRollLayer[0].clip.name);
 
         //Access the Animation clip name
-        if (value && !(m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Idle") 
-            || m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Walk") 
-            //|| !m_CurrentClipInfoRollLayer[0].clip.name.Contains("Roll")
-            )
+        if (value && (
+            // check if base layer is on an animation that accept transition (IDLE or WALK)
+            !(m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Idle") 
+            || m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Walk"))
+            ||
+            // check if roll layer is on an animation that accept transition (IDLE)
+            !m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
             )
         {
+            Debug.Log("AnimatorController, Roll : wait to roll");
             waitToRoll = true;
             return;
         };
 
-        Debug.Log("AnimatorController, SetBlocking : on ? " + value);
+        Debug.Log("AnimatorController, Roll : " + value);
         if(value)animator.SetTrigger("Roll");
-        animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
+        if(value) animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
     }
 }

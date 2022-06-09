@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateAnimator()
     {
         Debug.Log("PlayerControlelr, UpdateAnimator : speed clamped = " + (body.velocity.sqrMagnitude / maxSpeed));
-        animator.SetControllerAnimator(body.velocity.sqrMagnitude / maxSpeed, move.magnitude > .1f);
+        animator.SetControllerAnimator(body.velocity.sqrMagnitude / 45f, move.magnitude > .1f);
     }
 
     public void SetMove(Vector2 move)

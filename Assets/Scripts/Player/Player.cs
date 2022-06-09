@@ -117,22 +117,20 @@ public class Player : Hitable
 
     public void StartRolling()
     {
-        SetBlocking(false);
+        if(blocking)SetBlocking(false);
+        Debug.Log("Player, StartRolling");
         animator.Roll(true);
     }
     public void StartRollingMovement()
     {
         AddStatus(new Status(Status.Type.Rolling, .8f, transform.forward * combatData.Speed));
+        Debug.Log("Player, StartRollingMovement");
         SetIsMoving(false);
     }
     override public void SetRolling(bool value)
     {
         Debug.Log("Player, SetRolling : value = " + value);
         rolling = value;
-    }
-    public void StopRolling()
-    {
-        animator.Roll(false);
     }
 
     void Start()

@@ -8,6 +8,7 @@ public class StartRollingBehavior : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        Debug.Log("StartRollingBehavior, OnStateEnter : set hasRool = false");
         hasRoll = false;
     }
 
@@ -16,6 +17,7 @@ public class StartRollingBehavior : StateMachineBehaviour
     {
     if (animator.GetLayerWeight(3) == 1f && animator.GetComponentInParent<Player>() && stateInfo.normalizedTime > .2f && !hasRoll)
         {
+            Debug.Log("StartRollingBehavior, OnStateUpdate : start roll movement");
             animator.GetComponentInParent<Player>().StartRollingMovement();
             hasRoll = true;
         }

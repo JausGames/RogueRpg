@@ -8,7 +8,10 @@ public class RollingBehavior : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (animator.GetLayerWeight(3) == 1f)
+        {
+            Debug.Log("RollingBehavior, OnStateEnter : SetRolling -> true");
             animator.GetComponentInParent<Hitable>().SetRolling(true);
+        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -21,7 +24,10 @@ public class RollingBehavior : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (animator.GetLayerWeight(3) == 1f)
+        {
+            Debug.Log("RollingBehavior, OnStateEnter : SetRolling -> false");
             animator.GetComponentInParent<Hitable>().SetRolling(false);
+        }
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
