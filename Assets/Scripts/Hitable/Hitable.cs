@@ -7,18 +7,25 @@ using UnityEngine.Events;
 
 abstract public class Hitable : MonoBehaviour
 {
+    [HideInInspector]
     public UnityEvent dieEvent;
+    [Header("Base - Status")]
     [SerializeField] protected bool moving = false;
     [SerializeField] protected bool frozen = false;
     [SerializeField] protected bool blocking = false;
-    [SerializeField] protected Shield blockingShield;
     [SerializeField] protected bool rolling = false;
+    [Space]
+    [Header("Base - Combat")]
     [SerializeField] protected CombatData combatData;
     [SerializeField] protected List<Status> currentStatusList = new List<Status>();
-    [SerializeField] private List<Renderer> ObjsBetweenThisAndCamera;
+    [HideInInspector] private List<Renderer> ObjsBetweenThisAndCamera;
+    [Space]
+    [Header("Base - Component")]
+    [SerializeField] protected Shield blockingShield;
     [SerializeField] protected RagdollManager ragdoll;
     [SerializeField] protected AnimatorController animator;
-
+    [Space]
+    [Header("Base - VFX")]
     [SerializeField] protected GameObject hitVfx;
 
     public bool Moving { get => moving; set => moving = value; }
@@ -72,24 +79,42 @@ abstract public class Hitable : MonoBehaviour
 
     virtual public void GetHit(AttackData attackData)
     {
-        if (blocking)
+        if (blocking && CheckIsBlocked(attackData.origin.transform.position - transform.position))
         {
-            var angle = Vector3.Angle(transform.forward, attackData.origin.transform.position - transform.position);
-
-            Debug.Log("Hitable, GetHit : Try Block, angle =  " + angle);
-            if (angle < 30f)
-            {
-                attackData.origin.GetBlock();
-                return;
-            }
+            attackData.origin.GetBlock();
+            return;
 
         }
+
         if (rolling)
             return;
-        animator.GetHit();
-        var vfxGo = Instantiate(hitVfx, transform.position + Vector3.up, Quaternion.Euler(transform.position.x - attackData.knockback.origin.x, transform.position.y - attackData.knockback.origin.y, transform.position.z - attackData.knockback.origin.z), null);
-        Destroy(vfxGo, 6f);
+
+        ThrowBloodVfx(attackData);
+
         if (combatData.Health == 0f) return;
+
+        Vector3 force = ApplyAttackData(attackData);
+
+        if (combatData.Health == 0f)
+            Die(force);
+    }
+
+    private bool CheckIsBlocked(Vector3 origin)
+    {
+        var angle = Vector3.Angle(transform.forward, origin);
+        var isBlocked = false;
+
+        Debug.Log("Hitable, GetHit : Try Block, angle =  " + angle);
+        if (angle < 45f)
+        {
+            isBlocked = true;
+        }
+
+        return isBlocked;
+    }
+
+    private Vector3 ApplyAttackData(AttackData attackData)
+    {
         var damageWithArmor = Mathf.Min(attackData.damage - combatData.PhysicArmor);
         combatData.Health = Mathf.Max(combatData.Health - damageWithArmor, 0f);
 
@@ -102,16 +127,21 @@ abstract public class Hitable : MonoBehaviour
             }
         }
         var force = Vector3.zero;
-        if(attackData.knockback.force > 0f)
+        if (attackData.knockback.force > 0f)
         {
-            force = (this.transform.position - attackData.knockback.origin).normalized * attackData.knockback.force;
+            force = (this.transform.position - attackData.knockback.origin).normalized * attackData.knockback.force * combatData.KnockBackRatio;
             //this.GetComponent<Rigidbody>().AddForce(force, ForceMode.VelocityChange);
 
-            AddStatus(new Status(Status.Type.Knock, attackData.knockback.time, force));
+            AddStatus(new Status(Status.Type.Knock, attackData.knockback.time * combatData.KnockBackRatio, force));
         }
 
-        if (combatData.Health == 0f)
-            Die(force);
+        return force;
+    }
+
+    private void ThrowBloodVfx(AttackData attackData)
+    {
+        var vfxGo = Instantiate(hitVfx, transform.position + Vector3.up, Quaternion.Euler(transform.position.x - attackData.knockback.origin.x, transform.position.y - attackData.knockback.origin.y, transform.position.z - attackData.knockback.origin.z), null);
+        Destroy(vfxGo, 6f);
     }
 
     public void AddStatus(Status it)
@@ -200,7 +230,7 @@ abstract public class Hitable : MonoBehaviour
 
         return returnList;
     }
-    bool ContainStatus(Status status)
+    protected bool ContainStatus(Status status)
     {
         foreach(Status state in currentStatusList)
             if (state.StatusType == status.StatusType) return true;

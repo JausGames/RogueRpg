@@ -3,37 +3,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Player : Hitable
 {
 
-    [Header("Rolling")]
-    private float lastRoll;
-    private float rollCooldown = 0.3f;
 
-    [Header("Reste")]
+    [Header("Player - Component")]
     Army army;
     PlayerCombat combat;
     PlayerController motor;
-    [SerializeField] MapUI mapUi;
+    [SerializeField] PlayerWallet wallet;
 
+    [Header("Player - Masks")]
     [SerializeField] LayerMask minionMask;
     [SerializeField] LayerMask doorLayer;
     [SerializeField] LayerMask interactLayer;
     [SerializeField] LayerMask pickableLayer;
 
-    [SerializeField] PlayerWallet wallet;
-
+    [Header("Player - UI")]
+    [SerializeField] MapUI mapUi;
     [SerializeField] HealthBar healthUI;
-    [SerializeField] ParticleSystem actionParticle;
     [SerializeField] List<GameObject> hidableGo;
     [SerializeField] Text walletTxt;
+
+    [Header("Player - VFX")]
+    [SerializeField] ParticleSystem actionParticle;
+    [HideInInspector]
+    public UnityEvent TargetSetNullEvent;
+
     //[SerializeField] new private PlayerAnimatorController animator;
 
     public LayerMask MinionMask { get => minionMask; set => minionMask = value; }
     public PlayerWallet Wallet { get => wallet;}
     public PlayerController Motor { get => motor; set => motor = value; }
+    public Transform Target { get => motor.Target; }
 
     public void ResetForNewStage()
     {
@@ -97,6 +102,12 @@ public class Player : Hitable
                 }
             }
         }
+        /*if(Target != null)
+        {
+
+            SetTargetNull();
+        }*/
+
         //HideElementsBetween();
     }
 
@@ -118,6 +129,7 @@ public class Player : Hitable
     public void StartRolling()
     {
         if(blocking)SetBlocking(false);
+        if (motor.Running) motor.Running = false;
         Debug.Log("Player, StartRolling");
         animator.Roll(true);
     }
@@ -163,9 +175,33 @@ public class Player : Hitable
         }
     }
 
+    internal void isAiming(Minion target)
+    {
+        if (Target && target) 
+            if(target.transform == Target.transform) 
+                return;
+
+        if (target != null) target.dieEvent.RemoveListener(SetTargetNull);
+        motor.Target = target == null ? null : target.transform;
+        if (target != null) target.dieEvent.AddListener(SetTargetNull);
+    }
+
+    internal void SetRunning(bool isPerformed)
+    {
+
+        if(animator.CanRun()) motor.Running = isPerformed;
+    }
+
+    private void SetTargetNull()
+    {
+        motor.Target = null;
+        TargetSetNullEvent.Invoke();
+    }
+
     public override void Attack(Hitable victim)
     {
-        SetBlocking(false);
+        if (blocking) SetBlocking(false);
+        if (motor.Running) motor.Running = false;
         combat.Attack();
     }
 
@@ -193,6 +229,7 @@ public class Player : Hitable
     public override void GetHit(AttackData attackData)
     {
         base.GetHit(attackData);
+        animator.GetHit();
         healthUI.SetHealth(combatData.Health);
     }
     public override void StopMotion(bool isMoving)

@@ -152,6 +152,5 @@ MonoBehaviour:
   - {fileID: 8714519180634354003, guid: 0e4b3bc10009a9947b088fcae4db2362, type: 3}
   MinionSpawnerList:
   - {fileID: 11400000, guid: bc636696d76209642a12a611a0db4b5e, type: 2}
-  - {fileID: 11400000, guid: e9d8c91d6ff861847b23ed92e3ebf43f, type: 2}
   MinionSpawner: {fileID: 0}
   minions: []

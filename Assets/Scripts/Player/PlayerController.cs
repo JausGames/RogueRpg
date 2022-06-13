@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 look = Vector2.zero;
     [SerializeField] float speed = 50f;
     [SerializeField] float maxSpeed = 15f;
+    [SerializeField] float maxRunSpeed = 22f;
     [SerializeField] bool isMoving = true;
     [SerializeField] bool canStop = true;
     [SerializeField] Rigidbody body;
@@ -25,9 +26,14 @@ public class PlayerController : MonoBehaviour
     private float lastTimeLook;
     private bool rotateWithLook;
 
+    [SerializeField] Transform target;
+    [SerializeField] private bool running;
+
     public bool CanStop { get => canStop; set => canStop = value; }
     public Rigidbody Body { get => body; set => body = value; }
     public bool IsMoving { get => isMoving; set => isMoving = value; }
+    public Transform Target { get => target; set => target = value; }
+    public bool Running { get => running; set => running = value; }
 
     internal void SetSpeed(float speed)
     {
@@ -54,7 +60,7 @@ public class PlayerController : MonoBehaviour
         var v3Look = look.x * transform.right + look.y * transform.forward;
 
         var lookAngle = Vector3.SignedAngle(transform.forward, v3Look, transform.up);
-        if (look.magnitude > 0.05f)
+        /*if (look.magnitude > 0.05f)
         {
             var baseRot = cameraContainer.rotation;
             cameraContainer.Rotate(transform.up * lookAngle * .2f);
@@ -65,10 +71,11 @@ public class PlayerController : MonoBehaviour
         {
             lastTimeNoLook = Time.time;
             //body.angularVelocity /= 10f;
-        }
+        }*/
 
         var v3Move = move.x * cameraContainer.right + move.y * cameraContainer.forward;
 
+        var maxSpeed = (running ? this.maxRunSpeed : this.maxSpeed);
         if (move.magnitude > 0.1f && currSpeed < maxSpeed)
         {
             body.velocity = Vector3.Lerp(body.velocity, body.velocity.magnitude * v3Move, 0.1f);
@@ -88,21 +95,28 @@ public class PlayerController : MonoBehaviour
             body.velocity /= 10f;
         }
 
-        if (move.magnitude > 0.05f && !rotateWithLook)
+        if (target != null)
+        {
+            var targetDir = target.position - transform.position;
+            targetDir -= targetDir.y * Vector3.up;
+            var angle = Vector3.SignedAngle(transform.forward, targetDir.normalized , transform.up);
+            var baseRot = transform.rotation;
+            transform.Rotate(transform.up * angle * .2f);
+            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.2f);
+        }
+        else if (move.magnitude > 0.05f && !rotateWithLook)
         {
             var angle = Vector3.SignedAngle(transform.forward, v3Move, transform.up);
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);
-            // transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
-            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.7f);
+            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 1.2f);
         }
         else if(look.magnitude > 0.05f && rotateWithLook)
         {
             var angle = Vector3.SignedAngle(transform.forward, Camera.main.transform.forward, transform.up);
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);
-            // transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, Mathf.Min(Mathf.Pow(Time.time - lastTimeNoLook, 1f), 0.1f));
-            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.7f);
+            transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 1.2f);
         }
         else
         {
@@ -110,13 +124,13 @@ public class PlayerController : MonoBehaviour
             body.angularVelocity /= 10f;
         }
 
-        if(Time.time - lastTimeLook > .5f)
+        /*if(Time.time - lastTimeLook > .5f)
         {
             var resetAngle = Vector3.SignedAngle(cameraContainer.forward, transform.forward, transform.up);
             var baseRot = cameraContainer.rotation;
             cameraContainer.Rotate(transform.up * resetAngle * .2f);
             cameraContainer.rotation = Quaternion.Lerp(baseRot, cameraContainer.rotation, Mathf.Min(Time.time - lastTimeLook - .5f, 1f) * 0.1f);
-        }
+        }*/
 
         updateArmyEvent.Invoke();
 
@@ -138,7 +152,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateAnimator()
     {
         Debug.Log("PlayerControlelr, UpdateAnimator : speed clamped = " + (body.velocity.sqrMagnitude / maxSpeed));
-        animator.SetControllerAnimator(body.velocity.sqrMagnitude / 45f, move.magnitude > .1f);
+        animator.SetControllerAnimator(body.velocity.sqrMagnitude / 30f, move.magnitude > .1f);
     }
 
     public void SetMove(Vector2 move)

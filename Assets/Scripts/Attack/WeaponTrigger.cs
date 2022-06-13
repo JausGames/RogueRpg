@@ -42,6 +42,37 @@ public class WeaponTrigger : MonoBehaviour
             Debug.Log("WeaponTrigger, OnTriggerEnter : hitable " + minion.gameObject);
         }
     }
+    private void OnTriggerStay(Collider other)
+    {
+
+        /*if (!isActive) return;
+        Debug.Log("WeaponTrigger, OnTriggerEnter : other = " + other.gameObject);
+        if (other.GetComponent<Shield>())
+        {
+            var shield = other.GetComponent<Shield>();
+            if (shield.IsActive)
+            {
+                isActive = false;
+                touchedList.Clear();
+                owner.GetBlock();
+
+                Debug.Log("WeaponTrigger, OnTriggerEnter : get block by shield");
+            }
+        }*/
+        if (!isActive) return;
+
+
+        if (other.GetComponent<Hitable>() || other.GetComponentInParent<Hitable>())
+        {
+            var minion = other.GetComponent<Hitable>() ? other.GetComponent<Hitable>() : other.GetComponentInParent<Hitable>();
+            if (minion == owner || touchedList.Contains(minion)) return;
+
+            minion.GetHit(owner.CombatData.GetAttackData(owner.transform.position, owner));
+            touchedList.Add(minion);
+
+            Debug.Log("WeaponTrigger, OnTriggerEnter : hitable " + minion.gameObject);
+        }
+    }
 
     public void ResetSwing()
     {

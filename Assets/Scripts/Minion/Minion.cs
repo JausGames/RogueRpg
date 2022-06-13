@@ -23,30 +23,33 @@ public class Minion : Hitable
     }
 
     //[SerializeField] public float nextHit = 0f;
-    [Header("Status")]
+    [Header("Minion - Status")]
     [SerializeField] private bool fighting = false;
     [SerializeField] private bool attacking = false;
-    [Header("Minion characteristic")]
-    [SerializeField] Type type;
-    [Header("Component")]
+    [Space]
+    [Header("Minion - Combat")]
     [SerializeField] public Transform hitPoint;
+    [Space]
+    [Header("Minion - Masks")]
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask friendLayer;
-    [SerializeField] new public EnnemyAnimatorController animator;
+    //[SerializeField] new public EnnemyAnimatorController animator;
+    [Space]
+    [Header("Minion - Component")]
     [SerializeField] Player owner;
-    [SerializeField] Vector3 randomDestination;
+    [SerializeField] KnockdownModule koModule;
+    [HideInInspector] Vector3 randomDestination;
     [SerializeField] AiMotor motor;
-    [Header("Timers")]
+    [Space]
+    [Header("Minion - Timers")]
     [SerializeField] bool waitToAttack = false;
     [SerializeField] float attackTimer;
     [SerializeField] bool waitToMove = false;
     [SerializeField] float moveTimer;
 
-    [HideInInspector]
 
     public Player Owner { get => owner; set => owner = value; }
     public bool Fighting { get => fighting; set => fighting = value; }
-    public Type MinionType { get => type; set => type = value; }
     public LayerMask EnemyLayer { get => enemyLayer; set => enemyLayer = value; }
     public LayerMask FriendLayer { get => friendLayer; set => friendLayer = value; }
     public AiMotor Motor { get => motor; set => motor = value; }
@@ -56,6 +59,7 @@ public class Minion : Hitable
     {
 
         CopyWeapon(combatData.Weapon);
+        ragdoll = GetComponentInChildren<RagdollManager>();
         ragdoll.SetRagdollActive(false); 
         if (motor)
         {
@@ -69,19 +73,32 @@ public class Minion : Hitable
     public override void GetHit(AttackData attackData)
     {
         base.GetHit(attackData);
+        koModule.knockdownTolerance -= attackData.damage;
+
+        if(koModule.knockdownTolerance <= 0)
+        {
+            koModule.startRecoveryTimer = Time.time + koModule.koRecoveryDelay;
+            koModule.knockdownTolerance = koModule.MAX_KO_TOLERANCE;
+            animator.GetHit();
+        }
+
         waitToAttack = false;
         waitToMove = false;
     }
     private void Update()
     {
-        if(waitToAttack && attackTimer + .5f < Time.time && !frozen)
+        if (koModule.knockdownTolerance < koModule.MAX_KO_TOLERANCE && Time.time >= koModule.startRecoveryTimer)
+            koModule.knockdownTolerance = Mathf.Min(koModule.MAX_KO_TOLERANCE, koModule.knockdownTolerance + Time.deltaTime * koModule.koRecoverySpeed * 0.0001f);
+
+        if(waitToAttack && attackTimer + .1f < Time.time && !frozen)
         {
             Attack(null);
             moveTimer = Time.time;
             waitToMove = true;
             waitToAttack = false;
+            return;
         }
-        if (waitToMove && moveTimer + .3f < Time.time && !frozen)
+        if (!waitToAttack && waitToMove && moveTimer + .8f < Time.time && !frozen)
         {
             Moving = true;
             waitToMove = false;
@@ -185,15 +202,20 @@ public class Minion : Hitable
         if(Mathf.Abs(speed.x) > Mathf.Abs(speed.z) && Mathf.Abs(speed.x) > 0.2f)
         {
             var Direction = speed.x < 0 ? Minion.Direction.Left : Minion.Direction.Right;
+            var animator = (EnnemyAnimatorController) base.animator;
             animator.SetController(speed.magnitude);
         }
         else if(Mathf.Abs(speed.x) < Mathf.Abs(speed.z) && Mathf.Abs(speed.z) > 0.2f)
         {
             var Direction = speed.z < 0 ? Minion.Direction.Down : Minion.Direction.Up;
+            var animator = (EnnemyAnimatorController)base.animator;
             animator.SetController(speed.magnitude);
         }
         else
+        {
+            var animator = (EnnemyAnimatorController)base.animator;
             animator.SetController(0f);
+        }
     }
 
     public void SetPosition(Vector3 position)
@@ -283,6 +305,7 @@ public class Minion : Hitable
         if (frozen) return;
         if(isMoving)
         {
+            var animator = (EnnemyAnimatorController)base.animator;
             animator.PlayAnimation(true);
             Moving = true;
             frozen = false;
@@ -290,10 +313,20 @@ public class Minion : Hitable
         }
         else
         {
+            var animator = (EnnemyAnimatorController)base.animator;
             animator.PlayAnimation(false);
             Moving = false;
             motor.Body.velocity = Vector3.zero;
             motor.IsActive = false;
         }
     }
+}
+[Serializable]
+public class KnockdownModule
+{
+    public float knockdownTolerance = 20f;
+    public float MAX_KO_TOLERANCE = 20f;
+    public float koRecoverySpeed = 1f;
+    public float koRecoveryDelay = .5f;
+    public float startRecoveryTimer;
 }

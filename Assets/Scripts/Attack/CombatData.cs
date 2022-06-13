@@ -10,6 +10,7 @@ public class CombatData
     [Header("Stats - Health")]
     [SerializeField] protected float maxHealth = 10f;
     [SerializeField] protected float health;
+    [SerializeField] protected float knockBackRatio = 1f;
     [Header("Stats - Speed")]
     [SerializeField] protected float speed;
     [SerializeField] protected float acceleration;
@@ -39,6 +40,7 @@ public class CombatData
     public KnockbackData KnockBack { get => Weapon.KnockBack; set => Weapon.KnockBack = value; }
     public float Acceleration { get => acceleration; set => acceleration = value; }
     public WeaponData Weapon { get => weapon; set => weapon = value; }
+    public float KnockBackRatio { get => knockBackRatio; set => knockBackRatio = value; }
 
     /*private void Awake()
     {

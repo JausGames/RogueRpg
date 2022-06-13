@@ -34,7 +34,7 @@ public class Army : MonoBehaviour
 
         for (int i = 0; i < minions.Count; i++)
         {
-            switch (minions[i].MinionType)
+            /*switch (minions[i].MinionType)
             {
                 case Minion.Type.Warrior:
                     warriors.Add(minions[i]);
@@ -50,7 +50,7 @@ public class Army : MonoBehaviour
                     break;
                 default:
                     break;
-            }
+            }*/
         }
         
         var lastI = 0f;

@@ -98,6 +98,42 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Button"",
+                    ""id"": ""7ce2ede2-6054-4da4-9483-9adcbad0d244"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseRoll"",
+                    ""type"": ""Value"",
+                    ""id"": ""49719a8c-ba65-4cae-9f00-1a67dc4f0286"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""StickSwitchTarget"",
+                    ""type"": ""Value"",
+                    ""id"": ""e64e58b4-0994-4eb4-a63b-c919f55dab79"",
+                    ""expectedControlType"": ""Stick"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""d03e507d-7712-4b08-b8c5-bac45ea6369f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -298,6 +334,72 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a7fcc7c-7599-4834-8ba1-bdff972b7b39"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d8d0ae1-96c8-452f-976e-58847d9fa410"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a4d3a08e-496f-4134-8f61-a0922f673d9a"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""MouseRoll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""391520b1-d728-446c-bc22-fb8d0074a3b3"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StickSwitchTarget"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f22d336-4451-48ae-ac02-fc1a500537aa"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fdf22009-7931-435c-bb3e-d84397127eb7"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -342,6 +444,10 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_PlayerControl_Map = m_PlayerControl.FindAction("Map", throwIfNotFound: true);
         m_PlayerControl_Block = m_PlayerControl.FindAction("Block", throwIfNotFound: true);
         m_PlayerControl_Roll = m_PlayerControl.FindAction("Roll", throwIfNotFound: true);
+        m_PlayerControl_Aim = m_PlayerControl.FindAction("Aim", throwIfNotFound: true);
+        m_PlayerControl_MouseRoll = m_PlayerControl.FindAction("MouseRoll", throwIfNotFound: true);
+        m_PlayerControl_StickSwitchTarget = m_PlayerControl.FindAction("StickSwitchTarget", throwIfNotFound: true);
+        m_PlayerControl_Run = m_PlayerControl.FindAction("Run", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -409,6 +515,10 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControl_Map;
     private readonly InputAction m_PlayerControl_Block;
     private readonly InputAction m_PlayerControl_Roll;
+    private readonly InputAction m_PlayerControl_Aim;
+    private readonly InputAction m_PlayerControl_MouseRoll;
+    private readonly InputAction m_PlayerControl_StickSwitchTarget;
+    private readonly InputAction m_PlayerControl_Run;
     public struct PlayerControlActions
     {
         private @Controls m_Wrapper;
@@ -421,6 +531,10 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Map => m_Wrapper.m_PlayerControl_Map;
         public InputAction @Block => m_Wrapper.m_PlayerControl_Block;
         public InputAction @Roll => m_Wrapper.m_PlayerControl_Roll;
+        public InputAction @Aim => m_Wrapper.m_PlayerControl_Aim;
+        public InputAction @MouseRoll => m_Wrapper.m_PlayerControl_MouseRoll;
+        public InputAction @StickSwitchTarget => m_Wrapper.m_PlayerControl_StickSwitchTarget;
+        public InputAction @Run => m_Wrapper.m_PlayerControl_Run;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -454,6 +568,18 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Roll.started -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnRoll;
                 @Roll.performed -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnRoll;
                 @Roll.canceled -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnRoll;
+                @Aim.started -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnAim;
+                @Aim.performed -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnAim;
+                @Aim.canceled -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnAim;
+                @MouseRoll.started -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnMouseRoll;
+                @MouseRoll.performed -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnMouseRoll;
+                @MouseRoll.canceled -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnMouseRoll;
+                @StickSwitchTarget.started -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnStickSwitchTarget;
+                @StickSwitchTarget.performed -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnStickSwitchTarget;
+                @StickSwitchTarget.canceled -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnStickSwitchTarget;
+                @Run.started -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnRun;
+                @Run.performed -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnRun;
+                @Run.canceled -= m_Wrapper.m_PlayerControlActionsCallbackInterface.OnRun;
             }
             m_Wrapper.m_PlayerControlActionsCallbackInterface = instance;
             if (instance != null)
@@ -482,6 +608,18 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Roll.started += instance.OnRoll;
                 @Roll.performed += instance.OnRoll;
                 @Roll.canceled += instance.OnRoll;
+                @Aim.started += instance.OnAim;
+                @Aim.performed += instance.OnAim;
+                @Aim.canceled += instance.OnAim;
+                @MouseRoll.started += instance.OnMouseRoll;
+                @MouseRoll.performed += instance.OnMouseRoll;
+                @MouseRoll.canceled += instance.OnMouseRoll;
+                @StickSwitchTarget.started += instance.OnStickSwitchTarget;
+                @StickSwitchTarget.performed += instance.OnStickSwitchTarget;
+                @StickSwitchTarget.canceled += instance.OnStickSwitchTarget;
+                @Run.started += instance.OnRun;
+                @Run.performed += instance.OnRun;
+                @Run.canceled += instance.OnRun;
             }
         }
     }
@@ -514,5 +652,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnMap(InputAction.CallbackContext context);
         void OnBlock(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
+        void OnMouseRoll(InputAction.CallbackContext context);
+        void OnStickSwitchTarget(InputAction.CallbackContext context);
+        void OnRun(InputAction.CallbackContext context);
     }
 }

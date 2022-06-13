@@ -19,7 +19,7 @@ public class ArmyUI : MonoBehaviour
 
         for (int i = 0; i < army.Count; i++)
         {
-            switch (army[i].MinionType)
+            /*switch (army[i].MinionType)
             {
                 case Minion.Type.Warrior:
                     warriors.Add(army[i]);
@@ -35,7 +35,7 @@ public class ArmyUI : MonoBehaviour
                     break;
                 default:
                     break;
-            }
+            }*/
         }
         tanksCount.text = tanks.Count < 10 ? "0" + tanks.Count.ToString() : tanks.Count.ToString();
         warriorCount.text = warriors.Count < 10 ? "0" + warriors.Count.ToString() : warriors.Count.ToString();

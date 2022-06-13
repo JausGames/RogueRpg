@@ -113,7 +113,7 @@ PrefabInstance:
         type: 3}
       propertyPath: animator
       value: 
-      objectReference: {fileID: 3045737275660291975}
+      objectReference: {fileID: 5286440600578599761}
     - target: {fileID: 4736359163381438491, guid: 5cfab249de9d9a0468a7d70dfd7151c4,
         type: 3}
       propertyPath: m_Layer
@@ -313,9 +313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef80e19901243e445bf6a4388d95d39b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!95 &3045737275660291975 stripped
+--- !u!95 &5286440600578599761 stripped
 Animator:
-  m_CorrespondingSourceObject: {fileID: 2010724204384764189, guid: 5cfab249de9d9a0468a7d70dfd7151c4,
+  m_CorrespondingSourceObject: {fileID: 8718427228837717451, guid: 5cfab249de9d9a0468a7d70dfd7151c4,
     type: 3}
   m_PrefabInstance: {fileID: 3576745311185899162}
   m_PrefabAsset: {fileID: 0}

@@ -28,7 +28,7 @@ abstract public class WeaponData : ScriptableObject
         else
         {
             if (animator) animator.AttackAnimation();
-            ResetCooldown();
+            //ResetCooldown();
         }
     }
     public void ResetCooldown()
