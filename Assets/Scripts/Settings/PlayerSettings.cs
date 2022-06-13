@@ -8,7 +8,7 @@ public class PlayerSettings : Settings
     private static float pickableRadius = .2f;
     private static Dictionary<string, int> animatorLayers = new Dictionary<string, int>() { { "base", 0 }, { "walk", 1 }, { "block", 2 }, { "roll", 3 } };
 
-    public static int StartMoney { get => StartMoney; }
+    public static int StartMoney { get => startMoney; }
     public static float PickableRadiusCheck { get => pickableRadius; }
 
     public static int GetAnimatorLayers(string layerName)

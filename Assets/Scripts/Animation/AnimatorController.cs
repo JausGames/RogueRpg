@@ -74,7 +74,6 @@ public class AnimatorController : MonoBehaviour
     {
         //Fetch the current Animation clip information for the base layer
         var baseLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"));
-        var m_CurrentClipLength = baseLayer[0].clip.length;
         if (value &&
         // check if base layer is on an animation that accept transition (IDLE, WALK, GETHIT, GETBLOCK)
             !(baseLayer[0].clip.name.Contains("Idle")
@@ -87,7 +86,7 @@ public class AnimatorController : MonoBehaviour
         };
 
         animator.SetBool("Blocking", value);
-        animator.SetLayerWeight(2, value ? 1f : 0f);
+        animator.SetLayerWeight(PlayerSettings.GetAnimatorLayers("block"), value ? 1f : 0f);
 
         // waitToBlock = true;
     }
@@ -109,7 +108,7 @@ public class AnimatorController : MonoBehaviour
             return;
         };
         if (value) animator.SetTrigger("Roll");
-        animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
+        animator.SetLayerWeight(PlayerSettings.GetAnimatorLayers("roll"), value || waitToRoll ? 1f : 0f);
 
         // waitToRoll = true;
     }
