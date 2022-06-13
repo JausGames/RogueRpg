@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridSettings
+public class GridSettings : Settings
 {
     static public Vector2 gridSize = new Vector2(14f, 12f);
     static public float wallSize = 0.5f;

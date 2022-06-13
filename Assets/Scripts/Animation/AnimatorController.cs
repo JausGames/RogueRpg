@@ -14,16 +14,14 @@ public class AnimatorController : MonoBehaviour
 
     private void Update()
     {
-        var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
-        var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
+        var baseLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"));
+        var rollLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("roll"));
         if (waitToRoll)
         {
-
-            //var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
-            if ((m_CurrentClipInfo[0].clip.name.Contains("Idle")
-            || m_CurrentClipInfo[0].clip.name.Contains("Walk")
-            || m_CurrentClipInfo[0].clip.name.Contains("GetHit")
-            ) && m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
+            if ((baseLayer[0].clip.name.Contains("Idle")
+            || baseLayer[0].clip.name.Contains("Walk")
+            || baseLayer[0].clip.name.Contains("GetHit")
+            ) && rollLayer[0].clip.name.Contains("Idle"))
             {
                 waitToRoll = false;
 
@@ -32,10 +30,9 @@ public class AnimatorController : MonoBehaviour
                 return;
             }
         }
-        if (waitToBlock && m_CurrentClipInfo.Length >= 1)
+        if (waitToBlock && baseLayer.Length >= 1)
         {
-            //var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
-            if (m_CurrentClipInfo[0].clip.name.Contains("Idle") || m_CurrentClipInfo[0].clip.name.Contains("Walk"))
+            if (baseLayer[0].clip.name.Contains("Idle") || baseLayer[0].clip.name.Contains("Walk"))
             {
                 waitToBlock = false;
 
@@ -44,11 +41,11 @@ public class AnimatorController : MonoBehaviour
                 return;
             }
         }
-        if(waitToAttack && m_CurrentClipInfo.Length >= 1 && m_CurrentClipInfoRollLayer.Length >= 1)
+        if(waitToAttack && baseLayer.Length >= 1 && rollLayer.Length >= 1)
         {
-            if ((m_CurrentClipInfo[0].clip.name.Contains("Idle")
-                  || m_CurrentClipInfo[0].clip.name.Contains("Walk")
-                  ) && m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
+            if ((baseLayer[0].clip.name.Contains("Idle")
+                  || baseLayer[0].clip.name.Contains("Walk")
+                  ) && rollLayer[0].clip.name.Contains("Idle"))
             {
                 waitToAttack = false;
                 animator.SetTrigger("Attack");
@@ -58,16 +55,6 @@ public class AnimatorController : MonoBehaviour
     }
     virtual public void AttackAnimation()
     {
-        /*var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
-        var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
-
-        if ((m_CurrentClipInfo[0].clip.name.Contains("Idle")
-               || m_CurrentClipInfo[0].clip.name.Contains("Walk")
-               ) && m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
-            animator.SetTrigger("Attack");
-        else if(m_CurrentClipInfo[0].clip.name.Contains("Attack"))
-            animator.SetBool("AttackCombo", true);
-        else waitToAttack = true;*/
         waitToAttack = true;
     }
 
@@ -86,22 +73,19 @@ public class AnimatorController : MonoBehaviour
     virtual public void SetBlocking(bool value)
     {
         //Fetch the current Animation clip information for the base layer
-        var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
-        //Access the current length of the clip
-        var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
-        //Access the Animation clip name
+        var baseLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"));
+        var m_CurrentClipLength = baseLayer[0].clip.length;
         if (value &&
         // check if base layer is on an animation that accept transition (IDLE, WALK, GETHIT, GETBLOCK)
-            !(m_CurrentClipInfo[0].clip.name.Contains("Idle")
-            || m_CurrentClipInfo[0].clip.name.Contains("Walk")
-            || m_CurrentClipInfo[0].clip.name.Contains("GetHit")
-            || m_CurrentClipInfo[0].clip.name.Contains("GetBlock")))
+            !(baseLayer[0].clip.name.Contains("Idle")
+            || baseLayer[0].clip.name.Contains("Walk")
+            || baseLayer[0].clip.name.Contains("GetHit")
+            || baseLayer[0].clip.name.Contains("GetBlock")))
         {
             waitToBlock = true;
             return;
         };
 
-        Debug.Log("AnimatorController, SetBlocking : on ? " + value);
         animator.SetBool("Blocking", value);
         animator.SetLayerWeight(2, value ? 1f : 0f);
 
@@ -109,28 +93,21 @@ public class AnimatorController : MonoBehaviour
     }
     internal void Roll(bool value)
     {
-        //Fetch the current Animation clip information for the base layer
-        var m_CurrentClipInfoBaseLayer = animator.GetCurrentAnimatorClipInfo(0);
-        var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
-        //Access the current length of the clip
-        Debug.Log("AnimatorController, Roll : clip name = " + m_CurrentClipInfoRollLayer[0].clip.name);
+        var baseLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"));
+        var rollLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("roll"));
 
-        //Access the Animation clip name
         if (value && (
             // check if base layer is on an animation that accept transition (IDLE or WALK)
-            !(m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Idle")
-            || m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Walk"))
+            !(baseLayer[0].clip.name.Contains("Idle")
+            || baseLayer[0].clip.name.Contains("Walk"))
 
             // check if roll layer is on an animation that accept transition (IDLE)
-            || !m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle"))
+            || !rollLayer[0].clip.name.Contains("Idle"))
             )
         {
-            Debug.Log("AnimatorController, Roll : wait to roll");
             waitToRoll = true;
             return;
         };
-
-        Debug.Log("AnimatorController, Roll : " + value);
         if (value) animator.SetTrigger("Roll");
         animator.SetLayerWeight(3, value || waitToRoll ? 1f : 0f);
 
@@ -139,13 +116,13 @@ public class AnimatorController : MonoBehaviour
 
     internal bool CanRun()
     {
-        var m_CurrentClipInfoBaseLayer = animator.GetCurrentAnimatorClipInfo(0);
-        var m_CurrentClipInfoRollLayer = animator.GetCurrentAnimatorClipInfo(3);
-        var m_CurrentClipInfoBlockLayer = animator.GetCurrentAnimatorClipInfo(2);
+        var baseLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"));
+        var rollLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("roll"));
+        var blockLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("block"));
 
-        return (m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Idle")
-            || m_CurrentClipInfoBaseLayer[0].clip.name.Contains("Walk"))
-            && m_CurrentClipInfoRollLayer[0].clip.name.Contains("Idle")
-            && m_CurrentClipInfoBlockLayer[0].clip.name.Contains("Idle");
+        return (baseLayer[0].clip.name.Contains("Idle")
+            || baseLayer[0].clip.name.Contains("Walk"))
+            && rollLayer[0].clip.name.Contains("Idle")
+            && blockLayer[0].clip.name.Contains("Idle");
     }
 }

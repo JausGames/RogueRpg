@@ -63,7 +63,7 @@ public class Player : Hitable
     {
         ragdoll.SetRagdollActive(false);
         CopyWeapon(combatData.Weapon);
-        wallet = new PlayerWallet(10);
+        wallet = new PlayerWallet(PlayerSettings.StartMoney);
         UpdateWalletUi();
     }
     private void OnEnable()
@@ -88,7 +88,7 @@ public class Player : Hitable
     {
         mapUi.SetPlayerPosition(transform.position.x / GridSettings.gridSize.x, transform.position.z / GridSettings.gridSize.y);
         //Check for pickable
-        var cols = Physics.OverlapSphere(transform.position, .3f, pickableLayer);
+        var cols = Physics.OverlapSphere(transform.position, PlayerSettings.PickableRadiusCheck, pickableLayer);
         if(cols.Length > 0)
         {
             List<Pickable> pickables = new List<Pickable>();
