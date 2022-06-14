@@ -151,8 +151,14 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        Debug.Log("PlayerControlelr, UpdateAnimator : speed clamped = " + (body.velocity.sqrMagnitude / maxSpeed));
-        animator.SetControllerAnimator(body.velocity.sqrMagnitude / 30f, move.magnitude > .1f);
+        var velocity = body.velocity.sqrMagnitude / 30f;
+        var frontRatio = Vector3.Dot(body.velocity.normalized, transform.forward);
+        var sideRatio = Vector3.Dot(body.velocity.normalized, transform.right);
+
+        Debug.Log("PlayerControlelr, UpdateAnimator : ratio front = " + frontRatio);
+        Debug.Log("PlayerControlelr, UpdateAnimator : ratio side = " + sideRatio);
+
+        animator.SetControllerAnimator(velocity, move.magnitude > .1f, frontRatio, sideRatio);
     }
 
     public void SetMove(Vector2 move)
