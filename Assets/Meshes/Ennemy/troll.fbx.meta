@@ -30,6 +30,9 @@ ModelImporter:
   - first:
       74: 312914537992169742
     second: troll_rig|GetBlock
+  - first:
+      74: -5605354105162870911
+    second: troll_rig|SmallAttack
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -103,7 +106,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.21543407
+      - time: 0.22650419
         functionName: SetTriggerActive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -111,7 +114,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.33440506
+      - time: 0.24399915
         functionName: SetTriggerInactive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -351,6 +354,51 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: troll_rig|SmallAttack
+      takeName: troll_rig|SmallAttack
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 45
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.16473317
+        functionName: SetTriggerActive
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
+          type: 3}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.18793504
+        functionName: SetTriggerInactive
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

@@ -12,7 +12,6 @@ abstract public class Hitable : MonoBehaviour
     [Header("Base - Status")]
     [SerializeField] protected bool moving = false;
     [SerializeField] protected bool frozen = false;
-    [SerializeField] protected bool blocking = false;
     [SerializeField] protected bool rolling = false;
     [Space]
     [Header("Base - Combat")]
@@ -32,6 +31,8 @@ abstract public class Hitable : MonoBehaviour
     public CombatData CombatData { get => combatData; set => combatData = value; }
     public bool Frozen { get => frozen; set => frozen = value; }
     public List<Status> CurrentStatusList { get => currentStatusList; set => currentStatusList = value; }
+    protected bool Blocking { get => blockingShield.IsActive; set => blockingShield.IsActive = value; }
+    protected bool Countering { get => blockingShield.IsCounter; set => blockingShield.IsCounter = value; }
 
     abstract public void Attack(Hitable victim);
 
@@ -79,11 +80,14 @@ abstract public class Hitable : MonoBehaviour
 
     virtual public void GetHit(AttackData attackData)
     {
-        if (blocking && CheckIsBlocked(attackData.origin.transform.position - transform.position))
+        if (Countering && CheckIsBlocked(attackData.origin.transform.position - transform.position))
         {
             attackData.origin.GetBlock();
             return;
-
+        }
+        else if(Blocking && CheckIsBlocked(attackData.origin.transform.position - transform.position))
+        {
+            attackData.damage = attackData.damage * (1f - blockingShield.ShieldPower * 0.01f);
         }
 
         if (rolling)
@@ -115,7 +119,7 @@ abstract public class Hitable : MonoBehaviour
 
     private Vector3 ApplyAttackData(AttackData attackData)
     {
-        var damageWithArmor = Mathf.Min(attackData.damage - combatData.PhysicArmor);
+        var damageWithArmor = attackData.damage * (100f - combatData.PhysicArmor) * 0.01f;
         combatData.Health = Mathf.Max(combatData.Health - damageWithArmor, 0f);
 
 
@@ -185,7 +189,7 @@ abstract public class Hitable : MonoBehaviour
     }
     virtual public void SetBlocking(bool value)
     {
-        blocking = value;
+        Blocking = value;
     }
 
     public void Push(Vector3 force)

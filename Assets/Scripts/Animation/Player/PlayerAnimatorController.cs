@@ -10,7 +10,7 @@ public class PlayerAnimatorController : AnimatorController
     {
         animator.SetBool("Moving", isMoving);
         animator.SetFloat("SpeedForward", (velocity * Mathf.Sign(forwardRatio)));
-        //animator.SetFloat("SpeedForward", (velocity * forwardRatio));
+        animator.SetFloat("Speed", velocity);
         animator.SetFloat("SpeedSide", (velocity * Mathf.Sign(sideRatio)));
         animator.SetFloat("SpeedRatio", Mathf.Min(1f, Mathf.Abs(forwardRatio) / Mathf.Abs(sideRatio)));
         animator.SetLayerWeight(PlayerSettings.GetAnimatorLayers("walk"), isMoving || blocking ? 1f : 0f);
@@ -20,5 +20,10 @@ public class PlayerAnimatorController : AnimatorController
         blocking = value;
         base.SetBlocking(value);
         animator.SetLayerWeight(PlayerSettings.GetAnimatorLayers("walk"), value ? 1f : 0f);
+    }
+
+    public void SetAgility(float agility)
+    {
+        animator.SetFloat("Agility", agility);
     }
 }

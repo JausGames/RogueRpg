@@ -8,7 +8,8 @@ public class AnimatorController : MonoBehaviour
     [SerializeField] protected Animator animator;
     [SerializeField] bool waitToBlock = false;
     [SerializeField] bool waitToRoll = false;
-    private bool waitToAttack;
+    [SerializeField] private bool waitToAttack;
+    protected string animAttackTrigger;
 
     public Animator Animator { get => animator; set => animator = value; }
 
@@ -20,6 +21,7 @@ public class AnimatorController : MonoBehaviour
         {
             if ((baseLayer[0].clip.name.Contains("Idle")
             || baseLayer[0].clip.name.Contains("Walk")
+            || baseLayer[0].clip.name.Contains("Run")
             || baseLayer[0].clip.name.Contains("GetHit")
             ) && rollLayer[0].clip.name.Contains("Idle"))
             {
@@ -32,7 +34,7 @@ public class AnimatorController : MonoBehaviour
         }
         if (waitToBlock && baseLayer.Length >= 1)
         {
-            if (baseLayer[0].clip.name.Contains("Idle") || baseLayer[0].clip.name.Contains("Walk"))
+            if (baseLayer[0].clip.name.Contains("Idle") || baseLayer[0].clip.name.Contains("Walk") || baseLayer[0].clip.name.Contains("Run"))
             {
                 waitToBlock = false;
 
@@ -41,20 +43,25 @@ public class AnimatorController : MonoBehaviour
                 return;
             }
         }
+        if (waitToAttack) Debug.Log("AnimatorController, Wait to attack : " + baseLayer[0].clip.name);
         if(waitToAttack && baseLayer.Length >= 1 && rollLayer.Length >= 1)
         {
             if ((baseLayer[0].clip.name.Contains("Idle")
                   || baseLayer[0].clip.name.Contains("Walk")
+                  || baseLayer[0].clip.name.Contains("Run")
                   ) && rollLayer[0].clip.name.Contains("Idle"))
             {
                 waitToAttack = false;
-                animator.SetTrigger("Attack");
+                animator.SetTrigger(animAttackTrigger);
                 return;
             }
+            else if (baseLayer[0].clip.name.Contains("Attack"))
+                waitToAttack = false;
         }
     }
-    virtual public void AttackAnimation()
+    virtual public void AttackAnimation(string animAttackTrigger = "")
     {
+        if (animAttackTrigger == "") this.animAttackTrigger = "Attack";
         waitToAttack = true;
     }
 
@@ -66,6 +73,8 @@ public class AnimatorController : MonoBehaviour
     {
         animator.SetTrigger("GetHit");
     }
+
+
     virtual public void GetBlock()
     {
         animator.SetTrigger("GetBlock");
@@ -78,6 +87,7 @@ public class AnimatorController : MonoBehaviour
         // check if base layer is on an animation that accept transition (IDLE, WALK, GETHIT, GETBLOCK)
             !(baseLayer[0].clip.name.Contains("Idle")
             || baseLayer[0].clip.name.Contains("Walk")
+            || baseLayer[0].clip.name.Contains("Run")
             || baseLayer[0].clip.name.Contains("GetHit")
             || baseLayer[0].clip.name.Contains("GetBlock")))
         {
@@ -98,7 +108,8 @@ public class AnimatorController : MonoBehaviour
         if (value && (
             // check if base layer is on an animation that accept transition (IDLE or WALK)
             !(baseLayer[0].clip.name.Contains("Idle")
-            || baseLayer[0].clip.name.Contains("Walk"))
+            || baseLayer[0].clip.name.Contains("Walk")
+            || baseLayer[0].clip.name.Contains("Run"))
 
             // check if roll layer is on an animation that accept transition (IDLE)
             || !rollLayer[0].clip.name.Contains("Idle"))
@@ -120,7 +131,8 @@ public class AnimatorController : MonoBehaviour
         var blockLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("block"));
 
         return (baseLayer[0].clip.name.Contains("Idle")
-            || baseLayer[0].clip.name.Contains("Walk"))
+            || baseLayer[0].clip.name.Contains("Walk")
+            || baseLayer[0].clip.name.Contains("Run"))
             && rollLayer[0].clip.name.Contains("Idle")
             && blockLayer[0].clip.name.Contains("Idle");
     }

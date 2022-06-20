@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class EnnemyAnimatorController : AnimatorController
 {
-    public override void AttackAnimation()
+    public override void AttackAnimation(string animTrigger = "")
     {
-        animator.SetTrigger("Attack");
+        if (animTrigger == "") animTrigger = "Attack";
+        animator.SetTrigger(animTrigger);
     }
     internal void SetController(float velocity)
     {

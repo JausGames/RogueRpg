@@ -5,44 +5,25 @@ using UnityEngine;
 
 public class MapSettings
 {
-    static List<Color> colors = new List<Color>() { 
-        new Color(.3f, .5f, .7f), // Start
-        new Color(.7f, .3f, .3f), // End
-        new Color(.4f, .7f, .3f), // Gather
-        Color.white,              // Default
-        new Color(1f, .85f, .2f), // Bonus
-        new Color(.8f, .55f, .4f) // Shop
-    };
+    static Dictionary<SpecialRoom.Type, Color> colorsDict = new Dictionary<SpecialRoom.Type, Color>(){
+        {SpecialRoom.Type.PowerUp, new Color(0.78f, 0.94f, 1.00f)},
+        {SpecialRoom.Type.Shop, new Color(.8f, .55f, .4f) },
+        {SpecialRoom.Type.Heal, new Color(1.00f, 0.62f, 0.93f)},
+        {SpecialRoom.Type.Smith, new Color(0.67f, 0.67f, 0.79f)},
+        {SpecialRoom.Type.LevelUp, new Color(1f, .85f, .2f)},
+        {SpecialRoom.Type.Null, Color.white},
+        };
+
+    static Dictionary<Type, Color> roomColorDict = new Dictionary<Type, Color>(){
+        {Type.Start, new Color(.3f, .5f, .7f)},
+        {Type.End, new Color(.7f, .3f, .3f) },
+        {Type.Default, Color.white}
+        };
+
 
     static public Color RoomTypeToColor(Type roomType, SpecialRoom.Type specialType = SpecialRoom.Type.Null)
     {
-        switch (roomType)
-        {
-            case Type.Start:
-                return colors[0];
-            case Type.End:
-                return colors[1];
-            case Type.Special:
-                return SpecialRoomTypeToColor(specialType);
-            case Type.Default:
-                return colors[3];
-            default:
-                return colors[3];
-        }
-    }
-
-    static public Color SpecialRoomTypeToColor(SpecialRoom.Type roomType)
-    {
-        switch (roomType)
-        {
-            case SpecialRoom.Type.Troup:
-                return colors[2];
-            case SpecialRoom.Type.Bonus:
-                return colors[4];
-            case SpecialRoom.Type.Shop:
-                return colors[5];
-            default:
-                return colors[3];
-        }
+        if (specialType != SpecialRoom.Type.Null) return colorsDict[specialType];
+        else return roomColorDict[roomType];
     }
 }

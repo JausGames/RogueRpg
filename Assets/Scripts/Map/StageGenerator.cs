@@ -365,7 +365,7 @@ public class StageGenerator : MonoBehaviour
 
             var room = InstantiateRoom(prefab, roomData[i], prefab.transform.rotation);
             if (room.GetComponent<SpecialRoom>()) 
-                room.GetComponent<SpecialRoom>().SpecialType = specialRoomCount == 1 ? SpecialRoom.Type.Bonus : (SpecialRoom.Type) ((specialRoomCount % 2) * 2);
+                room.GetComponent<SpecialRoom>().SpecialType = specialRoomCount == 1 ? SpecialRoom.Type.PowerUp : (SpecialRoom.Type) Random.Range(0, specialRoomPrefabs.Count + 1);
         }
 
         stage.SetStageStart(GetRoomByPos(startData.placedRoomMatPos), startData.placedRoomMatPos);

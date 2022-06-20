@@ -8,6 +8,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Component")]
     [SerializeField] CombatData combatData;
     [SerializeField] CombatDataUi ui;
+    [SerializeField] PowerUpUi powerUpUi;
     [SerializeField] public Transform hitPoint;
     [SerializeField] private LayerMask ennemyLayer;
     [SerializeField] private LayerMask friendLayer;
@@ -24,7 +25,11 @@ public class PlayerCombat : MonoBehaviour
 
     internal void AddBonus(Bonus bonus)
     {
-        combatData.AddBonus(bonus);
+        var displayList = combatData.AddBonus(bonus);
         ui.UpdateStatUi(combatData, bonus);
+        foreach (var item in displayList)
+        {
+            powerUpUi.ShowBonus(item.Key, item.Value);
+        }
     }
 }

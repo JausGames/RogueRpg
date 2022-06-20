@@ -121,14 +121,14 @@ public class Player : Hitable
         Debug.Log("Player, SetBlocking : shield on ? " + value);
         if(!value)
             animator.SetBlocking(value);
-        blocking = value;
+        Blocking = value;
         motor.RotateWithLook(value);
         blockingShield.IsActive = value;
     }
 
     public void StartRolling()
     {
-        if(blocking)SetBlocking(false);
+        if(Blocking)SetBlocking(false);
         if (motor.Running) motor.Running = false;
         Debug.Log("Player, StartRolling");
         animator.Roll(true);
@@ -151,6 +151,8 @@ public class Player : Hitable
         combat.CombatData = combatData;
         motor = GetComponent<PlayerController>();
         army = GetComponent<Army>();
+        // to set roll speed
+        combatData.Agility = combatData.Agility;
 
         motor.SetSpeed(combatData.Speed);
         motor.updateArmyEvent.AddListener(delegate { army.SetMinionsPosition(transform.position, transform.forward); });
@@ -200,7 +202,7 @@ public class Player : Hitable
 
     public override void Attack(Hitable victim)
     {
-        if (blocking) SetBlocking(false);
+        if (Blocking) SetBlocking(false);
         if (motor.Running) motor.Running = false;
         combat.Attack();
     }
@@ -229,7 +231,7 @@ public class Player : Hitable
     public override void GetHit(AttackData attackData)
     {
         base.GetHit(attackData);
-        animator.GetHit();
+        if(!Blocking && !Countering)animator.GetHit();
         healthUI.SetHealth(combatData.Health);
     }
     public override void StopMotion(bool isMoving)

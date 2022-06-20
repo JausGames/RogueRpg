@@ -6,10 +6,16 @@ public class PlayerSettings : Settings
 {
     private static int startMoney = 10;
     private static float pickableRadius = .2f;
+    private static float fastRollAgilityValue = 5f;
+    private static float maxAnimationSpeed = 25f;
+    private static float maxWeaponDamageBoostByStrength = 1.5f;
     private static Dictionary<string, int> animatorLayers = new Dictionary<string, int>() { { "base", 0 }, { "walk", 1 }, { "block", 2 }, { "roll", 3 } };
 
     public static int StartMoney { get => startMoney; }
     public static float PickableRadiusCheck { get => pickableRadius; }
+    public static float FastRollAgilityValue { get => fastRollAgilityValue; set => fastRollAgilityValue = value; }
+    public static float MaxWeaponDamageBoostByStrength { get => maxWeaponDamageBoostByStrength; set => maxWeaponDamageBoostByStrength = value; }
+    public static float MaxAnimationSpeed { get => maxAnimationSpeed; set => maxAnimationSpeed = value; }
 
     public static int GetAnimatorLayers(string layerName)
     {

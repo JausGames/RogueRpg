@@ -13,10 +13,34 @@ MonoBehaviour:
   m_Name: TrollHand
   m_EditorClassIdentifier: 
   damage: 8
+  mass: 0
   hitRange: 1.4
+  neededStrength: 0
   knockBack:
     force: 4
     time: 0.2
-  coolDown: 1
-  nextHit: 0
+  attackSet:
+  - damage: 8
+    knockback:
+      force: 4
+      time: 0.2
+    origin: {fileID: 0}
+    statusList: []
+    triggerId: 0
+  - damage: 3
+    knockback:
+      force: 2
+      time: 0.2
+    origin: {fileID: 0}
+    statusList: []
+    triggerId: 1
+  currentAttack:
+    damage: 0
+    knockback:
+      force: 0
+      time: 0
+    origin: {fileID: 0}
+    statusList: []
+    triggerId: 0
   comboable: 0
+  comboTime: 0.3

@@ -6,12 +6,10 @@ using UnityEngine.UI;
 public class CombatDataUi : MonoBehaviour
 {
     [Header("Stats")]
-    [SerializeField] protected Text damage;
-    [SerializeField] protected Text speed; //projectile
+    [SerializeField] protected Text strength;
+    [SerializeField] protected Text agility; 
+    [SerializeField] protected Text speed; 
     [SerializeField] protected Text physicArmor;
-    [SerializeField] protected Text hitRadius;
-    [SerializeField] protected Text hitRange;
-    [SerializeField] protected Text coolDown;
     [SerializeField] protected Text maxHealth;
 
 
@@ -22,12 +20,10 @@ public class CombatDataUi : MonoBehaviour
 
     public void UpdateStatUi(CombatData data, Bonus newBonus)
     {
-        damage.text = (Mathf.Ceil(data.Damage * 10f) * 0.1f) .ToString();
+        strength.text = (Mathf.Ceil(data.Strength * 10f) * 0.1f) .ToString();
         speed.text = (Mathf.Ceil(data.Speed * 10f) * 0.1f).ToString();
+        agility.text = (Mathf.Ceil(data.Agility * 10f) * 0.1f).ToString();
         physicArmor.text = (Mathf.Ceil(data.PhysicArmor * 10f) * 0.1f).ToString();
-        hitRange.text = (Mathf.Ceil(data.HitRange * 10f) * 0.1f).ToString();
-        //hitRadius.text = (Mathf.Ceil(data.Radius * 10f) * 0.1f).ToString();
-        coolDown.text = (Mathf.Ceil(data.Cooldown * 10f) * 0.1f).ToString();
         maxHealth.text = (Mathf.Ceil(data.MAX_HEALTH * 10f) * 0.1f).ToString();
 
         var icon = Instantiate(bonusSpritePrefab, bonusRect);
@@ -42,12 +38,10 @@ public class CombatDataUi : MonoBehaviour
     }
     internal void SetUpStat(CombatData data)
     {
-        damage.text = (Mathf.Ceil(data.Damage * 10f) * 0.1f).ToString();
+        strength.text = (Mathf.Ceil(data.Strength * 10f) * 0.1f).ToString();
         speed.text = (Mathf.Ceil(data.Speed * 10f) * 0.1f).ToString();
+        agility.text = (Mathf.Ceil(data.Agility * 10f) * 0.1f).ToString();
         physicArmor.text = (Mathf.Ceil(data.PhysicArmor * 10f) * 0.1f).ToString();
-        hitRange.text = (Mathf.Ceil(data.HitRange * 10f) * 0.1f).ToString();
-        //hitRadius.text = (Mathf.Ceil(data.Radius * 10f) * 0.1f).ToString();
-        coolDown.text = (Mathf.Ceil(data.Cooldown * 10f) * 0.1f).ToString();
         maxHealth.text = (Mathf.Ceil(data.MAX_HEALTH * 10f) * 0.1f).ToString();
 
 

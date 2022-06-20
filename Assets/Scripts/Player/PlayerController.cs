@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        var velocity = body.velocity.sqrMagnitude / 30f;
+        var velocity = body.velocity.sqrMagnitude / PlayerSettings.MaxAnimationSpeed;
         var frontRatio = Vector3.Dot(body.velocity.normalized, transform.forward);
         var sideRatio = Vector3.Dot(body.velocity.normalized, transform.right);
 

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 494047f5d6c97aa4bb9962dd57bf28e2, type: 3}
+  m_Name: Chadification
+  m_EditorClassIdentifier: 
+  modifiers: []
+  bonus:
+    strength: 1.5
+    speed: 0
+    agility: -0.5
+    physicArmor: 2
+    health: 0
+  sprite: {fileID: 21300000, guid: d9a8ee99c46b03247abef7d92a429001, type: 3}
+  texture: {fileID: 2800000, guid: d9a8ee99c46b03247abef7d92a429001, type: 3}
+  basePrice: 150

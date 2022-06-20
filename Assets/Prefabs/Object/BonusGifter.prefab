@@ -601,7 +601,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 1.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -5168,9 +5168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shop: {fileID: 0}
   bonusList:
-  - {fileID: 11400000, guid: 020ea0e9d20033b488aea55994ecee63, type: 2}
-  - {fileID: 11400000, guid: 0fd722a9f278f0b4a955f8f844aea7df, type: 2}
-  - {fileID: 11400000, guid: f5a63c4808935f049855f8289215bff5, type: 2}
+  - {fileID: 11400000, guid: ce8f4628d681f994d90bf0e4681a4df6, type: 2}
   bonus: {fileID: 0}
   prtc: {fileID: 7015045184532694807}
   bonusName: {fileID: 2815391766705021979}

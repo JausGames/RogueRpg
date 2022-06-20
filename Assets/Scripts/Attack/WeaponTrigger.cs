@@ -7,27 +7,22 @@ public class WeaponTrigger : MonoBehaviour
 {
     [SerializeField] Hitable owner;
     [SerializeField] List<Hitable> touchedList;
+    [SerializeField] List<ParticleSystem> particles;
     [SerializeField] bool isActive = false;
 
-    public bool IsActive { get => isActive; set { isActive = value; touchedList.Clear(); } }
+    public bool IsActive { get => isActive;
+        set
+        {
+            isActive = value;
+            touchedList.Clear();
+            if (value)
+                foreach (ParticleSystem prtcl in particles)
+                    prtcl.Play();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-
-        /*if (!isActive) return;
-        Debug.Log("WeaponTrigger, OnTriggerEnter : other = " + other.gameObject);
-        if (other.GetComponent<Shield>())
-        {
-            var shield = other.GetComponent<Shield>();
-            if (shield.IsActive)
-            {
-                isActive = false;
-                touchedList.Clear();
-                owner.GetBlock();
-
-                Debug.Log("WeaponTrigger, OnTriggerEnter : get block by shield");
-            }
-        }*/
         if (!isActive) return;
 
 
@@ -44,21 +39,6 @@ public class WeaponTrigger : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-
-        /*if (!isActive) return;
-        Debug.Log("WeaponTrigger, OnTriggerEnter : other = " + other.gameObject);
-        if (other.GetComponent<Shield>())
-        {
-            var shield = other.GetComponent<Shield>();
-            if (shield.IsActive)
-            {
-                isActive = false;
-                touchedList.Clear();
-                owner.GetBlock();
-
-                Debug.Log("WeaponTrigger, OnTriggerEnter : get block by shield");
-            }
-        }*/
         if (!isActive) return;
 
 

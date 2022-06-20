@@ -29,14 +29,11 @@ public class SpecialRoom : Room
 
         switch (specialType)
         {
-            case Type.Troup:
+            case Type.PowerUp:
                 Instantiate(roomFloorPrefabs[0], transform.position, doorPrefabs[0].transform.rotation, transform);
                 break;
-            case Type.Bonus:
-                Instantiate(roomFloorPrefabs[1], transform.position, doorPrefabs[0].transform.rotation, transform);
-                break;
             case Type.Shop:
-                Instantiate(roomFloorPrefabs[2], transform.position, doorPrefabs[0].transform.rotation, transform);
+                Instantiate(roomFloorPrefabs[1], transform.position, doorPrefabs[0].transform.rotation, transform);
                 break;
             default:
                 break;
@@ -46,9 +43,11 @@ public class SpecialRoom : Room
     
     public enum Type
     {
-        Troup,
-        Bonus,
+        PowerUp,
         Shop,
+        Heal,
+        Smith,
+        LevelUp,
         Null
     }
 }

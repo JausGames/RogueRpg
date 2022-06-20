@@ -5,27 +5,23 @@ using UnityEngine;
 [System.Serializable()]
 public class StatBonus
 {
-    public float damage;
+    public float strength;
     public float speed;
+    public float agility;
     public float physicArmor;
-    public float hitRadius;
-    public float hitRange;
-    public float coolDown;
     public float health;
 
-    public StatBonus(float damage, float speed, float physicArmor, float hitRadius, float hitRange, float coolDown, float health)
+    public StatBonus(float strength, float speed, float agility, float physicArmor, float hitRadius, float hitRange, float coolDown, float health)
     {
-        this.damage = damage;
+        this.strength = strength;
         this.speed = speed;
+        this.agility = agility;
         this.physicArmor = physicArmor;
-        this.hitRadius = hitRadius;
-        this.hitRange = hitRange;
-        this.coolDown = coolDown;
         this.health = health;
     }
 }
 
-[CreateAssetMenu(fileName = "Bonus", menuName = "Bonus/Basic Bonus", order = 1)]
+[CreateAssetMenu(fileName = "Power Up", menuName = "Bonus/Basic Power Up", order = 1)]
 public class Bonus : ScriptableObject
 {
     [SerializeField] List<AttackModifier> modifiers = new List<AttackModifier>();

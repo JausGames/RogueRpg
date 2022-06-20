@@ -14,7 +14,7 @@ public class RangeWeapon : WeaponData
     public float ProjectileSpeed { get => projectileSpeed; set => projectileSpeed = value; }
     public GameObject Projectile { get => projectile; set => projectile = value; }
 
-    public override void TriggerWeapon(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, AnimatorController animator)
+    public override void TriggerWeapon(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, AnimatorController animator, string animTrigger = "")
     {
         //base.Attack(owner, hitPoint, enemyLayer, friendLayer);
         if (!animator && nextHit > Time.time) return;
@@ -22,7 +22,7 @@ public class RangeWeapon : WeaponData
         else
         {
             if (animator) animator.AttackAnimation();
-            nextHit = Time.time + coolDown;
+            nextHit = Time.time + comboTime;
 
             var projectileGo = Instantiate(projectile, hitPoint.transform.position, owner.transform.rotation * projectile.transform.rotation, null);
             var projectileCmp = projectileGo.GetComponent<Projectile>();

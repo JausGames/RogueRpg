@@ -1347,7 +1347,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.214, z: 0.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 9076961469616465229}
   - {fileID: 6607356430720000043}
   m_Father: {fileID: 7691128446250889848}
   m_RootOrder: 0
@@ -1550,11 +1549,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4718299795538798230}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.27, z: -1.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1826100606985916871}
+  m_Father: {fileID: 6607356430720000043}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &8335427335645396426
@@ -6479,9 +6478,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.27, z: 1.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 9076961469616465229}
   m_Father: {fileID: 1826100606985916871}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6179093339309263372
 MonoBehaviour:
@@ -7123,8 +7123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trigger: {fileID: 6179093339309263372}
+  triggers: []
+  smallTrigger: {fileID: 0}
   owner: {fileID: 4229908006521760277}
+  animator: {fileID: 0}
 --- !u!1 &6830521254976537262
 GameObject:
   m_ObjectHideFlags: 0
@@ -7717,13 +7719,14 @@ MonoBehaviour:
       m_Calls: []
   moving: 0
   frozen: 0
-  blocking: 0
-  blockingShield: {fileID: 0}
   rolling: 0
   combatData:
     maxHealth: 15
     health: 15
+    knockBackRatio: 1
+    strength: 0
     speed: 4
+    agility: 0
     acceleration: 3
     physicArmor: 1
     weapon: {fileID: 11400000, guid: 3efdc9fb58af8834ca0f62fddb40213c, type: 2}
@@ -7736,18 +7739,14 @@ MonoBehaviour:
     modifiers: []
     animator: {fileID: 4657408473020989470}
   currentStatusList: []
-  ObjsBetweenThisAndCamera: []
+  blockingShield: {fileID: 0}
   ragdoll: {fileID: 1601734318231802767}
   animator: {fileID: 4657408473020989470}
   hitVfx: {fileID: 3177673595057747396, guid: 37d4ae79f8b28be45b39b3daeadc7192, type: 3}
   fighting: 0
   attacking: 0
-  type: 0
-  knockdownTolerance: 20
-  MAX_KO_TOLERANCE: 20
-  koRecoverySpeed: 1
-  koRecoveryDelay: 0.5
-  startRecoveryTimer: 0
+  canRotate: 1
+  DetectionRadius: 8
   hitPoint: {fileID: 6607356430720000043}
   enemyLayer:
     serializedVersion: 2
@@ -7756,10 +7755,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   owner: {fileID: 0}
-  randomDestination: {x: 0, y: 0, z: 0}
+  koModule:
+    knockdownTolerance: 20
+    MAX_KO_TOLERANCE: 20
+    koRecoverySpeed: 1
+    koRecoveryDelay: 0.5
+    startRecoveryTimer: 0
   motor: {fileID: 5158726428985721348}
   waitToAttack: 0
   attackTimer: 0
+  waitToSmallAttack: 0
+  endOfAttack: 0
   waitToMove: 0
   moveTimer: 0
 --- !u!114 &4657408473020989470
@@ -7777,6 +7783,7 @@ MonoBehaviour:
   animator: {fileID: 8718427228837717451}
   waitToBlock: 0
   waitToRoll: 0
+  waitToAttack: 0
 --- !u!54 &244236185232563158
 Rigidbody:
   m_ObjectHideFlags: 0

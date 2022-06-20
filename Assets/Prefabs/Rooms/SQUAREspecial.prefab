@@ -136,7 +136,6 @@ MonoBehaviour:
   doorsPostition: []
   doorObject: []
   roomFloorPrefabs:
-  - {fileID: 8714519180634354003, guid: 62a6c0c7efaa2ce4293fd9497c35d0fd, type: 3}
   - {fileID: 8714519180634354003, guid: 0fc127bd6d4eb694d852beed3eab2bd3, type: 3}
   - {fileID: 8714519180634354003, guid: a331b558874ea0246ab7d4b3c90757c9, type: 3}
   doorPrefabs:
