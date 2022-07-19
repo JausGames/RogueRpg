@@ -227,7 +227,6 @@ public class Player : Hitable
         base.GetHit(damage);
         healthUI.SetHealth(combatData.Health);
     }
-
     public override void GetHit(AttackData attackData)
     {
         base.GetHit(attackData);

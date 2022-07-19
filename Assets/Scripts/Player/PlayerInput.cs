@@ -72,6 +72,11 @@ public class PlayerInput : MonoBehaviour
     }
     public void OnLook(CallbackContext context)
     {
+        if (!Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
         look = new Vector2(stickLookSpeed.x * input.x, stickLookSpeed.y * input.y);
@@ -81,6 +86,11 @@ public class PlayerInput : MonoBehaviour
 
     public void OnMouseLook(CallbackContext context)
     {
+        if (Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
         motor.SetLook(look);

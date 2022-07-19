@@ -321,13 +321,19 @@ public class Minion : Hitable
 
     public void SetRotation(Vector3 direction)
     {
-        if (!canRotate) return;
+        //if (!canRotate) return;
         var angle = Vector3.SignedAngle(transform.forward, direction, transform.up);
         var currentRot = transform.rotation;
         transform.Rotate(transform.up * angle);
         var futurRot = transform.rotation;
         transform.rotation = currentRot;
-        transform.rotation = Quaternion.Lerp(currentRot, futurRot, .2f);
+        transform.rotation = Quaternion.Lerp(currentRot, futurRot, .8f);
+    }
+    public void SetInstantRotation(Vector3 direction)
+    {
+        //if (!canRotate) return;
+        var angle = Vector3.SignedAngle(transform.forward, direction, transform.up);
+        transform.Rotate(transform.up * angle);
     }
     public override void Attack(Hitable victim)
     {
