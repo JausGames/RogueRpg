@@ -26,7 +26,7 @@ public class BaseMap : MonoBehaviour
 
 
 
-    private void Awake()
+    /*private void Awake()
     {
         //InitializeBorders();
 
@@ -42,6 +42,31 @@ public class BaseMap : MonoBehaviour
 
         meshData.DeleteTrisRandomly();
 
+        meshData.SubdivideGrid();
+        meshData.SubdivideGrid();
+        meshData.SubdivideGrid();
+
+        
+        StartCoroutine(meshData.SmoothGrid());
+    }*/
+    private void Start()
+    {
+        //InitializeBorders();
+
+        meshData = new MeshData(new List<Vector3>(), radius, layerNb, tiling);
+        GenerateLayers(layerNb, radius);
+        InitializeBorders();
+        GenerateBaseMesh();
+
+        foreach (MeshData.v3Tris triangles in meshData.TrianglesV3)
+        {
+            triangles.FindNeighbours(meshData);
+        }
+
+        meshData.DeleteTrisRandomly();
+
+        meshData.SubdivideGrid();
+        meshData.SubdivideGrid();
         meshData.SubdivideGrid();
 
         
@@ -160,6 +185,7 @@ public class BaseMap : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        return;
         foreach (var pt in corners)
         {
             var color = Color.red;
@@ -443,11 +469,19 @@ public class MeshData
 
     internal void SubdivideGrid()
     {
-        quads.Clear();
+        var newQuads = new List<v3Quad>();
+
         for(int i = 0; i < v3Poly.Count; i ++)
         {
-            List<v3> subs = v3Poly[i].Subdivide(this);
+            newQuads.AddRange(v3Poly[i].Subdivide(this));
         }
+        for(int i = 0; i < quads.Count; i ++)
+        {
+            newQuads.AddRange(quads[i].Subdivide(this));
+        }
+        quads.Clear();
+        v3Poly.Clear();
+        quads.AddRange(newQuads);
 
         foreach (v3Quad quad in quads)
         {
@@ -547,7 +581,7 @@ public class MeshData
         [HideInInspector]
         public List<v3> Neighbours { get => neighbours; set => neighbours = value; }
 
-        public virtual List<v3> Subdivide(MeshData data)
+        public virtual List<v3Quad> Subdivide(MeshData data)
         {
             throw new NotImplementedException();
         }
@@ -685,18 +719,18 @@ public class MeshData
                     }
                 }
         }
-        public override List<v3> Subdivide(MeshData data)
+        public override List<v3Quad> Subdivide(MeshData data)
         {
             var middle = (pts[0] + pts[1] + pts[2]) / 3f;
 
-            var result = new List<v3>();
+            var result = new List<v3Quad>();
             for (int i = 0; i < pts.Length; i++)
             {
                 /*var ptss = new Vector3[] { pts[i], (pts[i] + pts[(i + 1) % pts.Length]) / 2f, middle};
                 var newTris = new v3Tris(ptss);*/
                 var ptss = new Vector3[] { pts[i], (pts[i] + pts[(i + 1) % pts.Length]) / 2f, middle, (pts[(i + pts.Length - 1) % pts.Length] + pts[i]) / 2f };
                 var newQuad = new v3Quad(ptss);
-                data.Quads.Add(newQuad);
+                //data.Quads.Add(newQuad);
                 //data.v3Poly.Add(newQuad);
                 //DebugDrawer.DrawPolygon(newQuad.pts, Color.blue);
                 result.Add(newQuad);
@@ -735,16 +769,16 @@ public class MeshData
                 }
             }
         }
-        public override List<v3> Subdivide(MeshData data)
+        public override List<v3Quad> Subdivide(MeshData data)
         {
             var middle = (pts[0] + pts[1] + pts[2]+ pts[3]) / 4f;
 
-            var result = new List<v3>();
+            var result = new List<v3Quad>();
             for (int i = 0; i < pts.Length; i++)
             {
                 var ptss = new Vector3[] { pts[i], (pts[i] + pts[(i + 1) % pts.Length]) / 2f, middle, (pts[(i + pts.Length - 1) % pts.Length] + pts[i]) / 2f };
                 var newQuad = new v3Quad(ptss);
-                data.Quads.Add(newQuad);
+                //data.Quads.Add(newQuad);
                 result.Add(newQuad);
             }
             //data.v3Poly.Remove(this);
@@ -753,7 +787,6 @@ public class MeshData
 
         internal void SmoothPoint(Vector3 pt, MeshData meshData)
         {
-            foreach(Vector3 borderPt in meshData.border) 
             for(int i = 0; i < meshData.border.Length; i++) 
                 if(v3.isSamePoint(pt, meshData.border[i])
                         || v3.isSamePoint(pt, (meshData.border[(i + 1) % meshData.border.Length] + meshData.border[i]) / 2f)
