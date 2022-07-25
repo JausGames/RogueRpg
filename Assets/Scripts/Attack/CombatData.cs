@@ -30,7 +30,7 @@ public class CombatData
     [SerializeField] List<AttackModifier> modifiers = new List<AttackModifier>();
     [SerializeField] protected AnimatorController animator;
 
-    public float HitRange { get => Weapon.HitRange; set => Weapon.HitRange = value; }
+    public List<float> HitRange { get => Weapon.HitRange; }
     public float MAX_HEALTH { get => maxHealth; set => maxHealth = value; }
     public float Health { get => health; set => health = value; }
     public float Speed { 
@@ -86,9 +86,9 @@ public class CombatData
         return data;
     }
 
-    virtual public void Attack(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, string animTrigger = "")
+    virtual public void Attack(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, int animTriggerId = 1080829965)
     {
-        Weapon.TriggerWeapon(owner, hitPoint, enemyLayer, friendLayer, animator, animTrigger);
+        Weapon.TriggerWeapon(owner, hitPoint, enemyLayer, friendLayer, animator, animTriggerId);
     }
     virtual public void HitTarget(Hitable victim, Vector3 hitOrigin)
     {
@@ -156,13 +156,16 @@ public class AttackData
     public KnockbackData knockback;
     public Hitable origin;
     public List<Status> statusList = new List<Status>();
+    public float range;
     public int triggerId;
+    public int colliderId;
 
-    public AttackData(float strength, KnockbackData knockback, Hitable origin, List<AttackModifier> modifiers, int triggerId)
+    public AttackData(float strength, KnockbackData knockback, Hitable origin, List<AttackModifier> modifiers, int range, int triggerId)
     {
         this.damage = strength;
         this.knockback = knockback;
         this.origin = origin;
+        this.range = range;
         this.triggerId = triggerId;
         foreach (AttackModifier mod in modifiers)
         {

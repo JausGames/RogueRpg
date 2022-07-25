@@ -14,7 +14,7 @@ public class RangeWeapon : WeaponData
     public float ProjectileSpeed { get => projectileSpeed; set => projectileSpeed = value; }
     public GameObject Projectile { get => projectile; set => projectile = value; }
 
-    public override void TriggerWeapon(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, AnimatorController animator, string animTrigger = "")
+    public override void TriggerWeapon(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, AnimatorController animator, int animTrigger = 0)
     {
         //base.Attack(owner, hitPoint, enemyLayer, friendLayer);
         if (!animator && nextHit > Time.time) return;
@@ -31,7 +31,7 @@ public class RangeWeapon : WeaponData
             projectileCmp.WillDestroyLayer = 1 | (1 << 6);
             //projectileCmp.WillDestroyLayer = ~friendLayer & (1 << projectileGo.layer) & ~(1 << floorLayer));
             projectileCmp.Data = parent;
-            projectileCmp.Range = hitRange;
+            //projectileCmp.Range = hitRange;
             projectileCmp.Speed = projectileSpeed;
         }
     }

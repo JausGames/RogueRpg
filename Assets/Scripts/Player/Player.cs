@@ -39,6 +39,14 @@ public class Player : Hitable
     public PlayerWallet Wallet { get => wallet;}
     public PlayerController Motor { get => motor; set => motor = value; }
     public Transform Target { get => motor.Target; }
+    override public bool CanRotate { 
+        get => canRotate; 
+        set
+            {
+                canRotate = value;
+                motor.IsMoving = value;
+            } 
+    }
 
     public void ResetForNewStage()
     {
@@ -154,7 +162,8 @@ public class Player : Hitable
         // to set roll speed
         combatData.Agility = combatData.Agility;
 
-        motor.SetSpeed(combatData.Speed);
+        motor.SetSpeed(combatData.Acceleration);
+        motor.SetMaxSpeed(combatData.Speed);
         motor.updateArmyEvent.AddListener(delegate { army.SetMinionsPosition(transform.position, transform.forward); });
 
         healthUI.SetMaxHealth(combatData.MAX_HEALTH);

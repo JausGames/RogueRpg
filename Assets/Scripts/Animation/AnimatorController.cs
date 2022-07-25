@@ -9,7 +9,7 @@ public class AnimatorController : MonoBehaviour
     [SerializeField] bool waitToBlock = false;
     [SerializeField] bool waitToRoll = false;
     [SerializeField] private bool waitToAttack;
-    protected string animAttackTrigger;
+    protected int animAttackTrigger;
 
     public Animator Animator { get => animator; set => animator = value; }
 
@@ -59,9 +59,9 @@ public class AnimatorController : MonoBehaviour
                 waitToAttack = false;
         }
     }
-    virtual public void AttackAnimation(string animAttackTrigger = "")
+    virtual public void AttackAnimation(int animAttackTriggerId = 1080829965)
     {
-        if (animAttackTrigger == "") this.animAttackTrigger = "Attack";
+        animAttackTrigger = animAttackTriggerId;
         waitToAttack = true;
     }
 

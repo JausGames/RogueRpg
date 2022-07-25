@@ -13,6 +13,7 @@ abstract public class Hitable : MonoBehaviour
     [SerializeField] protected bool moving = false;
     [SerializeField] protected bool frozen = false;
     [SerializeField] protected bool rolling = false;
+    [SerializeField] protected bool canRotate = true;
     [Space]
     [Header("Base - Combat")]
     [SerializeField] protected CombatData combatData;
@@ -33,6 +34,7 @@ abstract public class Hitable : MonoBehaviour
     public List<Status> CurrentStatusList { get => currentStatusList; set => currentStatusList = value; }
     protected bool Blocking { get => blockingShield.IsActive; set => blockingShield.IsActive = value; }
     protected bool Countering { get => blockingShield.IsCounter; set => blockingShield.IsCounter = value; }
+    virtual public bool CanRotate { get => canRotate; set => canRotate = value; }
 
     abstract public void Attack(Hitable victim);
 

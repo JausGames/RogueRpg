@@ -27,12 +27,12 @@ public class Minion : Hitable
     [Header("Minion - Status")]
     [SerializeField] private bool fighting = false;
     [SerializeField] private bool attacking = false;
-    [SerializeField] private bool canRotate = true;
     [Space]
     [Header("Minion - Ai")]
     [SerializeField] private float DetectionRadius = 8f;
     [Header("Minion - Combat")]
     [SerializeField] public Transform hitPoint;
+    [SerializeField] private Transform lookTarget;
     [Space]
     [Header("Minion - Masks")]
     [SerializeField] private LayerMask enemyLayer;
@@ -48,13 +48,13 @@ public class Minion : Hitable
     [Header("Minion - Timers")]
     [SerializeField] bool waitToAttack = false;
     [SerializeField] float attackTimer;
-    [SerializeField] bool waitToSmallAttack;
-    [SerializeField] float endOfAttack;
+    [SerializeField] int attackId = 0;
+    [SerializeField] float nextAttack;
 
     [SerializeField] bool waitToMove = false;
     [SerializeField] float moveTimer;
     //private float attackDelay = .1f;
-    private float attackDelay = 0;
+    private float attackDelay = .1f;
     private float animationDelay = 1f;
     private Hitable target;
 
@@ -73,7 +73,6 @@ public class Minion : Hitable
             if (target!= null) target.dieEvent.AddListener(delegate { target = null; });
         }
     }
-    public bool CanRotate { get => canRotate; set => canRotate = value; }
 
     private void Awake()
     {
@@ -88,6 +87,7 @@ public class Minion : Hitable
             motor.DestinationReached.AddListener(delegate { randomDestination = transform.position; });
         }
         randomDestination = transform.position;
+
         //StopMotion(false);
     }
     public override void GetHit(AttackData attackData)
@@ -110,98 +110,112 @@ public class Minion : Hitable
         if (koModule.knockdownTolerance < koModule.MAX_KO_TOLERANCE && Time.time >= koModule.startRecoveryTimer)
             koModule.knockdownTolerance = Mathf.Min(koModule.MAX_KO_TOLERANCE, koModule.knockdownTolerance + Time.deltaTime * koModule.koRecoverySpeed * 0.0001f);
 
-        if((waitToAttack || waitToSmallAttack) && attackTimer + attackDelay < Time.time && !frozen)
+        if (target)
         {
-            if (Vector3.Dot(transform.forward, (target.transform.position - transform.position).normalized) < 0.95f)
+            lookTarget.position = target.transform.position;
+            var rot = (target.transform.position - transform.position).x * Vector3.right + (target.transform.position - transform.position).z * Vector3.forward;
+            SetRotation(rot.normalized);
+        }
+        if ((waitToAttack) && attackTimer + attackDelay < Time.time && !frozen)
+        {
+            /*if (Vector3.Dot(transform.forward, (target.transform.position - transform.position).normalized) < 0.95f)
                 TryRotatingToFuturTargetPosition();
-            else
+            else*/
             {
-                if (waitToAttack) 
-                    Attack(null);
-                if (waitToSmallAttack)
-                    Attack(null, "SmallAttack");
+                Attack(null, attackId);
                 moveTimer = Time.time;
-                endOfAttack = Time.time + animationDelay;
+                nextAttack = Time.time + 1.2f;
                 SetMotorEnable(false);
                 motor.Body.velocity = Vector3.zero;
                 waitToMove = true;
                 waitToAttack = false;
-                waitToSmallAttack = false;
                 return;
             }
         }
-        else if(waitToAttack && Target)
+        else if (waitToAttack && !frozen)
+        {
+        }
+        /*else if(waitToAttack && Target)
         {
             TryRotatingToFuturTargetPosition();
-        }
+        }*/
         if (!waitToAttack && waitToMove && moveTimer + 1.5f < Time.time && !frozen)
         {
             SetMotorEnable(true);
             waitToMove = false;
         }
-        else if (waitToMove && Target)
+        /*else if (waitToMove && Target)
         {
             TryRotatingToFuturTargetPosition();
-        }
+        }*/
 
         if (!Moving || waitToAttack || waitToMove || frozen) return;
 
-        var cols = Physics.OverlapSphere(transform.position, combatData.HitRange, enemyLayer);
         var player = FindObjectOfType<Player>();
+        if(nextAttack < Time.time)
+        for (int i = 0; i < combatData.HitRange.Count; i++)
+        {
+            var cols = Physics.OverlapSphere(transform.position, combatData.HitRange[i], enemyLayer);
         
-
-        if (cols.Length > 0)
-        {
-            Fighting = true;
-
-            var offset = owner ? (owner.transform.position - cols[0].transform.position).normalized * combatData.HitRange : Vector3.zero;
-            Target = cols[0].GetComponent<Hitable>();
-            SetPosition(cols[0].transform.position + offset);
-            if (combatData.Weapon.GetType() == typeof(RangeWeapon))
+            if (cols.Length > 0)
             {
-                var rangeWeapon = (RangeWeapon)combatData.Weapon;
-                var opponentVelocity = cols[0].GetComponent<Minion>() ? cols[0].GetComponent<NavMeshAgent>().velocity : (Vector3)cols[0].GetComponent<Rigidbody>().velocity;
-                var opponentPosition = cols[0].transform.position;
-                var opponentLastPosition = (cols[0].transform.position + opponentVelocity.normalized * opponentVelocity.magnitude * combatData.HitRange * (1f / rangeWeapon.ProjectileSpeed));
-                //var opponentFuturePosition = FindNearestPointOnLine(cols[0].transform.position, opponentVelocity, hitPoint.position);
-                var opponentFuturePosition = opponentPosition;
+                Fighting = true;
 
-                var oppTravelTime = (opponentPosition - (Vector3)opponentFuturePosition).magnitude / opponentVelocity.magnitude;
-                var bulletTravelTime = (hitPoint.position - (Vector3)opponentFuturePosition).magnitude / rangeWeapon.ProjectileSpeed;
-
-                var it = 0;
-                var delta = 50f;
-                while (oppTravelTime < bulletTravelTime && opponentFuturePosition != opponentLastPosition && it < 80)
+                var offset = owner ? (owner.transform.position - cols[0].transform.position).normalized * combatData.HitRange[i] : Vector3.zero;
+                Target = cols[0].GetComponent<Hitable>();
+                SetPosition(cols[0].transform.position + offset);
+                #region rangeWeapon
+                if (combatData.Weapon.GetType() == typeof(RangeWeapon))
                 {
-                    if ((opponentFuturePosition - opponentLastPosition).magnitude < Time.deltaTime) opponentFuturePosition = opponentLastPosition;
-                    opponentFuturePosition += (opponentLastPosition - opponentFuturePosition).normalized * Time.deltaTime * delta;
-                    oppTravelTime = (opponentPosition - opponentFuturePosition).magnitude / opponentVelocity.magnitude;
-                    bulletTravelTime = (hitPoint.position - opponentFuturePosition).magnitude / rangeWeapon.ProjectileSpeed;
-                    it++;
+                    var rangeWeapon = (RangeWeapon)combatData.Weapon;
+                    var opponentVelocity = cols[0].GetComponent<Minion>() ? cols[0].GetComponent<NavMeshAgent>().velocity : (Vector3)cols[0].GetComponent<Rigidbody>().velocity;
+                    var opponentPosition = cols[0].transform.position;
+                    var opponentLastPosition = (cols[0].transform.position + opponentVelocity.normalized * opponentVelocity.magnitude * combatData.HitRange[i] * (1f / rangeWeapon.ProjectileSpeed));
+                    //var opponentFuturePosition = FindNearestPointOnLine(cols[0].transform.position, opponentVelocity, hitPoint.position);
+                    var opponentFuturePosition = opponentPosition;
+
+                    var oppTravelTime = (opponentPosition - (Vector3)opponentFuturePosition).magnitude / opponentVelocity.magnitude;
+                    var bulletTravelTime = (hitPoint.position - (Vector3)opponentFuturePosition).magnitude / rangeWeapon.ProjectileSpeed;
+
+                    var it = 0;
+                    var delta = 50f;
+                    while (oppTravelTime < bulletTravelTime && opponentFuturePosition != opponentLastPosition && it < 80)
+                    {
+                        if ((opponentFuturePosition - opponentLastPosition).magnitude < Time.deltaTime) opponentFuturePosition = opponentLastPosition;
+                        opponentFuturePosition += (opponentLastPosition - opponentFuturePosition).normalized * Time.deltaTime * delta;
+                        oppTravelTime = (opponentPosition - opponentFuturePosition).magnitude / opponentVelocity.magnitude;
+                        bulletTravelTime = (hitPoint.position - opponentFuturePosition).magnitude / rangeWeapon.ProjectileSpeed;
+                        it++;
+                    }
+                    Debug.Log("it = " + it);
+
+
+
+                    Debug.DrawLine(transform.position, opponentFuturePosition, Color.red);
+                    Debug.DrawLine(transform.position, opponentLastPosition, Color.black);
+                    Debug.DrawLine(opponentPosition, opponentFuturePosition, Color.cyan);
+                    //Debug.DrawLine(opponentPosition, opponentLastPosition, Color.blue);
+                    var rot = ((Vector3)opponentFuturePosition - transform.position).x * Vector3.right + ((Vector3)opponentFuturePosition - transform.position).z * Vector3.forward;
+                    SetRotation(rot.normalized);
                 }
-                Debug.Log("it = " + it);
-
-
-
-                Debug.DrawLine(transform.position, opponentFuturePosition, Color.red);
-                Debug.DrawLine(transform.position, opponentLastPosition, Color.black);
-                Debug.DrawLine(opponentPosition, opponentFuturePosition, Color.cyan);
-                //Debug.DrawLine(opponentPosition, opponentLastPosition, Color.blue);
-                var rot = ((Vector3)opponentFuturePosition - transform.position).x * Vector3.right + ((Vector3)opponentFuturePosition - transform.position).z * Vector3.forward;
-                SetRotation(rot.normalized);
+                #endregion
+                else
+                {
+                    Target = cols[0].GetComponent<Hitable>();
+                    var rot = (cols[0].transform.position - transform.position).x * Vector3.right + (cols[0].transform.position - transform.position).z * Vector3.forward;
+                    SetRotation(rot.normalized);
+                }
+                motor.Destination = transform.position;
+                attackTimer = Time.time;
+                waitToAttack = true;
+                attackId = combatData.Weapon.AttackSet[i].triggerId;
+                UpdateAnimator();
+                return;
             }
-            else
-            {
-                var rot = (cols[0].transform.position - transform.position).x * Vector3.right + (cols[0].transform.position - transform.position).z * Vector3.forward;
-                SetRotation(rot.normalized);
-            }
-            motor.Destination = transform.position;
-            attackTimer = Time.time;
-            waitToSmallAttack = true;
         }
-        else if (cols.Length == 0)
-        {
-            if (combatData.Weapon.GetType() == typeof(PhysicalWeapon) && player && !waitToSmallAttack)
+
+        
+            /*if (combatData.Weapon.GetType() == typeof(PhysicalWeapon) && player && !waitToSmallAttack)
             {
                 Vector3 rot = IsOpponentTouchableWithDelay(player);
                 if (rot != Vector3.zero)
@@ -214,12 +228,12 @@ public class Minion : Hitable
                     Debug.Log("Minion, Player : in thefuture");
                     return;
                 }
-            }
+            }*/
             Fighting = false;
 
             if (owner == null && player != null)
             {
-                cols = Physics.OverlapSphere(transform.position, DetectionRadius, enemyLayer);
+                var cols = Physics.OverlapSphere(transform.position, DetectionRadius, enemyLayer);
 
                 if (cols.Length > 0)
                 {
@@ -243,13 +257,13 @@ public class Minion : Hitable
                     }
                 }
             }
-        }
+        
         UpdateAnimator();
     }
 
     private void TryRotatingToFuturTargetPosition()
     {
-        var futurPos = (Vector3)target.transform.position - transform.position + target.GetComponent<Rigidbody>().velocity * (Time.time - endOfAttack);
+        var futurPos = (Vector3)target.transform.position - transform.position + target.GetComponent<Rigidbody>().velocity * (Time.time - nextAttack);
         var rot = futurPos.x * Vector3.right + futurPos.z * Vector3.forward;
         SetRotation(rot.normalized);
     }
@@ -260,7 +274,7 @@ public class Minion : Hitable
         Moving = value;
     }
 
-    private Vector3 IsOpponentTouchableWithDelay(Hitable target)
+    private Vector3 IsOpponentTouchableWithDelay(Hitable target, int attackId)
     {
         this.Target = target;
         var targetVelocity = target.GetComponent<Minion>() ? target.GetComponent<NavMeshAgent>().velocity : (Vector3)target.GetComponent<Rigidbody>().velocity;
@@ -276,7 +290,7 @@ public class Minion : Hitable
         var oppTravelTime = (targetPosition - (Vector3)targetFuturePosition).magnitude / targetVelocity.magnitude;
         Debug.Log("Minion, IsOpponentTouchableWithDelay : futureDistance = " + futurDistance);
         Debug.Log("Minion, IsOpponentTouchableWithDelay : oppTravelTime = " + oppTravelTime);
-        if (futurDistance > CombatData.HitRange || oppTravelTime > animationDelay || oppTravelTime <= animationDelay * 0.7f) return Vector3.zero;
+        if (futurDistance > CombatData.HitRange[attackId] || oppTravelTime > animationDelay || oppTravelTime <= animationDelay * 0.7f) return Vector3.zero;
 
         Debug.DrawLine(transform.position, targetFuturePosition, Color.red, 1f);
         //Debug.DrawLine(transform.position, targetLastPosition, Color.black, 1f);
@@ -321,17 +335,17 @@ public class Minion : Hitable
 
     public void SetRotation(Vector3 direction)
     {
-        //if (!canRotate) return;
+        if (!canRotate) return;
         var angle = Vector3.SignedAngle(transform.forward, direction, transform.up);
         var currentRot = transform.rotation;
         transform.Rotate(transform.up * angle);
         var futurRot = transform.rotation;
         transform.rotation = currentRot;
-        transform.rotation = Quaternion.Lerp(currentRot, futurRot, .8f);
+        transform.rotation = Quaternion.Lerp(currentRot, futurRot, .2f);
     }
     public void SetInstantRotation(Vector3 direction)
     {
-        //if (!canRotate) return;
+        if (!canRotate) return;
         var angle = Vector3.SignedAngle(transform.forward, direction, transform.up);
         transform.Rotate(transform.up * angle);
     }
@@ -341,11 +355,11 @@ public class Minion : Hitable
         Attacking = false;
         combatData.Attack(transform, hitPoint, enemyLayer, friendLayer);
     }
-    public void Attack(Hitable victim, string animTrigger = "")
+    public void Attack(Hitable victim, int attackId = 0)
     {
         if (!moving) return;
         Attacking = false;
-        combatData.Attack(transform, hitPoint, enemyLayer, friendLayer, animTrigger);
+        combatData.Attack(transform, hitPoint, enemyLayer, friendLayer, attackId);
     }
     public Vector3 FindNearestPointOnLine(Vector3 origin, Vector3 direction, Vector3 point)
     {

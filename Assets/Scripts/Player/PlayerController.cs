@@ -31,14 +31,20 @@ public class PlayerController : MonoBehaviour
 
     public bool CanStop { get => canStop; set => canStop = value; }
     public Rigidbody Body { get => body; set => body = value; }
-    public bool IsMoving { get => isMoving; set => isMoving = value; }
+    public bool IsMoving { get => isMoving;
+        set
+        {
+            Debug.Log("Set IsMoving : " + value);
+            isMoving = value;
+        }
+    }
     public Transform Target { get => target; set => target = value; }
     public bool Running { get => running; set => running = value; }
 
     internal void SetSpeed(float speed)
     {
-        maxSpeed = 3f * speed;
-        this.speed = maxSpeed * 3.333f;
+        maxSpeed = 5f * speed;
+        this.speed = 3f * speed;
     }
 
     
@@ -52,7 +58,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!isMoving) return;
+        if (!isMoving)
+        {
+            if(canStop) body.velocity /= 1.1f;
+            return;
+        }
         var currSpeed = body.velocity.sqrMagnitude;
 
         Debug.Log("Playercontroller, Update : currSpeed = " + currSpeed);
@@ -135,6 +145,12 @@ public class PlayerController : MonoBehaviour
         updateArmyEvent.Invoke();
 
         UpdateAnimator();
+    }
+
+    internal void SetMaxSpeed(float speed)
+    {
+        maxSpeed = speed;
+        maxRunSpeed = speed + this.speed * 0.5f;
     }
 
     public void RotateWithLook(bool value)

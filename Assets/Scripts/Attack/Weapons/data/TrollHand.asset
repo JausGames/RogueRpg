@@ -14,26 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 8
   mass: 0
-  hitRange: 1.4
   neededStrength: 0
   knockBack:
     force: 4
     time: 0.2
   attackSet:
-  - damage: 8
-    knockback:
-      force: 4
-      time: 0.2
-    origin: {fileID: 0}
-    statusList: []
-    triggerId: 0
   - damage: 3
     knockback:
       force: 2
       time: 0.2
     origin: {fileID: 0}
     statusList: []
-    triggerId: 1
+    range: 1.4
+    triggerId: -551155163
+    colliderId: 0
+  - damage: 8
+    knockback:
+      force: 4
+      time: 0.2
+    origin: {fileID: 0}
+    statusList: []
+    range: 1.7
+    triggerId: 1080829965
+    colliderId: 1
   currentAttack:
     damage: 0
     knockback:
@@ -41,6 +44,8 @@ MonoBehaviour:
       time: 0
     origin: {fileID: 0}
     statusList: []
+    range: 0
     triggerId: 0
+    colliderId: 0
   comboable: 0
   comboTime: 0.3

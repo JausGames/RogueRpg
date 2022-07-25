@@ -8,7 +8,7 @@ abstract public class WeaponData : ScriptableObject
     [Header("Stats - Damage")]
     [SerializeField] protected float damage;
     [SerializeField] protected float mass;
-    [SerializeField] protected float hitRange;
+    //[SerializeField] protected float hitRange;
     [SerializeField] protected float neededStrength;
     [SerializeField] protected KnockbackData knockBack;
     [SerializeField] protected List<AttackData> attackSet = new List<AttackData>();
@@ -20,7 +20,16 @@ abstract public class WeaponData : ScriptableObject
     internal float NextHitDamageRatio = 1f;
 
     public float Damage { get => damage; set => damage = value; }
-    public float HitRange { get => hitRange; set => hitRange = value; }
+    public List<float> HitRange { 
+        get  {
+            var range = new List<float>();
+            foreach(AttackData data in attackSet)
+            {
+                range.Add(data.range);
+            }
+            return range;
+        } 
+    }
     public float Mass { get => mass; set => mass = value; }
     public KnockbackData KnockBack { get => knockBack; set => knockBack = value; }
     public float CoolDown { get => comboTime; set => comboTime = value; }
@@ -29,14 +38,14 @@ abstract public class WeaponData : ScriptableObject
     public AttackData CurrentAttack { get => currentAttack; set => currentAttack = value; }
     public List<AttackData> AttackSet { get => attackSet; set => attackSet = value; }
 
-    virtual public void TriggerWeapon(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, AnimatorController animator, string animTrigger = "")
+    virtual public void TriggerWeapon(Transform owner, Transform hitPoint, LayerMask enemyLayer, LayerMask friendLayer, AnimatorController animator, int animTriggerId = 1080829965)
     {
         if (!Comboable && nextHit > Time.time) return;
         else if (nextHit > Time.time)
             animator.TryCombo();
         else
         {
-            if (animator) animator.AttackAnimation(animTrigger);
+            if (animator) animator.AttackAnimation(animTriggerId);
             if(Comboable) ResetCombo();
         }
     }

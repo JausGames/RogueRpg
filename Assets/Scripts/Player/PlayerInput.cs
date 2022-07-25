@@ -189,7 +189,7 @@ public class PlayerInput : MonoBehaviour
         _freeLookComponent.m_RecenterToTargetHeading.m_RecenteringTime = isAiming ? 0f : 2f;
         _freeLookComponent.m_YAxisRecentering.m_WaitTime = isAiming ? 0f : 2f;
         _freeLookComponent.m_YAxisRecentering.m_RecenteringTime = isAiming ? 0f : 2f;
-        _freeLookComponent.m_Orbits[1].m_Height = isAiming ? 1.8f : 2.4f;
+        //_freeLookComponent.m_Orbits[1].m_Height = isAiming ? 1.8f : 2.4f;
         //_freeLookComponent.m_Orbits[1].m_Radius = isAiming ? 3f : 5f;
     }
 

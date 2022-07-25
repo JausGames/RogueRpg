@@ -222,7 +222,7 @@ public class StageGenerator : MonoBehaviour
     {
         StageTrace.enable = traceEnabled;
 #if UNITY_EDITOR
-        Debug.unityLogger.logEnabled = true;
+        Debug.unityLogger.logEnabled = false;
 #else
     Debug.unityLogger.logEnabled = false;
 #endif
