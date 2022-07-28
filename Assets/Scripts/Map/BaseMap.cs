@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,7 +26,7 @@ public class BaseMap : MonoBehaviour
 
 
 
-    /*private void Awake()
+    *//*private void Awake()
     {
         //InitializeBorders();
 
@@ -48,7 +48,7 @@ public class BaseMap : MonoBehaviour
 
         
         StartCoroutine(meshData.SmoothGrid());
-    }*/
+    }*//*
     private void Start()
     {
         //InitializeBorders();
@@ -201,7 +201,7 @@ public class BaseMap : MonoBehaviour
             Gizmos.DrawSphere(pt, .01f);
         }
         if (meshData.processedTris == null) return;
-        /*foreach (var tris in meshData.TrianglesV3)
+        *//*foreach (var tris in meshData.TrianglesV3)
         {
             var inQuad = false;
             foreach (var quad in meshData.Quads)
@@ -220,7 +220,7 @@ public class BaseMap : MonoBehaviour
                 Gizmos.DrawSphere(sum / tris.pts.Length, .1f);
             }
 
-        }*/
+        }*//*
         foreach (var tris in meshData.ToBeProcess)
         {
             var color = Color.cyan;
@@ -233,7 +233,7 @@ public class BaseMap : MonoBehaviour
             }
             Gizmos.DrawSphere(sum / tris.pts.Length, .1f);
         }
-        /*if (meshData.processedTris == null) return;
+        *//*if (meshData.processedTris == null) return;
         foreach (var tris in meshData.processedTris)
         {
             var color = Color.green;
@@ -246,7 +246,7 @@ public class BaseMap : MonoBehaviour
             }
                 Gizmos.DrawSphere(sum / tris.pts.Length, .3f);
 
-        }*/
+        }*//*
         if (meshData.Quads == null) return;
         foreach(var quad in meshData.Quads)
         {
@@ -408,10 +408,10 @@ public class MeshData
         //foreach (int i in freeNeighours)
         //if (processed.Contains(v3Tris.neighbours[i])) freeNeighours.Remove(i);
 
-        /*foreach(var neigh in freeNeighours)
+        *//*foreach(var neigh in freeNeighours)
         {
             v3Tris.Neighbours[neigh].chec;
-        }*/
+        }*//*
 
         if (freeNeighours.Count > 0)
         {
@@ -517,12 +517,12 @@ public class MeshData
         var it = 0;
         while (it < 10)
         {
-            /*foreach(var pt in vertices)
+            *//*foreach(var pt in vertices)
             {
                 var quads = v3.GetQuadWithCommonPt(pt, this);
                 foreach(v3Quad quad in quads)
                     quad.SmoothPoint(pt, this);
-            }*/
+            }*//*
             foreach (MeshData.v3Quad quad in Quads)
             {
                 foreach (var pt in quad.pts)
@@ -726,8 +726,8 @@ public class MeshData
             var result = new List<v3Quad>();
             for (int i = 0; i < pts.Length; i++)
             {
-                /*var ptss = new Vector3[] { pts[i], (pts[i] + pts[(i + 1) % pts.Length]) / 2f, middle};
-                var newTris = new v3Tris(ptss);*/
+                *//*var ptss = new Vector3[] { pts[i], (pts[i] + pts[(i + 1) % pts.Length]) / 2f, middle};
+                var newTris = new v3Tris(ptss);*//*
                 var ptss = new Vector3[] { pts[i], (pts[i] + pts[(i + 1) % pts.Length]) / 2f, middle, (pts[(i + pts.Length - 1) % pts.Length] + pts[i]) / 2f };
                 var newQuad = new v3Quad(ptss);
                 //data.Quads.Add(newQuad);
@@ -823,4 +823,4 @@ public class pointOnQuad
         this.quad = quad;
         this.ptNb = ptNb;
     }
-}
+}*/
