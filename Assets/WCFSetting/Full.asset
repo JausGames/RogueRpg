@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b6cbc7b1ce9574982fadd1eed20673, type: 3}
+  m_Name: Full
+  m_EditorClassIdentifier: 
+  connectors:
+  - connection: 010000000100000001000000
+    blackList: []
+    whiteList: []
+  - connection: 010000000100000001000000
+    blackList: []
+    whiteList: []
+  - connection: 010000000100000001000000
+    blackList: []
+    whiteList: []
+  - connection: 010000000100000001000000
+    blackList: []
+    whiteList: []
+  id: 1
+  mesh: {fileID: -5495902117074765545, guid: 1b33131268b7b6d4786a524a699ed2d1, type: 3}

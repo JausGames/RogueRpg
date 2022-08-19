@@ -38,18 +38,21 @@ public class PlayerInput : MonoBehaviour
     {
         if (attack) KeepAttacking();
 
-        if(look.magnitude > 0f)
+        if (_freeLookComponent != null)
         {
-            _freeLookComponent.m_YAxisRecentering.m_enabled = false;
-            _freeLookComponent.m_RecenterToTargetHeading.m_enabled = false;
-            //Ajust axis values using look speed and Time.deltaTime so the look doesn't go faster if there is more FPS
-            _freeLookComponent.m_XAxis.Value = Mathf.Lerp(_freeLookComponent.m_XAxis.Value, _freeLookComponent.m_XAxis.Value + look.x * 180f * Time.deltaTime, .2f);
-            _freeLookComponent.m_YAxis.Value = Mathf.Lerp(_freeLookComponent.m_YAxis.Value, _freeLookComponent.m_YAxis.Value + look.y * Time.deltaTime, .2f);
-        }
-        else
-        {
-            _freeLookComponent.m_RecenterToTargetHeading.m_enabled = true;
-            _freeLookComponent.m_YAxisRecentering.m_enabled = true;
+            if (look.magnitude > 0f)
+            {
+                _freeLookComponent.m_YAxisRecentering.m_enabled = false;
+                _freeLookComponent.m_RecenterToTargetHeading.m_enabled = false;
+                //Ajust axis values using look speed and Time.deltaTime so the look doesn't go faster if there is more FPS
+                _freeLookComponent.m_XAxis.Value = Mathf.Lerp(_freeLookComponent.m_XAxis.Value, _freeLookComponent.m_XAxis.Value + look.x * 180f * Time.deltaTime, .2f);
+                _freeLookComponent.m_YAxis.Value = Mathf.Lerp(_freeLookComponent.m_YAxis.Value, _freeLookComponent.m_YAxis.Value + look.y * Time.deltaTime, .2f);
+            }
+            else
+            {
+                _freeLookComponent.m_RecenterToTargetHeading.m_enabled = true;
+                _freeLookComponent.m_YAxisRecentering.m_enabled = true;
+            }
         }
     }
     private void Start()
@@ -184,13 +187,16 @@ public class PlayerInput : MonoBehaviour
 
     private void SetCamera(Transform aim)
     {
-        _freeLookComponent.LookAt = aim == null ? player.transform : aim;
-        _freeLookComponent.m_RecenterToTargetHeading.m_WaitTime = isAiming ? 0f : 2f;
-        _freeLookComponent.m_RecenterToTargetHeading.m_RecenteringTime = isAiming ? 0f : 2f;
-        _freeLookComponent.m_YAxisRecentering.m_WaitTime = isAiming ? 0f : 2f;
-        _freeLookComponent.m_YAxisRecentering.m_RecenteringTime = isAiming ? 0f : 2f;
-        //_freeLookComponent.m_Orbits[1].m_Height = isAiming ? 1.8f : 2.4f;
-        //_freeLookComponent.m_Orbits[1].m_Radius = isAiming ? 3f : 5f;
+        if (_freeLookComponent)
+        {
+            _freeLookComponent.LookAt = aim == null ? player.transform : aim;
+            _freeLookComponent.m_RecenterToTargetHeading.m_WaitTime = isAiming ? 0f : 2f;
+            _freeLookComponent.m_RecenterToTargetHeading.m_RecenteringTime = isAiming ? 0f : 2f;
+            _freeLookComponent.m_YAxisRecentering.m_WaitTime = isAiming ? 0f : 2f;
+            _freeLookComponent.m_YAxisRecentering.m_RecenteringTime = isAiming ? 0f : 2f;
+            //_freeLookComponent.m_Orbits[1].m_Height = isAiming ? 1.8f : 2.4f;
+            //_freeLookComponent.m_Orbits[1].m_Radius = isAiming ? 3f : 5f;
+        }
     }
 
     private void GetAim(out Transform aim, out Minion opp, bool enable)

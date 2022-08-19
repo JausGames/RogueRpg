@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class FolloMainCameraRotation : MonoBehaviour
 {
+    [SerializeField] Transform target;
+    [SerializeField] Vector3 offset;
         // Update is called once per frame
     void Update()
     {
-        transform.rotation = Camera.main.transform.rotation;
+        transform.position = target.position + offset;
     }
 }
