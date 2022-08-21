@@ -11,6 +11,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] Player player = null;
     [SerializeField] bool isAiming = false;
     [SerializeField] LayerMask Enemy = 7;
+    [SerializeField] FolloMainCameraRotation freeCamera;
     [SerializeField] CinemachineFreeLook _freeLookComponent;
     [SerializeField] Vector2 look;
     [Header("Rolling")]
@@ -83,7 +84,8 @@ public class PlayerInput : MonoBehaviour
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
         look = new Vector2(stickLookSpeed.x * input.x, stickLookSpeed.y * input.y);
-        motor.SetLook(look);
+        //motor.SetLook(look);
+        freeCamera.SetLook(look);
     }
 
 

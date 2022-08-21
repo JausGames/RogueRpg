@@ -134,8 +134,8 @@ public class MapUI : MonoBehaviour
 
     internal void SetPlayerPosition(float x, float y)
     {
-        Debug.Log("MapUI, SetPlayerPosition : Update pos x : " + x);
-        Debug.Log("MapUI, SetPlayerPosition : Update pos y : " + y);
+        /*Debug.Log("MapUI, SetPlayerPosition : Update pos x : " + x);
+        Debug.Log("MapUI, SetPlayerPosition : Update pos y : " + y);*/
         if (!zoom) canvas.GetComponent<RectTransform>().localPosition = new Vector3(-x * imageSize - width, -y * imageSize - width);
         else canvas.GetComponent<RectTransform>().localPosition = new Vector3(-x * imageSize - Screen.width * 0.5f, -y * imageSize - Screen.height * 0.5f);
     }

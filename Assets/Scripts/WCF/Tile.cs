@@ -67,9 +67,9 @@ namespace WCF
             if (tile1.connectors[direction].BlackList.Contains(tile2.id)) return false;
             if (tile2.connectors[oppoDirection].BlackList.Contains(tile1.id)) return false;*/
 
-            if (tile1.connectors[direction].connection[0] == tile2.connectors[oppoDirection].connection[0]
+            if (tile1.connectors[direction].connection[0] == tile2.connectors[oppoDirection].connection[2]
             && tile1.connectors[direction].connection[1] == tile2.connectors[oppoDirection].connection[1]
-            && tile1.connectors[direction].connection[2] == tile2.connectors[oppoDirection].connection[2])
+            && tile1.connectors[direction].connection[2] == tile2.connectors[oppoDirection].connection[0])
                 return true;
 
             return false;
@@ -117,6 +117,7 @@ namespace WCF
     public enum Connection
     {
         Low,
+        Mid,
         High
     }
 

@@ -52,18 +52,24 @@ namespace GridGenerator
                 }
                 if (commonPts.Count >= 2)
                 {
-                    Neighbours.Add(new Neighbour(tris, commonPts, neighbourPts));
+                    Neighbours.Add(new Neighbour(this, tris, commonPts, neighbourPts));
                 }
             }
         
     }
-        protected bool haveCommonPoint(Vector3 pt)
+        public bool haveCommonPoint(Vector3 pt)
         {
             foreach (var ownPt in pts)
                 if (isSamePoint(pt, ownPt)) return true;
             return false;
         }
-        protected int FindCommonPointIndex(Vector3 pt)
+        public bool haveCommonPoint(List<Vector3> list, Vector3 checkedPt)
+        {
+            foreach (var pt in list)
+                if (isSamePoint(checkedPt, pt)) return true;
+            return false;
+        }
+        public int FindCommonPointIndex(Vector3 pt)
         {
             var result = -1;
             for (int i = 0; i < pts.Length; i++)
@@ -148,7 +154,6 @@ namespace GridGenerator
     [Serializable]
     public class v3Tris : v3
     {
-
         public int layerNb, neighbourLayer = 0;
         public v3Tris(Vector3[] pts, int layerNb = 0, int neighbourLayer = 0)
         {
@@ -177,6 +182,21 @@ namespace GridGenerator
     {
         [HideInInspector]
         public v3Tris[] internalTris = new v3Tris[2];
+
+        public Vector3 Position {
+            get
+            {
+                var mid = Vector3.zero;
+
+                foreach(var pt in pts)
+                {
+                    mid += pt;
+                }
+                mid /= pts.Length;
+
+                return mid;
+            }
+        }
 
         public v3Quad(Vector3[] pts, List<Neighbour> neighbours, v3Tris tris1, v3Tris tris2)
         {
@@ -207,7 +227,7 @@ namespace GridGenerator
                     }
                     if (commonPts.Count >= 2)
                     {
-                        Neighbours.Add(new Neighbour(quad, commonPts, neighbourPts));
+                        Neighbours.Add(new Neighbour(this, quad, commonPts, neighbourPts));
                         Debug.Log("neighbour edge = " + Neighbours[Neighbours.Count - 1].edge);
                     }
                 }
@@ -228,56 +248,55 @@ namespace GridGenerator
             return result;
         }
 
-        internal void SelfSmooth()
+        internal void SelfSmooth(List<Vector3> blackList)
         {
             var edge1 = pts[0] - pts[2];
             var edge2 = pts[1] - pts[3];
 
+            //bool[] canMove = new bool[] { true,true,true,true };
+            bool[] canMove = new bool[] { !haveCommonPoint(blackList, pts[0]), !haveCommonPoint(blackList, pts[1]), !haveCommonPoint(blackList, pts[2]), !haveCommonPoint(blackList, pts[3]) };
+            
+            var differenceSign = edge1.magnitude > edge2.magnitude ? -1 : +1;
+/*
+            if (canMove[0])
+                pts[0] += differenceSign * edge1 * 0.1f;
+            if (canMove[1])
+                pts[1] += -differenceSign * edge2 * 0.1f;
+            if (canMove[2])
+                pts[2] += differenceSign * edge1 * 0.1f;
+            if (canMove[3])
+                pts[3] += -differenceSign * edge2 * 0.1f;
+*/
             if (edge1.magnitude > edge2.magnitude)
             {
-                pts[0] -= edge1 * 0.1f;
-                pts[2] += edge1 * 0.1f;
-                pts[1] += edge2 * 0.1f;
-                pts[3] -= edge2 * 0.1f;
+                if(canMove[0])
+                    pts[0] -= edge1 * 0.1f;
+                if (canMove[1])
+                    pts[1] += edge2 * 0.1f;
+                if (canMove[2])
+                    pts[2] += edge1 * 0.1f;
+                if (canMove[3])
+                    pts[3] -= edge2 * 0.1f;
             }
             else
             {
-                pts[1] -= edge2 * 0.1f;
-                pts[3] += edge2 * 0.1f;
-                pts[0] += edge1 * 0.1f;
-                pts[2] -= edge1 * 0.1f;
-            };
+                if (canMove[0])
+                    pts[0] += edge1 * 0.1f;
+                if (canMove[1])
+                    pts[1] -= edge2 * 0.1f;
+                if (canMove[2])
+                    pts[2] -= edge1 * 0.1f;
+                if (canMove[3])
+                    pts[3] += edge2 * 0.1f;
+            }
         }
-        internal void SmoothPoint(Vector3 pt, MeshData meshData)
-        {
-            for (int i = 0; i < meshData.border.Length; i++)
-                if (v3.isSamePoint(pt, meshData.border[i])
-                        || v3.isSamePoint(pt, (meshData.border[(i + 1) % meshData.border.Length] + meshData.border[i]) / 2f)
-                        || v3.isSamePoint(pt, (meshData.border[(i + meshData.border.Length - 1) % meshData.border.Length] + meshData.border[i]) / 2f)
-                        ) return;
 
-            float x, y;
-            x = .3f;
-            y = .3f;
-
-            var id = -1;
-            for (int i = 0; i < pts.Length; i++)
-                if (isSamePoint(pt, pts[i])) id = i;
-
-            var otherPoint = new List<Vector3>() { pts[(id + 1) % pts.Length], pts[(id + pts.Length - 1) % pts.Length] };
-            var oppositePt = pts[(id + 2) % pts.Length];
-
-            var Q = Vector3.Lerp(pt, otherPoint[0], x);
-            var R = Vector3.Lerp(otherPoint[1], oppositePt, x);
-            var P = Vector3.Lerp(Q, R, y);
-
-            pts[id] = P;
-        }
     }
     [Serializable]
     public class Neighbour
     {
         [HideInInspector]
+        public v3 self;
         public v3 neighbour;
         public int[] edgesIndex; 
         public int[] neighbourEdgedIndex; 
@@ -338,15 +357,17 @@ namespace GridGenerator
             }
         }
 
-        public Neighbour(v3 tris, List<int> commonPts, List<int> neighbourPts)
+        public Neighbour(v3 self, v3 tris, List<int> commonPts, List<int> neighbourPts)
         {
             this.edgesIndex = commonPts.ToArray();
             this.neighbour = tris;
+            this.self = self;
             this.neighbourEdgedIndex = neighbourPts.ToArray();
         }
-        public Neighbour(v3 tris, List<int> commonPts)
+        public Neighbour(v3 self, v3 tris, List<int> commonPts)
         {
             this.neighbour = tris;
+            this.self = self;
             this.edgesIndex = commonPts.ToArray();
         }
 

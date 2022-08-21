@@ -25,7 +25,7 @@ public class Army : MonoBehaviour
 
     public void SetMinionsPosition(Vector3 position, Vector3 direction)
     {
-        Debug.Log("Army, SetMinionsPositions : direction = " + direction);
+        //Debug.Log("Army, SetMinionsPositions : direction = " + direction);
         var count = minions.Count;
         var warriors = new List<Minion>();
         var tanks = new List<Minion>();

@@ -8,7 +8,7 @@ public class MeshModifier
     public MeshFilter filter;
 
     public Vector3[] newVerticies;
-    private float height;
+    private float height = 250f;
 
     // Start is called before the first frame update
     void Start()
@@ -78,7 +78,7 @@ public class MeshModifier
         {
             var X = (points[i].x + xOffset) * xFactor;
             var Z = (points[i].y + zOffset) * zFactor;
-            var Y = points[i].z * 150f;
+            var Y = points[i].z * height;
             /*var Z = (cell[i].z + zOffset) * zFactor;
             var Y = cell[i].y * 100;*/
 

@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         }
         var currSpeed = body.velocity.sqrMagnitude;
 
-        Debug.Log("Playercontroller, Update : currSpeed = " + currSpeed);
+        //Debug.Log("Playercontroller, Update : currSpeed = " + currSpeed);
 
         var v3Look = look.x * transform.right + look.y * transform.forward;
 
@@ -92,13 +92,10 @@ public class PlayerController : MonoBehaviour
             var speedFactor = accelerationCurve.Evaluate(currSpeed / maxSpeed);
             body.AddForce(v3Move * speed * speedFactor * Time.deltaTime, ForceMode.Impulse);
 
-            Debug.Log("Playercontroller, Update : normal acc = " + v3Move * speed * speedFactor * Time.deltaTime);
-            Debug.Log("Playercontroller, Update : normal acc speedFactor = " + speedFactor);
         }
         else if (move.magnitude > 0.1f && body.velocity.sqrMagnitude >= maxSpeed)
         {
             body.velocity = Vector3.Lerp(body.velocity, Mathf.Sqrt(maxSpeed) * v3Move, 0.1f);
-            Debug.Log("Playercontroller, Update : max speed move = " + Mathf.Sqrt(maxSpeed) * v3Move);
         }
         else if(canStop)
         {
@@ -150,7 +147,7 @@ public class PlayerController : MonoBehaviour
     internal void SetMaxSpeed(float speed)
     {
         maxSpeed = speed;
-        maxRunSpeed = speed + this.speed * 0.5f;
+        maxRunSpeed = speed * 2f;
     }
 
     public void RotateWithLook(bool value)
@@ -168,13 +165,15 @@ public class PlayerController : MonoBehaviour
     private void UpdateAnimator()
     {
         var velocity = body.velocity.sqrMagnitude / PlayerSettings.MaxAnimationSpeed;
-        var frontRatio = Vector3.Dot(body.velocity.normalized, transform.forward);
-        var sideRatio = Vector3.Dot(body.velocity.normalized, transform.right);
+        /*var frontRatio = Vector3.Dot(body.velocity.normalized, transform.forward);
+        var sideRatio = Vector3.Dot(body.velocity.normalized, transform.right);*/
+        var frontRatio = 1f;
+        var sideRatio = 0f;
 
-        Debug.Log("PlayerControlelr, UpdateAnimator : ratio front = " + frontRatio);
-        Debug.Log("PlayerControlelr, UpdateAnimator : ratio side = " + sideRatio);
+        /*Debug.Log("PlayerControlelr, UpdateAnimator : ratio front = " + frontRatio);
+        Debug.Log("PlayerControlelr, UpdateAnimator : ratio side = " + sideRatio);*/
 
-        animator.SetControllerAnimator(velocity, move.magnitude > .1f, frontRatio, sideRatio);
+        animator.SetControllerAnimator(velocity, move.magnitude > .1f && isMoving, frontRatio, sideRatio);
     }
 
     public void SetMove(Vector2 move)

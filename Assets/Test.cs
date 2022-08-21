@@ -98,7 +98,7 @@ public class Test : MonoBehaviour
         var test10 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 1);
         var test11 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 2);
         var test12 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 3);*/
-        wcf.Tiles = tiles;
+        //wcf.Tiles = tiles;
 
         StartCoroutine(wcf.StartWave(quads.ToArray(), mat));
 

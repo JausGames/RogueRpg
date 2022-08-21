@@ -36,7 +36,9 @@ namespace GridGenerator
         private List<v3Tris> toBeProcessTris;
         private List<v3Tris> processed;
         public List<v3Tris> processedTris;
-        internal Vector3[] border;
+        [SerializeField]
+        public List<Vector3> border = new List<Vector3>();
+        public bool done = false;
 
         public List<Vector3> Vertices { get => vertices; set => vertices = value; }
         public List<v3Tris> TrianglesV3 { get => trianglesV3; set => trianglesV3 = value; }
@@ -254,7 +256,9 @@ namespace GridGenerator
         internal void SmoothGrid()
         {
             var dict = new Dictionary<Vector3, List<pointOnQuad>>();
+            var dictBasicPos = new Dictionary<Vector3, List<pointOnQuad>>();
             var keys = new List<Vector3>();
+            var borderKeys = new List<Vector3>();
 
             for (int i = 0; i < quads.Count; i++)
                 for (int j = 0; j < quads.Count; j++)
@@ -263,47 +267,55 @@ namespace GridGenerator
                     {
                         for (int a = 0; a < quads[i].pts.Length; a++)
                             for (int b = 0; b < quads[j].pts.Length; b++)
+                            {
                                 if (v3.isSamePoint(quads[i].pts[a], quads[j].pts[b]))
                                 {
+
+
+
                                     if (!dict.ContainsKey(quads[i].pts[a]))
                                     {
                                         dict.Add(quads[i].pts[a], new List<pointOnQuad>());
                                         keys.Add(quads[i].pts[a]);
                                     }
-                                    dict[quads[i].pts[a]].Add(new pointOnQuad(quads[i], a));
-                                    dict[quads[j].pts[b]].Add(new pointOnQuad(quads[j], b));
+                                    var poq1 = new pointOnQuad(quads[i], a);
+                                    var poq2 = new pointOnQuad(quads[j], b);
+                                    dict[quads[i].pts[a]].Add(poq1);
+                                    dict[quads[j].pts[b]].Add(poq2);
+
                                 }
+                            }
                     }
                 }
 
-            var it = 0;
-            while (it < 10)
-            {
-                foreach (v3Quad quad in Quads)
+
+                var it = 0;
+                while (it < 500)
                 {
-                    quad.SelfSmooth();
+                    foreach (v3Quad quad in Quads)
+                    {
+                        quad.SelfSmooth(border);
+                    }
+
+
+                    it++;
+                }
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    var ptsOnQuad = dict[keys[i]];
+                    var mid = Vector3.zero;
+                    foreach (var ptOnQuad in ptsOnQuad)
+                    {
+                        mid += ptOnQuad.quad.pts[ptOnQuad.ptNb];
+                    }
+                    mid /= ptsOnQuad.Count;
+                    foreach (var ptOnQuad in ptsOnQuad)
+                    {
+                        ptOnQuad.quad.pts[ptOnQuad.ptNb] = mid;
+                    }
                 }
 
-
-                it++;
             }
-
-            for (int i = 0; i < keys.Count; i++)
-            {
-                var ptsOnQuad = dict[keys[i]];
-                var mid = Vector3.zero;
-                foreach (var ptOnQuad in ptsOnQuad)
-                {
-                    mid += ptOnQuad.quad.pts[ptOnQuad.ptNb];
-                }
-                mid /= ptsOnQuad.Count;
-                foreach (var ptOnQuad in ptsOnQuad)
-                {
-                    ptOnQuad.quad.pts[ptOnQuad.ptNb] = mid;
-                }
-            }
-
-        }
 
 
         public class pointOnQuad
@@ -316,6 +328,14 @@ namespace GridGenerator
                 this.quad = quad;
                 this.ptNb = ptNb;
             }
+        }
+        public class ConnectedPoints
+        {
+            public List<Vector3> points = new List<Vector3>();
+        }
+        public class ConnectedCrossPoints
+        {
+            public List<Vector3> points = new List<Vector3>();
         }
     }
 }

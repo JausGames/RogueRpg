@@ -14,7 +14,7 @@ namespace GridGenerator
         public Mesh mesh;
         public WCF.WCF wcf;
         //
-        private const int layerNb = 2;
+        public int layerNb = 2;
         public MeshData meshData = null;
         public float radius = 4;
         public DebugDrawer DebugDrawer = null;
@@ -39,14 +39,14 @@ namespace GridGenerator
 
             meshData = new MeshData(new List<Vector3>(), radius, layerNb, tiling);
             GenerateLayers(layerNb, radius);
-            InitializeBorders();
             GenerateBaseMesh();
 
             meshData.DeleteTrisRandomly();
 
             meshData.SubdivideGrid();
-            /*meshData.SubdivideGrid();
-            meshData.SubdivideGrid();*/
+            //meshData.SubdivideGrid();
+            /*meshData.SubdivideGrid();*/
+            InitializeBorders();
 
             meshData.SmoothGrid();
             //MeshModifier meshModifier = new MeshModifier();
@@ -54,6 +54,7 @@ namespace GridGenerator
             StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
 
         }
+
 
         private void Start()
         {
@@ -148,9 +149,45 @@ namespace GridGenerator
         }
 
         private void InitializeBorders()
+        { 
+            var border = new List<Vector3>();
+            for(int i = 0; i < meshData.Quads.Count; i++)
+            {
+                if(meshData.Quads[i].Neighbours.Count < 4)
+                {
+                    var edgeIndex = new List<int>();
+                    edgeIndex.AddRange(new int[] { 0, 1, 2, 3 });
+                    foreach (Neighbour neigh in meshData.Quads[i].Neighbours)
+                        edgeIndex.Remove(neigh.edge);
+                    foreach(int index in edgeIndex)
+                    {
+                        var ptIndex = GetPointIndexByEdge(index);
+                        border.Add(meshData.Quads[i].pts[ptIndex[0]]);
+                        border.Add(meshData.Quads[i].pts[ptIndex[1]]);
+                    }
+                }
+            }
+
+
+            corners = border.ToArray();
+            meshData.border = border;
+        }
+        public int[] GetPointIndexByEdge(int edge)
         {
-            corners = meshData.Layers[meshData.Layers.Count - 1];
-            meshData.border = corners;
+            if (edge == 0)
+                // 0 up
+                return new int[] { 0, 1 };
+            else if (edge == 1)
+                // 1 left
+                return new int[] { 1, 2 };
+            else if (edge == 2)
+                // 2 back
+                return new int[] { 2, 3 };
+            else if (edge == 3)
+                // 3 right
+                return new int[] { 3, 0 };
+            else
+                throw new Exception("no edge found");
         }
 
         private Vector3[] GenerateHexagonPoints(Vector3 origin, float radius, int subDivision = 0)

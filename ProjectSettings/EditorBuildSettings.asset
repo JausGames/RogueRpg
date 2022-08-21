@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/baseMap.unity
+    guid: 9b2ea3981d3e21f4380d789ee247cc76
+  - enabled: 1
     path: Assets/Scenes/3dFightScene.unity
     guid: eb9895521c5afd6469956609810333ab
   m_configObjects: {}

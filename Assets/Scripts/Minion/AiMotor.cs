@@ -34,6 +34,20 @@ public class AiMotor : MonoBehaviour
     public UnityEvent DestinationReached { get => destinationReachedOrUnreachable; set => destinationReachedOrUnreachable = value; }
     public bool IsActive { get => isActive; set => isActive = value; }
 
+    private void Start()
+    {
+        if(bounding[0] == Vector3.zero
+            && bounding[1] == Vector3.zero
+            && bounding[2] == Vector3.zero
+            && bounding[3] == Vector3.zero)
+        {
+            bounding[0] = new Vector3(Mathf.Infinity, 0, Mathf.Infinity);
+            bounding[1] = new Vector3(Mathf.Infinity, 0, -Mathf.Infinity);
+            bounding[2] = new Vector3(-Mathf.Infinity, 0, -Mathf.Infinity);
+            bounding[3] = new Vector3(-Mathf.Infinity, 0, Mathf.Infinity);
+        }
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -62,11 +76,11 @@ public class AiMotor : MonoBehaviour
     }
     public Vector3 ClampDestination(Vector3 destination)
     {
-        Debug.Log("ClampDestination : dest = " + destination);
+        Debug.Log("ClampDestination : dest = " + destination);/*
         destination.x = Mathf.Max(destination.x, bounding[2].x + 1f);
         destination.x = Mathf.Min(destination.x, bounding[0].x - 1f);
         destination.z = Mathf.Max(destination.z, bounding[2].z + 1f);
-        destination.z = Mathf.Min(destination.z, bounding[0].z - 1f);
+        destination.z = Mathf.Min(destination.z, bounding[0].z - 1f);*/
         Debug.Log("ClampDestination : dest = " + destination);
         /*destination.x = Mathf.Max(Mathf.Min(destination.x, bounding[0].x), bounding[3].x);
         destination.z = Mathf.Max(Mathf.Min(destination.z, bounding[0].z), bounding[3].z);*/
