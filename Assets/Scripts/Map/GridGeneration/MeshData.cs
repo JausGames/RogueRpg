@@ -137,6 +137,7 @@ namespace GridGenerator
             }
 
             v3Poly.AddRange(processedTris);
+            trianglesV3.Clear();
 
         }
 
@@ -176,6 +177,7 @@ namespace GridGenerator
             var tris1Common = new List<int>();
             var tris2Common = new List<int>();
 
+            // We can the common points between 2 tris
             for (int i = 0; i < v3Tris1.pts.Length; i++)
                 for (int j = 0; j < v3Tris2.pts.Length; j++)
                 {
@@ -188,8 +190,10 @@ namespace GridGenerator
                     }
                 }
 
+            //We create the quad points from what find above
             var quadV = new Vector3[] { v3Tris1.pts[tris1Alone[0]], v3Tris1.pts[tris1Common[0]], v3Tris2.pts[tris2Alone[0]], v3Tris1.pts[tris1Common[1]] };
 
+            // We create the quad neighbour list form the 2 tris neighbours
             var neighbours = new List<Neighbour>();
             foreach (Neighbour neigh in v3Tris1.Neighbours)
                 if (neigh.neighbour != v3Tris2)
@@ -211,8 +215,8 @@ namespace GridGenerator
                     if (okay) neighbours.Add(neigh);
                 }
 
+            //Then we create the final quad from these data;
             var quad = new v3Quad(quadV, neighbours, v3Tris1, v3Tris2);
-            //DebugDrawer.DrawPolygon(quad.pts, Color.blue);
             return quad;
         }
 

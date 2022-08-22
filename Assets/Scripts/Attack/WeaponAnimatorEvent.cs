@@ -10,7 +10,6 @@ public class WeaponAnimatorEvent : MonoBehaviour
 
     public void SetTriggerActive(int attackId)
     {
-        Debug.Log("WeaponAnimatorEvent, SetTriggerActive : attackid " + attackId);
         owner.CombatData.Weapon.CurrentAttack = owner.CombatData.Weapon.AttackSet[attackId];
         triggers[owner.CombatData.Weapon.CurrentAttack.colliderId].IsActive = true;
         owner.CombatData.Weapon.ResetCombo();

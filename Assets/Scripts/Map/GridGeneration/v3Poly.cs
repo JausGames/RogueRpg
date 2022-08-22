@@ -14,9 +14,13 @@ namespace GridGenerator
         private List<Neighbour> neighbours;
         public List<Neighbour> Neighbours { get => neighbours; set => neighbours = value; }
 
+        [SerializeField]
+        private List<CrossNeighbour> crossNeighbours = new List<CrossNeighbour>();
+        public List<CrossNeighbour> CrossNeighbours { get => crossNeighbours; set => crossNeighbours = value; }
+
         public bool ContainNeighbour(v3 v3)
         {
-            foreach(var neigh in neighbours)
+            foreach (var neigh in neighbours)
             {
                 if (neigh.neighbour == v3) return true;
             }
@@ -29,13 +33,15 @@ namespace GridGenerator
         public void FindNeighbours(MeshData data)
         {
             Neighbours.Clear();
+            CrossNeighbours.Clear();
             var polys = new List<v3>();
             foreach (v3 tr in data.TrianglesV3)
                 if (!polys.Contains(tr) && tr != this) polys.Add(tr);
-            foreach (v3 qd in data.Quads)
-                if (!polys.Contains(qd) && qd != this) polys.Add(qd);
             foreach (v3 pl in data.V3Poly)
                 if (!polys.Contains(pl) && pl != this) polys.Add(pl);
+            foreach (v3 qd in data.Quads)
+                if (!polys.Contains(qd) && qd != this) polys.Add(qd);
+
 
             foreach (v3 tris in polys)
             {
@@ -50,13 +56,18 @@ namespace GridGenerator
                         commonPts.Add(commonPtIndex);
                     }
                 }
-                if (commonPts.Count >= 2)
+
+                if (commonPts.Count == 2)
                 {
                     Neighbours.Add(new Neighbour(this, tris, commonPts, neighbourPts));
                 }
+                else if (commonPts.Count == 1)
+                {
+                    crossNeighbours.Add(new CrossNeighbour(this, tris, commonPts[0], neighbourPts[0]));
+                }
             }
-        
-    }
+
+        }
         public bool haveCommonPoint(Vector3 pt)
         {
             foreach (var ownPt in pts)
@@ -130,7 +141,6 @@ namespace GridGenerator
 
             }
 
-            Debug.Log("v3, GetAdjacentPoints : nb adjacentPoint = " + result.Count);
             return result;
         }
 
@@ -183,12 +193,13 @@ namespace GridGenerator
         [HideInInspector]
         public v3Tris[] internalTris = new v3Tris[2];
 
-        public Vector3 Position {
+        public Vector3 Position
+        {
             get
             {
                 var mid = Vector3.zero;
 
-                foreach(var pt in pts)
+                foreach (var pt in pts)
                 {
                     mid += pt;
                 }
@@ -197,6 +208,7 @@ namespace GridGenerator
                 return mid;
             }
         }
+
 
         public v3Quad(Vector3[] pts, List<Neighbour> neighbours, v3Tris tris1, v3Tris tris2)
         {
@@ -225,10 +237,14 @@ namespace GridGenerator
                         neighbourPts.Add(i);
                         if (commonPtIndex != -1) commonPts.Add(commonPtIndex);
                     }
-                    if (commonPts.Count >= 2)
+
+                    if (commonPts.Count == 2)
                     {
                         Neighbours.Add(new Neighbour(this, quad, commonPts, neighbourPts));
-                        Debug.Log("neighbour edge = " + Neighbours[Neighbours.Count - 1].edge);
+                    }
+                    else if (commonPts.Count == 1)
+                    {
+                        CrossNeighbours.Add(new CrossNeighbour(this, quad, commonPts[0], neighbourPts[0]));
                     }
                 }
             }
@@ -255,39 +271,39 @@ namespace GridGenerator
 
             //bool[] canMove = new bool[] { true,true,true,true };
             bool[] canMove = new bool[] { !haveCommonPoint(blackList, pts[0]), !haveCommonPoint(blackList, pts[1]), !haveCommonPoint(blackList, pts[2]), !haveCommonPoint(blackList, pts[3]) };
-            
+
             var differenceSign = edge1.magnitude > edge2.magnitude ? -1 : +1;
-/*
-            if (canMove[0])
-                pts[0] += differenceSign * edge1 * 0.1f;
-            if (canMove[1])
-                pts[1] += -differenceSign * edge2 * 0.1f;
-            if (canMove[2])
-                pts[2] += differenceSign * edge1 * 0.1f;
-            if (canMove[3])
-                pts[3] += -differenceSign * edge2 * 0.1f;
-*/
+            /*
+                        if (canMove[0])
+                            pts[0] += differenceSign * edge1 * 0.1f;
+                        if (canMove[1])
+                            pts[1] += -differenceSign * edge2 * 0.1f;
+                        if (canMove[2])
+                            pts[2] += differenceSign * edge1 * 0.1f;
+                        if (canMove[3])
+                            pts[3] += -differenceSign * edge2 * 0.1f;
+            */
             if (edge1.magnitude > edge2.magnitude)
             {
-                if(canMove[0])
-                    pts[0] -= edge1 * 0.1f;
+                if (canMove[0])
+                    pts[0] -= edge1 * 0.2f;
                 if (canMove[1])
-                    pts[1] += edge2 * 0.1f;
+                    pts[1] += edge2 * 0.2f;
                 if (canMove[2])
-                    pts[2] += edge1 * 0.1f;
+                    pts[2] += edge1 * 0.2f;
                 if (canMove[3])
-                    pts[3] -= edge2 * 0.1f;
+                    pts[3] -= edge2 * 0.2f;
             }
             else
             {
                 if (canMove[0])
-                    pts[0] += edge1 * 0.1f;
+                    pts[0] += edge1 * 0.2f;
                 if (canMove[1])
-                    pts[1] -= edge2 * 0.1f;
+                    pts[1] -= edge2 * 0.2f;
                 if (canMove[2])
-                    pts[2] -= edge1 * 0.1f;
+                    pts[2] -= edge1 * 0.2f;
                 if (canMove[3])
-                    pts[3] += edge2 * 0.1f;
+                    pts[3] += edge2 * 0.2f;
             }
         }
 
@@ -297,9 +313,10 @@ namespace GridGenerator
     {
         [HideInInspector]
         public v3 self;
+        [HideInInspector]
         public v3 neighbour;
-        public int[] edgesIndex; 
-        public int[] neighbourEdgedIndex; 
+        public int[] edgesIndex;
+        public int[] neighbourEdgedIndex;
         public int edge
         {
             get
@@ -374,6 +391,25 @@ namespace GridGenerator
         public bool IsSameQuad(v3 quad)
         {
             return quad == neighbour;
+        }
+
+    }
+    [Serializable]
+    public class CrossNeighbour
+    {
+        [HideInInspector]
+        public v3 self;
+        [HideInInspector]
+        public v3 neighbour;
+        public int ptIndex;
+        public int neighbourPtIndex;
+
+        public CrossNeighbour(v3 self, v3 neighbour, int ptIndex, int neighbourPtIndex)
+        {
+            this.self = self;
+            this.neighbour = neighbour;
+            this.ptIndex = ptIndex;
+            this.neighbourPtIndex = neighbourPtIndex;
         }
     }
 }

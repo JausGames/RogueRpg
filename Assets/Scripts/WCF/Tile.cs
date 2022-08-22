@@ -61,12 +61,6 @@ namespace WCF
         /// <returns></returns>
         public static bool CheckIfTileConnect(Tile tile1, Tile tile2, int direction, int oppoDirection)
         {
-            /*if (tile1.connectors[direction].WhiteList.Count > 0 && !tile1.connectors[direction].WhiteList.Contains(tile2.id)) return false;
-            if (tile2.connectors[oppoDirection].WhiteList.Count > 0 && !tile2.connectors[oppoDirection].WhiteList.Contains(tile1.id)) return false;
-
-            if (tile1.connectors[direction].BlackList.Contains(tile2.id)) return false;
-            if (tile2.connectors[oppoDirection].BlackList.Contains(tile1.id)) return false;*/
-
             if (tile1.connectors[direction].connection[0] == tile2.connectors[oppoDirection].connection[2]
             && tile1.connectors[direction].connection[1] == tile2.connectors[oppoDirection].connection[1]
             && tile1.connectors[direction].connection[2] == tile2.connectors[oppoDirection].connection[0])
@@ -74,10 +68,21 @@ namespace WCF
 
             return false;
         }
+        public static bool CheckIfTileConnectCross(Tile tile1, Tile tile2, int ptIndex1, int ptIndex2)
+        {
+
+            if (tile1.name.Contains("High") && tile2.name.Contains("Mount") || tile2.name.Contains("High") && tile1.name.Contains("Mount"))
+                Debug.Log("debug");
+
+            if (tile1.connectors[(3 + ptIndex1) % 4].connection[0] == tile2.connectors[(3 + ptIndex2) % 4].connection[0]
+            && tile1.connectors[(ptIndex1) % 4].connection[2] == tile2.connectors[(ptIndex2) % 4].connection[2])
+                return true;
+
+            return false;
+        }
         public TileConnector[] RotateTile(int nb90Rotation)
         {
             var newConnector = new TileConnector[connectors.Length];
-            //nb90Rotation = 3 * (nb90Rotation % 5);
 
             for (int i = 0; i < connectors.Length ; i++)
             {

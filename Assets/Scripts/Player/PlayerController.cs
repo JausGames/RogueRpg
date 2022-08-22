@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour
     public bool IsMoving { get => isMoving;
         set
         {
-            Debug.Log("Set IsMoving : " + value);
             isMoving = value;
         }
     }

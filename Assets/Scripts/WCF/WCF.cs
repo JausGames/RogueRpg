@@ -45,6 +45,7 @@ namespace WCF
                     availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 180";
                     availableTiles[i].Add(new Tile(tile, 3));
                     availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 270";
+                    
                 }
             }
             var meshModifier = new MeshModifier();
@@ -58,22 +59,41 @@ namespace WCF
                 var rnd = UnityEngine.Random.Range(0, grid.Length - 1);
                 var pickedQuad = grid[rnd];
                 if (!treated.Contains(rnd))
-                    AddTileToGrid(grid, treated, rnd, new Tile(asset.Tiles[0]));
-                var homeObj = Instantiate(home, pickedQuad.Position, Quaternion.identity, transform);
-                var neighbourList = new List<Neighbour>();
-                for (int i = 0; i < pickedQuad.Neighbours.Count; i++)
                 {
-                    neighbourList.AddRange(pickedQuad.Neighbours[i].neighbour.Neighbours);
+                    var newTile = new Tile(asset.Tiles[0]);
+                    newTile.name = asset.Tiles[0].name + " - dungeon";
+                    AddTileToGrid(grid, treated, rnd, newTile);
                 }
-                neighbourList.AddRange(pickedQuad.Neighbours);
-                foreach(Neighbour neigh in neighbourList)
+                var homeObj = Instantiate(home, pickedQuad.Position, Quaternion.identity, transform);
+
+                //var neighbourList = new List<Neighbour>();
+                var neighbourList = new List<v3Quad>();
+                foreach(var neigh in pickedQuad.Neighbours)
+                    neighbourList.Add((v3Quad)neigh.neighbour);
+                foreach(var neigh in pickedQuad.CrossNeighbours)
+                    neighbourList.Add((v3Quad)neigh.neighbour);
+
+                foreach(var quad in neighbourList)
                 {
-                    int id = FindIndexOfQuad((v3Quad)neigh.self, grid);
-                    if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, neigh.self).Count > 0)
-                        AddTileToGrid(grid, treated, id, new Tile(asset.Tiles[0]));
+                    int id = FindIndexOfQuad(quad, grid);
+                    if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, quad).Count > 0)
+                    {
+                        var newTile = new Tile(asset.Tiles[0]);
+                        newTile.name = asset.Tiles[0].name + " - dungeon";
+                        AddTileToGrid(grid, treated, id, newTile);
+                    }
 
                 }
-                
+                /*var crossNeighbourList = new List<CrossNeighbour>();
+                crossNeighbourList.AddRange(pickedQuad.CrossNeighbours);
+                foreach (CrossNeighbour neigh in crossNeighbourList)
+                {
+                    int id = FindIndexOfQuad((v3Quad)neigh.neighbour, grid);
+                    if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, neigh.neighbour).Count > 0)
+                        AddTileToGrid(grid, treated, id, new Tile(asset.Tiles[0]));
+
+                }*/
+
                 it++;
             }
 
@@ -125,15 +145,30 @@ namespace WCF
 
         private bool AddTileToGrid(v3Quad[] grid, List<int> treated, int quadIndex, Tile pickedTile)
         {
+            if (pickedTile.name.Contains("High"))
+                Debug.Log("high tile picked");
             var retry = false;
             var chosenQuad = grid[quadIndex];
             var neighbours = chosenQuad.Neighbours;
+            var crossNeighbours = chosenQuad.CrossNeighbours;
             for (int x = 0; x < neighbours.Count; x++)
             {
                 int j = FindIndexOfQuad((v3Quad)neighbours[x].neighbour, grid);
                 if (gridTiled[j] == null)
                 {
                     RemoveUnavailableTiles(pickedTile, neighbours, x, j);
+                    if (availableTiles[j].Count == 0)
+                    {
+                        retry = true;
+                    }
+                }
+            }
+            for (int x = 0; x < crossNeighbours.Count; x++)
+            {
+                int j = FindIndexOfQuad((v3Quad)crossNeighbours[x].neighbour, grid);
+                if (gridTiled[j] == null)
+                {
+                    RemoveUnavailableTilesFromCross(pickedTile, crossNeighbours, x, j);
                     if (availableTiles[j].Count == 0)
                     {
                         retry = true;
@@ -163,6 +198,17 @@ namespace WCF
                     )
                     availableTiles[availablesIndex].Remove(tile);
 
+            }
+        }
+        private void RemoveUnavailableTilesFromCross(Tile pickedTile, List<CrossNeighbour> neighbours, int neighIndex, int availablesIndex)
+        {
+            var availableTileList = new List<Tile>();
+            availableTileList.AddRange(availableTiles[availablesIndex]);
+
+            foreach (Tile tile in availableTileList)
+            {
+                if (!Tile.CheckIfTileConnectCross(pickedTile, tile, neighbours[neighIndex].ptIndex, neighbours[neighIndex].neighbourPtIndex))
+                    availableTiles[availablesIndex].Remove(tile);
             }
         }
 

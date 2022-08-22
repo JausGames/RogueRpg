@@ -25,17 +25,12 @@ namespace GridGenerator
         float tiling = 1 / 10f;
         public Material mapMaterial;
 
-        public MeshFilter filter = null;
-        public MeshRenderer renderer;
-
 
 
 
         private void Awake()
         {
             Debug.Log("Start Time = " + Time.time);
-            filter = gameObject.AddComponent<MeshFilter>();
-            renderer = gameObject.AddComponent<MeshRenderer>();
 
             meshData = new MeshData(new List<Vector3>(), radius, layerNb, tiling);
             GenerateLayers(layerNb, radius);
@@ -49,7 +44,6 @@ namespace GridGenerator
             InitializeBorders();
 
             meshData.SmoothGrid();
-            //MeshModifier meshModifier = new MeshModifier();
 
             StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
 
@@ -83,13 +77,6 @@ namespace GridGenerator
 
         private void GenerateBaseMesh()
         {
-
-            renderer.material = new Material(mapMaterial);
-
-            var tris = new List<int>();
-            var normals = new List<Vector3>();
-            var tangents = new List<Vector4>();
-
             for (int i = 0; i < meshData.Layers.Count - 1; i++)
             {
                 var smallLayerIt = 0;
@@ -125,12 +112,6 @@ namespace GridGenerator
             }
         }
 
-
-        private void UpdateMesh()
-        {
-            filter.mesh.Clear();
-            filter.mesh = meshData.CreateMesh();
-        }
 
         private void GenerateLayers(int layerNb, float radius)
         {
