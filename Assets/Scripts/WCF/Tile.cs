@@ -71,8 +71,8 @@ namespace WCF
         public static bool CheckIfTileConnectCross(Tile tile1, Tile tile2, int ptIndex1, int ptIndex2)
         {
 
-            if (tile1.name.Contains("High") && tile2.name.Contains("Mount") || tile2.name.Contains("High") && tile1.name.Contains("Mount"))
-                Debug.Log("debug");
+            /*if (tile1.name.Contains("High") && tile2.name.Contains("Mount") || tile2.name.Contains("High") && tile1.name.Contains("Mount"))
+                Debug.Log("debug");*/
 
             if (tile1.connectors[(3 + ptIndex1) % 4].connection[0] == tile2.connectors[(3 + ptIndex2) % 4].connection[0]
             && tile1.connectors[(ptIndex1) % 4].connection[2] == tile2.connectors[(ptIndex2) % 4].connection[2])
@@ -90,6 +90,17 @@ namespace WCF
             }
 
             return newConnector;
+        }
+
+        internal bool CompareConnector(TileConnector[] connectors1, TileConnector[] connectors2)
+        {
+            for(int i = 0; i < connectors1.Length; i ++)
+            if (connectors1[i].connection[0] == connectors2[i].connection[0]
+            && connectors1[i].connection[1] == connectors2[i].connection[1]
+            && connectors1[i].connection[2] == connectors2[i].connection[2])
+                return true;
+
+            return false;
         }
     }
     [Serializable]

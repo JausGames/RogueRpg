@@ -104,7 +104,7 @@ public class PlayerInput : MonoBehaviour
     public void OnMouseSwitchAim(CallbackContext context)
     {
         var input = context.ReadValue<float>();
-        Debug.Log("PlayerInput, OnMouseSwitchAim : input = " + input);
+        //Debug.Log("PlayerInput, OnMouseSwitchAim : input = " + input);
         if (isAiming && input != 0)
         {
             SwitchTarget(out var aim, out var opp, input > 0f);
@@ -117,7 +117,7 @@ public class PlayerInput : MonoBehaviour
     public void OnStickSwitchAim(CallbackContext context)
     {
         var input = context.ReadValue<Vector2>().x;
-        Debug.Log("PlayerInput, OnStickSwitchAim : input = " + input);
+        //Debug.Log("PlayerInput, OnStickSwitchAim : input = " + input);
 
         if (isAiming && Mathf.Abs(input) > 0.9f)
         {
@@ -262,7 +262,7 @@ public class PlayerInput : MonoBehaviour
         aim = player.Target;
         opp = player.Target == null ? null : player.Target.GetComponent<Minion>() ? player.Target.GetComponent<Minion>() : player.Target.GetComponentInParent<Minion>(); ;
         if (Time.time < waitToSwitch + .3f) return;
-        Debug.Log("PlayerInput, SwitchTarget : Start");
+        //Debug.Log("PlayerInput, SwitchTarget : Start");
         var cols = Physics.OverlapSphere(transform.position, 8f, Enemy);
         var angleList = new List<float>();
         var ennemies = new List<Minion>();
@@ -301,7 +301,7 @@ public class PlayerInput : MonoBehaviour
         aim = null;
         opp = null;
         if (Time.time < waitToSwitch + .3f) return;
-        Debug.Log("PlayerInput, SwitchTarget : Start");
+        //Debug.Log("PlayerInput, SwitchTarget : Start");
         var cols = Physics.OverlapSphere(transform.position, 8f, Enemy);
         var angleList = new List<float>();
         var ennemies = new List<Minion>();

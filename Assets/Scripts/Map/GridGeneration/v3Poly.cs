@@ -308,7 +308,7 @@ namespace GridGenerator
         }
 
     }
-    [Serializable]
+    //[Serializable]
     public class Neighbour
     {
         [HideInInspector]
@@ -394,7 +394,7 @@ namespace GridGenerator
         }
 
     }
-    [Serializable]
+    //[Serializable]
     public class CrossNeighbour
     {
         [HideInInspector]
