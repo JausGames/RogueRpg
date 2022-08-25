@@ -6,8 +6,23 @@ using WCF;
 
 public class TileHolder : MonoBehaviour
 {
-    public Tile tile;
-    public v3Quad quad;
+    private Tile tile;
+    private v3Quad quad;
+    private GameObject center;
+
+    public v3Quad Quad 
+    { 
+        get => quad;
+        set
+        {
+            quad = value;
+            Destroy(center);
+            center = new GameObject("center");
+            center.transform.position = quad.Position;
+            center.transform.parent = transform;
+        }
+    }
+    public Tile Tile { get => tile; set => tile = value; }
 
     private void OnDrawGizmos()
     {
@@ -45,6 +60,9 @@ public class TileHolder : MonoBehaviour
         foreach(Neighbour neigh in quad.Neighbours)
             if(neigh.edge == 3) Gizmos.color = Color.red;
         Gizmos.DrawLine(quad0Pos, quad3Pos);
+
+        Gizmos.color = Color.yellow;
+        if(center)Gizmos.DrawSphere(center.transform.position, .5f);
 
         /*if (edgesIndex[0] == 0 && edgesIndex[1] == 1
             || edgesIndex[1] == 0 && edgesIndex[0] == 1)

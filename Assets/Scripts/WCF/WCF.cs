@@ -55,43 +55,49 @@ namespace WCF
             {
 
                 var go = new GameObject("quad - " + quad.Position,  typeof(TileHolder));
-                go.GetComponent<TileHolder>().quad = quad;
+                go.GetComponent<TileHolder>().Quad = quad;
             }
             var meshModifier = new MeshModifier();
             var retry = false;
 
             var nbPlain = 1;
             var maxCellPlain = 5;
-            var it = 0;
+            var it = 0; 
+            var homeObj = Instantiate(home, Vector3.zero, Quaternion.identity, transform);
             while (it < nbPlain)
             {
                 var rnd = UnityEngine.Random.Range(0, grid.Length - 1);
                 var pickedQuad = grid[rnd];
                 if (!treated.Contains(rnd))
                 {
-                    var newTile = new Tile(asset.Tiles[0]);
-                    newTile.name = asset.Tiles[0].name + " - dungeon";
-                    AddTileToGrid(grid, treated, rnd, newTile);
+                    var newTile = new Tile(tilesTest);
+                    newTile.name = tilesTest.name + " - dungeon";
+                    if(!AddTileToGrid(grid, treated, rnd, newTile))
+                    {
                         GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
-                }
-                var homeObj = Instantiate(home, pickedQuad.Position, Quaternion.identity, transform);
+                        homeObj.transform.position = pickedQuad.Position;
+                    }
 
-                //var neighbourList = new List<Neighbour>();
+                    yield return new WaitForSeconds(1f);
+                }
+                
+
                 var neighbourList = new List<v3Quad>();
                 foreach(var neigh in pickedQuad.Neighbours)
                     neighbourList.Add((v3Quad)neigh.neighbour);
                 foreach(var neigh in pickedQuad.CrossNeighbours)
                     neighbourList.Add((v3Quad)neigh.neighbour);
 
-                foreach(var quad in neighbourList)
+                foreach (var quad in neighbourList)
                 {
                     int id = FindIndexOfQuad(quad, grid);
                     if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, quad).Count > 0)
                     {
-                        var newTile = new Tile(asset.Tiles[0]);
-                        newTile.name = asset.Tiles[0].name + " - dungeon";
-                        AddTileToGrid(grid, treated, id, newTile);
-                        GenerateMesh(grid, mapMaterial, meshModifier, quad);
+                        var newTile = new Tile(tilesTest);
+                        newTile.name = tilesTest.name + " - dungeon";
+                        if (!AddTileToGrid(grid, treated, id, newTile))
+                            GenerateMesh(grid, mapMaterial, meshModifier, quad);
+                        yield return new WaitForSeconds(1f);
                     }
 
                 }
@@ -102,6 +108,8 @@ namespace WCF
                     int id = FindIndexOfQuad((v3Quad)neigh.neighbour, grid);
                     if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, neigh.neighbour).Count > 0)
                         AddTileToGrid(grid, treated, id, new Tile(asset.Tiles[0]));
+                        GenerateMesh(grid, mapMaterial, meshModifier, quad);
+                        yield return new WaitForSeconds(1f);
 
                 }*/
 
@@ -124,7 +132,7 @@ namespace WCF
                     {
                         GenerateMesh(grid, mapMaterial, meshModifier, chosenQuad);
                     }
-                    else
+                    /*else
                     {
                         var blockedCount = 0;
                         foreach(var available in availableTiles)
@@ -133,7 +141,7 @@ namespace WCF
                         }
                         if (blockedCount + treated.Count == grid.Length) retry = true;
                         else retry = false;
-                    }
+                    }*/
                     yield return null;
                 }
 
@@ -161,20 +169,30 @@ namespace WCF
 
         private void GenerateMesh(v3Quad[] grid, Material mapMaterial, MeshModifier meshModifier, v3Quad chosenQuad)
         {
+            try
+            {
             // generate mesh
-            var i = FindIndexOfQuad(chosenQuad, grid);
-            var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
-            go.transform.parent = transform;
-            var filter = go.GetComponent<MeshFilter>();
-            var rend = go.GetComponent<MeshRenderer>();
-            var col = go.GetComponent<MeshCollider>();
-            go.GetComponent<TileHolder>().tile = gridTiled[i];
-            go.GetComponent<TileHolder>().quad = quadTiled[i];
-            tiles.Add(go);
-            rend.material = mapMaterial;
-            var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh);
-            filter.mesh = modifiedMesh;
-            col.sharedMesh = modifiedMesh;
+                var i = FindIndexOfQuad(chosenQuad, grid);
+                var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
+                go.transform.parent = transform;
+                var filter = go.GetComponent<MeshFilter>();
+                var rend = go.GetComponent<MeshRenderer>();
+                var col = go.GetComponent<MeshCollider>();
+                go.GetComponent<TileHolder>().Tile = gridTiled[i];
+                go.GetComponent<TileHolder>().Quad = quadTiled[i];
+                tiles.Add(go);
+                rend.material = mapMaterial;
+                var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh);
+                filter.mesh = modifiedMesh;
+                col.sharedMesh = modifiedMesh;
+
+            }
+            catch
+            {
+                var i = FindIndexOfQuad(chosenQuad, grid);
+                Debug.Log("error with chosen quad = " + chosenQuad.Position);
+                Debug.Log("found index = " + i);
+            }
         }
 
         private bool PickTileToAdd(v3Quad[] grid, List<int> treated, v3Quad chosenQuad)
@@ -221,7 +239,7 @@ namespace WCF
                     }
                 }
             }
-            /*for (int x = 0; x < crossNeighbours.Count; x++)
+            for (int x = 0; x < crossNeighbours.Count; x++)
             {
                 int j = FindIndexOfQuad((v3Quad)crossNeighbours[x].neighbour, grid);
                 var oldList = new List<Tile>();
@@ -245,7 +263,7 @@ namespace WCF
                         onlyOneAvailableIndexes.Add(j);
                     }
                 }
-            }*/
+            }
             if(!retry)
             {
                 availableTiles[quadIndex].Clear();
@@ -255,17 +273,17 @@ namespace WCF
             }
             else
             {
-                /*var oldAvailableList = new List<Tile> {};
+                var oldAvailableList = new List<Tile> {};
                 oldAvailableList.AddRange(availableTiles[quadIndex]);
                 foreach(var tile in oldAvailableList)
-                    if(tile.CompareConnector(tile.connectors, pickedTile.connectors)) availableTiles[quadIndex].Remove(tile);*/
+                    if(tile.CompareConnector(tile.connectors, pickedTile.connectors)) availableTiles[quadIndex].Remove(tile);
             }
 
-            var meshModifier = new MeshModifier();
+            /*var meshModifier = new MeshModifier();
             foreach (var index in onlyOneAvailableIndexes)
             {
-                if(!AddTileToGrid(grid, treated, index, availableTiles[index][0])) GenerateMesh(grid, mapMaterial, meshModifier, grid[index]);
-            }
+                if(availableTiles[index].Count > 0 && !AddTileToGrid(grid, treated, index, availableTiles[index][0])) GenerateMesh(grid, mapMaterial, meshModifier, grid[index]);
+            }*/
             return retry;
         }
 
