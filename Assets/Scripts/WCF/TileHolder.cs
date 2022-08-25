@@ -36,29 +36,29 @@ public class TileHolder : MonoBehaviour
         Gizmos.color = Color.Lerp(basecolor, Color.white, 1f);
         Gizmos.DrawSphere(quad0Pos, .1f);
         Gizmos.color = basecolor;
-        foreach(Neighbour neigh in quad.Neighbours)
-            if(neigh.edge == 0) Gizmos.color = Color.red;
+        /*foreach(Neighbour neigh in quad.Neighbours)
+            if(neigh.edge == 0) Gizmos.color = Color.red;*/
         Gizmos.DrawLine(quad0Pos, quad1Pos);
 
         Gizmos.color = Color.Lerp(basecolor, Color.white, 0.66f);
         Gizmos.DrawSphere(quad1Pos, .1f);
         Gizmos.color = basecolor;
-        foreach(Neighbour neigh in quad.Neighbours)
-            if(neigh.edge == 1) Gizmos.color = Color.red;
+        /*foreach(Neighbour neigh in quad.Neighbours)
+            if(neigh.edge == 1) Gizmos.color = Color.red;*/
         Gizmos.DrawLine(quad1Pos, quad2Pos);
 
         Gizmos.color = Color.Lerp(basecolor, Color.white, 0.33f);
         Gizmos.DrawSphere(quad2Pos, .1f);
         Gizmos.color = basecolor;
-        foreach(Neighbour neigh in quad.Neighbours)
-            if(neigh.edge == 2) Gizmos.color = Color.red;
+        /*foreach(Neighbour neigh in quad.Neighbours)
+            if(neigh.edge == 2) Gizmos.color = Color.red;*/
         Gizmos.DrawLine(quad2Pos, quad3Pos);
 
         Gizmos.color = Color.Lerp(basecolor, Color.white, 0.0f);
         Gizmos.DrawSphere(quad3Pos, .1f);
         Gizmos.color = basecolor;
-        foreach(Neighbour neigh in quad.Neighbours)
-            if(neigh.edge == 3) Gizmos.color = Color.red;
+        /*foreach(Neighbour neigh in quad.Neighbours)
+            if(neigh.edge == 3) Gizmos.color = Color.red;*/
         Gizmos.DrawLine(quad0Pos, quad3Pos);
 
         Gizmos.color = Color.yellow;
