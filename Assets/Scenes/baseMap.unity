@@ -177,7 +177,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 70
+  orthographic size: 7
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -200,13 +200,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671905475}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 100, z: 0}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: 0, y: 0, z: -4.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1423295393}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!114 &671905479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,9 +269,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6efddf93f25dbea46a3f397b8a2ab354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  asset: {fileID: 11400000, guid: 34b1304c4496c1f4dab1a6d540f8ab4b, type: 2}
+  asset: {fileID: 11400000, guid: e4bd7d706d346fb449a99693938d1bb1, type: 2}
   gridTiled: []
-  tilesTest: {fileID: 11400000, guid: 43ff97d64d8ca07438ca86e2d79f9d9f, type: 2}
+  tilesTest: {fileID: 11400000, guid: 8985f4883c5f33f47b1f9171383080b2, type: 2}
   home: {fileID: 4278267385950720005, guid: c2123438fdfcb784785cc41ab5f79936, type: 3}
 --- !u!4 &672969056
 Transform:
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423295392}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 409750e98a86fb04388b4a0d489062bd, type: 3}
   m_Name: 

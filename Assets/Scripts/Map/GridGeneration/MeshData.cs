@@ -294,7 +294,7 @@ namespace GridGenerator
 
 
                 var it = 0;
-                while (it < 500)
+                while (it < 2000)
                 {
                     foreach (v3Quad quad in Quads)
                     {

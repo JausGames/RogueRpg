@@ -14,6 +14,7 @@ namespace WCF
         private Material mapMaterial;
         [SerializeField]
         Tile[] gridTiled;
+        bool[] hasBackUpTile;
         v3Quad[] quadTiled;
         [SerializeField]
         List<Tile>[] availableTiles;
@@ -24,18 +25,35 @@ namespace WCF
         private List<GameObject> tiles = new List<GameObject>();
 
         public List<Tile> Tiles { get => asset.Tiles;}
+        private void Awake()
+        {
+           /* var list = new List<Tile>();
+            list.AddRange(asset.BackUpTiles);
+            foreach (Tile tile in list)
+            {
+                asset.BackUpTiles.Add(new Tile(tile, 1));
+                asset.BackUpTiles[asset.BackUpTiles.Count - 1].name = tile.name + " - rot 90";
+                asset.BackUpTiles.Add(new Tile(tile, 2));
+                asset.BackUpTiles[asset.BackUpTiles.Count - 1].name = tile.name + " - rot 180";
+                asset.BackUpTiles.Add(new Tile(tile, 3));
+                asset.BackUpTiles[asset.BackUpTiles.Count - 1].name = tile.name + " - rot 270";
+
+            }*/
+        }
 
         public IEnumerator StartWave(v3Quad[] grid, Material mapMaterial)
         {
             this.mapMaterial = mapMaterial;
             gridTiled = new Tile[grid.Length];
             quadTiled = new v3Quad[grid.Length];
+            hasBackUpTile = new bool[grid.Length];
             availableTiles = new List<Tile>[grid.Length];
             var treated = new List<int>();
 
             for (int i = 0; i < availableTiles.Length; i++)
             {
-                    availableTiles[i] = new List<Tile>();
+                hasBackUpTile[i] = false;
+                availableTiles[i] = new List<Tile>();
                 //Add all tiles to the available tile for each cell of the grid
                 foreach(Tile tile in asset.Tiles)
                 {
@@ -53,68 +71,42 @@ namespace WCF
 
             foreach(var quad in grid)
             {
-
                 var go = new GameObject("quad - " + quad.Position,  typeof(TileHolder));
                 go.GetComponent<TileHolder>().Quad = quad;
+                tiles.Add(go);
             }
             var meshModifier = new MeshModifier();
             var retry = false;
 
+            /*var nbPlain = 1;
+            var maxCellPlain = 50;
+            var tilePlain = asset.Tiles[0];
+
+
+            SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
+
+            var nbMount = 2;
+            var maxCellMount = 5;
+            var tileMount = tilesTest;
+
+
+            SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
+            yield return new WaitForSeconds(2f);*/
+
             var nbPlain = 1;
-            var maxCellPlain = 5;
-            var it = 0; 
-            var homeObj = Instantiate(home, Vector3.zero, Quaternion.identity, transform);
-            while (it < nbPlain)
-            {
-                var rnd = UnityEngine.Random.Range(0, grid.Length - 1);
-                var pickedQuad = grid[rnd];
-                if (!treated.Contains(rnd))
-                {
-                    var newTile = new Tile(tilesTest);
-                    newTile.name = tilesTest.name + " - dungeon";
-                    if(!AddTileToGrid(grid, treated, rnd, newTile))
-                    {
-                        GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
-                        homeObj.transform.position = pickedQuad.Position;
-                    }
+            var maxCellPlain = 50;
+            var tilePlain = asset.Tiles[0];
 
-                    yield return new WaitForSeconds(1f);
-                }
-                
 
-                var neighbourList = new List<v3Quad>();
-                foreach(var neigh in pickedQuad.Neighbours)
-                    neighbourList.Add((v3Quad)neigh.neighbour);
-                foreach(var neigh in pickedQuad.CrossNeighbours)
-                    neighbourList.Add((v3Quad)neigh.neighbour);
+            SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
 
-                foreach (var quad in neighbourList)
-                {
-                    int id = FindIndexOfQuad(quad, grid);
-                    if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, quad).Count > 0)
-                    {
-                        var newTile = new Tile(tilesTest);
-                        newTile.name = tilesTest.name + " - dungeon";
-                        if (!AddTileToGrid(grid, treated, id, newTile))
-                            GenerateMesh(grid, mapMaterial, meshModifier, quad);
-                        yield return new WaitForSeconds(1f);
-                    }
+            var nbMount = 6;
+            var maxCellMount = 4;
+            var tileMount = asset.Tiles[0];
 
-                }
-                /*var crossNeighbourList = new List<CrossNeighbour>();
-                crossNeighbourList.AddRange(pickedQuad.CrossNeighbours);
-                foreach (CrossNeighbour neigh in crossNeighbourList)
-                {
-                    int id = FindIndexOfQuad((v3Quad)neigh.neighbour, grid);
-                    if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, neigh.neighbour).Count > 0)
-                        AddTileToGrid(grid, treated, id, new Tile(asset.Tiles[0]));
-                        GenerateMesh(grid, mapMaterial, meshModifier, quad);
-                        yield return new WaitForSeconds(1f);
 
-                }*/
-
-                it++;
-            }
+            SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
+            yield return new WaitForSeconds(2f);
 
             var retryCount = 0;
             while(treated.Count < grid.Length && !retry)
@@ -122,7 +114,8 @@ namespace WCF
                 // Get the list of cells where the entropy is the lowest
                 List<v3Quad> lowestEntropy = GetLowestEntropyCells(treated, grid, out int lowestEntropyNb);
                 Debug.Log("lowest entropy = " + lowestEntropyNb + ", quad = " + lowestEntropy[0].Position);
-                if (lowestEntropy.Count == 0 || lowestEntropyNb == 0) retry = true;
+                if (lowestEntropy.Count == 0 || lowestEntropyNb == 0) 
+                    retry = true;
                 else
                 {
                     var rndCell = UnityEngine.Random.Range(0, lowestEntropy.Count);
@@ -146,33 +139,69 @@ namespace WCF
                 }
 
             }
-            /*if (retry) StartCoroutine(StartWave(grid, mapMaterial));
-            else
-                for(int i = 0; i < gridTiled.Length; i++)
-                {
-                   *//* // generate mesh
-                    var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
-                    go.transform.parent = transform;
-                    var filter = go.GetComponent<MeshFilter>();
-                    var rend = go.GetComponent<MeshRenderer>();
-                    var col = go.GetComponent<MeshCollider>();
-                    go.GetComponent<TileHolder>().tile = gridTiled[i];
-                    go.GetComponent<TileHolder>().quad = quadTiled[i];
-                    rend.material = mapMaterial;
-                    var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh);
-                    filter.mesh = modifiedMesh;
-                    col.sharedMesh = modifiedMesh;
-                    yield return null;*//*
-                }*/
+            if (retry)
+            {
+                foreach(var tile in tiles)
+                    Destroy(tile);
+                StartCoroutine(StartWave(grid, mapMaterial));
+            }
             Debug.Log("End Time = " + Time.time);
+        }
+
+        private void SetUpSomeTile(int nbIteration, int maxCell, Tile tile, List<int> treated, v3Quad[] grid, GameObject prefab = null)
+        {
+            var meshModifier = new MeshModifier();
+            var it = 0;
+            while (it < nbIteration)
+            {
+                var rnd = UnityEngine.Random.Range(0, grid.Length - 1);
+                var pickedQuad = grid[rnd];
+                if (!treated.Contains(rnd))
+                {
+                    var newTile = new Tile(tile);
+                    newTile.name = tile.name + " - static";
+                    if(!AddTileToGrid(grid, treated, rnd, newTile, false))
+                    {
+                        GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
+                        if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
+                    }
+                }
+
+
+                var neighbourList = new List<v3Quad>();
+                foreach (var neigh in pickedQuad.Neighbours)
+                    neighbourList.Add((v3Quad)neigh.neighbour);
+                foreach (var neigh in pickedQuad.CrossNeighbours)
+                    neighbourList.Add((v3Quad)neigh.neighbour);
+
+                var nbDone = 0f;
+                foreach (var quad in neighbourList)
+                {
+                    if (nbDone == maxCell) break;
+
+                    int id = FindIndexOfQuad(quad, grid);
+                    if (!treated.Contains(id) && pickedQuad.GetCommonPoints(pickedQuad, quad).Count > 0)
+                    {
+                        var newTile = new Tile(tile);
+                        newTile.name = tile.name + " - static";
+                        if (!AddTileToGrid(grid, treated, id, newTile, false))
+                            GenerateMesh(grid, mapMaterial, meshModifier, quad);
+                        
+                        nbDone++;
+                    }
+
+                }
+
+                it++;
+            }
         }
 
         private void GenerateMesh(v3Quad[] grid, Material mapMaterial, MeshModifier meshModifier, v3Quad chosenQuad)
         {
-            try
+        // generate mesh
+            var i = FindIndexOfQuad(chosenQuad, grid);
+            if(gridTiled[i])
             {
-            // generate mesh
-                var i = FindIndexOfQuad(chosenQuad, grid);
                 var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
                 go.transform.parent = transform;
                 var filter = go.GetComponent<MeshFilter>();
@@ -185,13 +214,6 @@ namespace WCF
                 var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh);
                 filter.mesh = modifiedMesh;
                 col.sharedMesh = modifiedMesh;
-
-            }
-            catch
-            {
-                var i = FindIndexOfQuad(chosenQuad, grid);
-                Debug.Log("error with chosen quad = " + chosenQuad.Position);
-                Debug.Log("found index = " + i);
             }
         }
 
@@ -206,9 +228,11 @@ namespace WCF
             return retry;
         }
 
-        private bool AddTileToGrid(v3Quad[] grid, List<int> treated, int quadIndex, Tile pickedTile)
+        private bool AddTileToGrid(v3Quad[] grid, List<int> treated, int quadIndex, Tile pickedTile, bool autoComplete = true)
         {
             var retry = false;
+            var rollBack = false;
+
             var chosenQuad = grid[quadIndex];
             var neighbours = chosenQuad.Neighbours;
             var crossNeighbours = chosenQuad.CrossNeighbours;
@@ -230,10 +254,19 @@ namespace WCF
                         Debug.Log("chosen quad = " + chosenQuad.Position);
                         Debug.Log("neighbour nb = " + x);
                         Debug.Log("------ END ---------");
-                        availableTiles[j] = oldList;
-                        retry = true;
+                        if(autoComplete)
+                        {
+                            availableTiles[j] = oldList;
+                            rollBack = true;
+                        }
+                        else if (!hasBackUpTile[j])
+                        {
+                            availableTiles[j].AddRange(asset.BackUpTiles);
+                            hasBackUpTile[j] = true;
+                        }
                     }
-                    else if (availableTiles[j].Count == 1)
+                    else 
+                    if (availableTiles[j].Count == 1)
                     {
                         onlyOneAvailableIndexes.Add(j);
                     }
@@ -255,8 +288,16 @@ namespace WCF
                         Debug.Log("chosen quad = " + chosenQuad.Position);
                         Debug.Log("neighbour nb = " + x);
                         Debug.Log("------ END ---------");
-                        availableTiles[j] = oldList;
-                        retry = true;
+                        if (autoComplete)
+                        {
+                            availableTiles[j] = oldList;
+                            rollBack = true;
+                        }
+                        else if (!hasBackUpTile[j])
+                        {
+                            availableTiles[j].AddRange(asset.BackUpTiles);
+                            hasBackUpTile[j] = true;
+                        }
                     }
                     else if (availableTiles[j].Count == 1)
                     {
@@ -264,26 +305,44 @@ namespace WCF
                     }
                 }
             }
-            if(!retry)
+            if(!rollBack)
             {
                 availableTiles[quadIndex].Clear();
                 gridTiled[quadIndex] = pickedTile;
                 quadTiled[quadIndex] = chosenQuad;
                 treated.Add(quadIndex);
             }
-            else
+            else if (autoComplete)
             {
                 var oldAvailableList = new List<Tile> {};
                 oldAvailableList.AddRange(availableTiles[quadIndex]);
                 foreach(var tile in oldAvailableList)
-                    if(tile.CompareConnector(tile.connectors, pickedTile.connectors)) availableTiles[quadIndex].Remove(tile);
+                {
+                    if(tile.CompareConnector(tile.connectors, pickedTile.connectors)) 
+                        availableTiles[quadIndex].Remove(tile);
+                }
+
+                if (availableTiles[quadIndex].Count == 0)
+                {
+                    if(!hasBackUpTile[quadIndex])
+                    {
+                        availableTiles[quadIndex].AddRange(asset.BackUpTiles);
+                        hasBackUpTile[quadIndex] = true;
+                    }
+                    else
+                        retry = true;
+                }
             }
 
-            /*var meshModifier = new MeshModifier();
-            foreach (var index in onlyOneAvailableIndexes)
+            if(autoComplete)
             {
-                if(availableTiles[index].Count > 0 && !AddTileToGrid(grid, treated, index, availableTiles[index][0])) GenerateMesh(grid, mapMaterial, meshModifier, grid[index]);
-            }*/
+                var meshModifier = new MeshModifier();
+                foreach (var index in onlyOneAvailableIndexes)
+                {
+                    if(availableTiles[index].Count == 1 && !AddTileToGrid(grid, treated, index, availableTiles[index][0])) 
+                        GenerateMesh(grid, mapMaterial, meshModifier, grid[index]);
+                }
+            }
             return retry;
         }
 

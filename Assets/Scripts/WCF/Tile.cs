@@ -94,13 +94,14 @@ namespace WCF
 
         internal bool CompareConnector(TileConnector[] connectors1, TileConnector[] connectors2)
         {
+            var isTheSame = true;
             for(int i = 0; i < connectors1.Length; i ++)
-            if (connectors1[i].connection[0] == connectors2[i].connection[0]
+            if (!(connectors1[i].connection[0] == connectors2[i].connection[0]
             && connectors1[i].connection[1] == connectors2[i].connection[1]
-            && connectors1[i].connection[2] == connectors2[i].connection[2])
-                return true;
+            && connectors1[i].connection[2] == connectors2[i].connection[2]))
+                isTheSame = false;
 
-            return false;
+            return isTheSame;
         }
     }
     [Serializable]
