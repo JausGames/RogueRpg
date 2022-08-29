@@ -59,12 +59,21 @@ namespace WCF
                 {
                     availableTiles[i].Add(new Tile(tile));
                     availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
-                    availableTiles[i].Add(new Tile(tile, 1));
-                    availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 90";
-                    availableTiles[i].Add(new Tile(tile, 2));
-                    availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 180";
-                    availableTiles[i].Add(new Tile(tile, 3));
-                    availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 270";
+                    if(tile.symetry != Symetry.Full)
+                    {
+                        availableTiles[i].Add(new Tile(tile, 1));
+                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 90";
+                    }
+                    if (tile.symetry != Symetry.Half)
+                    {
+                        availableTiles[i].Add(new Tile(tile, 2));
+                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 180";
+                    }
+                    if (tile.symetry == Symetry.None)
+                    {
+                        availableTiles[i].Add(new Tile(tile, 3));
+                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 270";
+                    }
                     
                 }
             }
@@ -87,7 +96,7 @@ namespace WCF
 
             var nbMount = 2;
             var maxCellMount = 5;
-            var tileMount = tilesTest;
+            var tileMount = asset.BackUpTiles[0];
 
 
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
@@ -109,7 +118,7 @@ namespace WCF
             yield return new WaitForSeconds(2f);
 
             var retryCount = 0;
-            while(treated.Count < grid.Length && !retry)
+            while(treated.Count < grid.Length)
             {
                 // Get the list of cells where the entropy is the lowest
                 List<v3Quad> lowestEntropy = GetLowestEntropyCells(treated, grid, out int lowestEntropyNb);
@@ -122,28 +131,18 @@ namespace WCF
                     var chosenQuad = lowestEntropy[rndCell];
                     retry = PickTileToAdd(grid, treated, chosenQuad);
                     if (!retry)
-                    {
                         GenerateMesh(grid, mapMaterial, meshModifier, chosenQuad);
-                    }
-                    /*else
-                    {
-                        var blockedCount = 0;
-                        foreach(var available in availableTiles)
-                        {
-                            if (available.Count == 0) blockedCount++;
-                        }
-                        if (blockedCount + treated.Count == grid.Length) retry = true;
-                        else retry = false;
-                    }*/
+                    
                     yield return null;
                 }
+                if (retry)
+                {
+                    foreach(var tile in tiles)
+                        Destroy(tile);
+                    StartCoroutine(StartWave(grid, mapMaterial));
+                    break;
+                }
 
-            }
-            if (retry)
-            {
-                foreach(var tile in tiles)
-                    Destroy(tile);
-                StartCoroutine(StartWave(grid, mapMaterial));
             }
             Debug.Log("End Time = " + Time.time);
         }
@@ -204,6 +203,7 @@ namespace WCF
             {
                 var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
                 go.transform.parent = transform;
+                go.transform.position = chosenQuad.Position;
                 var filter = go.GetComponent<MeshFilter>();
                 var rend = go.GetComponent<MeshRenderer>();
                 var col = go.GetComponent<MeshCollider>();
@@ -211,7 +211,7 @@ namespace WCF
                 go.GetComponent<TileHolder>().Quad = quadTiled[i];
                 tiles.Add(go);
                 rend.material = mapMaterial;
-                var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh);
+                var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh, chosenQuad.Position);
                 filter.mesh = modifiedMesh;
                 col.sharedMesh = modifiedMesh;
             }

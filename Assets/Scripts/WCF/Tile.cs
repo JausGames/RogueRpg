@@ -5,6 +5,13 @@ using UnityEngine;
 
 namespace WCF
 {
+    public enum Symetry
+    {
+        None,
+        Half,
+        Full
+    }
+
     [CreateAssetMenu(fileName = "Tile", menuName = "WCF/Tile", order = 3)]
     public class Tile : ScriptableObject
     {
@@ -14,6 +21,7 @@ namespace WCF
         //9-11 right
         public TileConnector[] connectors = new TileConnector[4];
         public int id;
+        public Symetry symetry;
         public Mesh mesh;
 
 
@@ -40,6 +48,11 @@ namespace WCF
             }
             rotatedMesh.vertices = points;
             rotatedMesh.triangles = mesh.triangles;
+            /*for (int i = 0; i < rotatedMesh.vertices.Length; i++)
+            {
+                rotatedMesh.uv[i] = new Vector2(rotatedMesh.vertices[i].y / lenght, rotatedMesh.vertices[i].x / 250f);
+            }*/
+            rotatedMesh.uv = mesh.uv;
             rotatedMesh.RecalculateNormals();
             rotatedMesh.RecalculateBounds();
             rotatedMesh.RecalculateTangents();

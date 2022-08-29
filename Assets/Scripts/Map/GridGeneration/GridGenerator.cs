@@ -34,13 +34,13 @@ namespace GridGenerator
 
             meshData = new MeshData(new List<Vector3>(), radius, layerNb, tiling);
             GenerateLayers(layerNb, radius);
-            GenerateBaseMesh();
+           GenerateBaseMesh();
 
             meshData.DeleteTrisRandomly();
 
             meshData.SubdivideGrid();
             //meshData.SubdivideGrid();
-            /*meshData.SubdivideGrid();*/
+            //meshData.SubdivideGrid();
             InitializeBorders();
 
             meshData.SmoothGrid();

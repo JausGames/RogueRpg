@@ -113,7 +113,7 @@ public class Test : MonoBehaviour
     void DoIt() {
 
         var modMesh = new Mesh();
-        var newVerticies = modifier.ModifyMesh(pointsA, tile.mesh);
+        var newVerticies = modifier.ModifyMesh(pointsA, tile.mesh, Vector3.zero);
         modMesh.vertices = newVerticies.vertices;
         modMesh.triangles = tile.mesh.triangles;
         modMesh.RecalculateNormals();
@@ -124,7 +124,7 @@ public class Test : MonoBehaviour
         var newTile = new Tile(tile, 1);
 
         modMesh = new Mesh();
-        newVerticies = modifier.ModifyMesh(pointsB, newTile.mesh);
+        newVerticies = modifier.ModifyMesh(pointsB, newTile.mesh, Vector3.zero);
         modMesh.vertices = newVerticies.vertices;
         modMesh.triangles = tile.mesh.triangles;
         modMesh.RecalculateNormals();
@@ -134,7 +134,7 @@ public class Test : MonoBehaviour
 
         newTile = new Tile(tile, 2);
         modMesh = new Mesh();
-        newVerticies = modifier.ModifyMesh(pointsC, newTile.mesh);
+        newVerticies = modifier.ModifyMesh(pointsC, newTile.mesh, Vector3.zero);
         modMesh.vertices = newVerticies.vertices;
         modMesh.triangles = tile.mesh.triangles;
         modMesh.RecalculateNormals();

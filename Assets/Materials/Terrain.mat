@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_34586f8174c94e4aa864ef035e334825:
+        m_Texture: {fileID: 2800000, guid: a928eb40511b5ec449e515f6be2cc577, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -94,6 +98,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_7f04c5cfa07a4531a9039e5cafc4a745_Texture_1:
+        m_Texture: {fileID: 2800000, guid: a928eb40511b5ec449e515f6be2cc577, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_9e1d94fdc04440bcac17a32e682ffb6e_Texture_1:
+        m_Texture: {fileID: 2800000, guid: a928eb40511b5ec449e515f6be2cc577, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -181,9 +193,9 @@ Material:
     - _ZWrite: 1
     - testScale: 10
     m_Colors:
-    - Color_a4f1d122174448fe933603372e18c5ed: {r: 0.536, g: 0.2475356, b: 0.13292801,
+    - Color_a4f1d122174448fe933603372e18c5ed: {r: 0.73333335, g: 0.3647059, b: 0.21960786,
         a: 0}
-    - Color_caa7c43c6d2e476b8d750d9f39a0e08f: {r: 0.764151, g: 0.7083378, b: 0.4793966,
+    - Color_caa7c43c6d2e476b8d750d9f39a0e08f: {r: 0.86666673, g: 0.69411767, b: 0.54509807,
         a: 0}
     - _BaseColor: {r: 0.5, g: 0.3854384, b: 0.2004717, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

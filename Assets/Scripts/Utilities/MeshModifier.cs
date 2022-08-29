@@ -23,18 +23,29 @@ public class MeshModifier
         filter.mesh = modMesh;*/
     }
 
-    public Mesh ModifyMesh(Vector3[] irregularCell, Mesh mesh)
+    public Mesh ModifyMesh(Vector3[] irregularCell, Mesh mesh, Vector3 offset)
     {
         var modMesh = new Mesh();
-        newVerticies = ModifyMesh(irregularCell, mesh.vertices);
+        newVerticies = ModifyMesh(irregularCell, mesh.vertices, offset);
+
+        
+        float lenght = (irregularCell[0] - irregularCell[2]).magnitude > (irregularCell[1] - irregularCell[3]).magnitude ? (irregularCell[0] - irregularCell[2]).magnitude : (irregularCell[1] - irregularCell[3]).magnitude;
+
         modMesh.vertices = newVerticies;
+        modMesh.uv = new Vector2[newVerticies.Length];
         modMesh.triangles = mesh.triangles;
+        /*for (int i = 0; i < modMesh.vertices.Length; i++)
+        {
+            modMesh.uv[i] = new Vector2(modMesh.vertices[i].y / lenght, modMesh.vertices[i].x / lenght);
+        }*/
+        modMesh.uv = mesh.uv;
         modMesh.RecalculateNormals();
         modMesh.RecalculateBounds();
         modMesh.RecalculateTangents();
+        //modMesh.RecalculateUVDistributionMetrics();
         return modMesh;
     }
-    public Vector3[] ModifyMesh(Vector3[] irregularCell, Vector3[] points)
+    public Vector3[] ModifyMesh(Vector3[] irregularCell, Vector3[] points, Vector3 offset)
     {
         var A = irregularCell[0];
         var B = irregularCell[1];
@@ -85,7 +96,7 @@ public class MeshModifier
             var Q = Vector3.Lerp(A, B, X);
             var R = Vector3.Lerp(D, C, X);
             var P = Vector3.Lerp(R, Q, Z) + Y * Vector3.up;
-            newVerticies[i] = P;
+            newVerticies[i] = P - offset;
         }
 
         return newVerticies;
