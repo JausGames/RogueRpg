@@ -274,9 +274,6 @@ namespace GridGenerator
                             {
                                 if (v3.isSamePoint(quads[i].pts[a], quads[j].pts[b]))
                                 {
-
-
-
                                     if (!dict.ContainsKey(quads[i].pts[a]))
                                     {
                                         dict.Add(quads[i].pts[a], new List<pointOnQuad>());
