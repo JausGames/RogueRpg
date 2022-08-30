@@ -23,6 +23,12 @@ namespace WCF
         [SerializeField]
         private GameObject home;
         private List<GameObject> tiles = new List<GameObject>();
+        private List<TileHolder> tileHolders = new List<TileHolder>();
+
+        [SerializeField]
+        NoiseSettings noiseSettings;
+        [SerializeField]
+        AnimationCurve heightCurve;
 
         public List<Tile> Tiles { get => asset.Tiles;}
         private void Awake()
@@ -78,12 +84,12 @@ namespace WCF
                 }
             }
 
-            foreach(var quad in grid)
+            /*foreach(var quad in grid)
             {
                 var go = new GameObject("quad - " + quad.Position,  typeof(TileHolder));
                 go.GetComponent<TileHolder>().Quad = quad;
                 tiles.Add(go);
-            }
+            }*/
             var meshModifier = new MeshModifier();
             var retry = false;
 
@@ -109,9 +115,9 @@ namespace WCF
 
             SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
 
-            var nbMount = 6;
-            var maxCellMount = 4;
-            var tileMount = asset.Tiles[0];
+            var nbMount = 2;
+            var maxCellMount = 50;
+            var tileMount = asset.BackUpTiles[0];
 
 
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
@@ -139,11 +145,21 @@ namespace WCF
                 {
                     foreach(var tile in tiles)
                         Destroy(tile);
+                    tileHolders.Clear();
+                    tiles.Clear();
                     StartCoroutine(StartWave(grid, mapMaterial));
                     break;
                 }
 
             }
+
+            if (!retry)
+            {
+                var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
+
+                meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 20f, heightCurve);
+            }
+            
             Debug.Log("End Time = " + Time.time);
         }
 
@@ -162,7 +178,7 @@ namespace WCF
                     if(!AddTileToGrid(grid, treated, rnd, newTile, false))
                     {
                         GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
-                        if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
+                        //if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
                     }
                 }
 
@@ -207,8 +223,10 @@ namespace WCF
                 var filter = go.GetComponent<MeshFilter>();
                 var rend = go.GetComponent<MeshRenderer>();
                 var col = go.GetComponent<MeshCollider>();
-                go.GetComponent<TileHolder>().Tile = gridTiled[i];
-                go.GetComponent<TileHolder>().Quad = quadTiled[i];
+                var holder = go.GetComponent<TileHolder>();
+                holder.Tile = gridTiled[i];
+                holder.Quad = quadTiled[i];
+                tileHolders.Add(holder);
                 tiles.Add(go);
                 rend.material = mapMaterial;
                 var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh, chosenQuad.Position);

@@ -8,7 +8,8 @@ public class MeshModifier
     public MeshFilter filter;
 
     public Vector3[] newVerticies;
-    private float height = 250f;
+    private float height = 50f;
+    private float noiseCoef = 20f;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +29,7 @@ public class MeshModifier
         var modMesh = new Mesh();
         newVerticies = ModifyMesh(irregularCell, mesh.vertices, offset);
 
-        
+
         float lenght = (irregularCell[0] - irregularCell[2]).magnitude > (irregularCell[1] - irregularCell[3]).magnitude ? (irregularCell[0] - irregularCell[2]).magnitude : (irregularCell[1] - irregularCell[3]).magnitude;
 
         modMesh.vertices = newVerticies;
@@ -102,5 +103,61 @@ public class MeshModifier
         return newVerticies;
     }
 
+    public Mesh ModifyTileWithHeightMap(TileHolder holder, float[,] noise, float maxHeight, float terrainWidth, AnimationCurve heightCurve)
+    {
+        var mesh = holder.GetComponent<MeshFilter>().mesh;
+        var offset = holder.transform.position;
+        var width = noise.GetLength(0);
+        var ratio = width / (terrainWidth + 15);
+
+        var newMesh = new Mesh();
+        newMesh.vertices = new Vector3[mesh.vertices.Length];
+        var vertx = new Vector3[mesh.vertices.Length];
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            var vertex = mesh.vertices[i];
+            var x = Mathf.RoundToInt((vertex.x + offset.x) * ratio) + (width / 2) + 1;
+            var z = Mathf.RoundToInt((vertex.z + offset.z) * ratio) + (width / 2) + 1;
+            var y = vertex.y;
+            Debug.Log("ModifyTileWithHeightMap : x = " + x + ", y = " + z);
+            var evaluatedNoise = noise[x, z] * heightCurve.Evaluate(y / 1f); 
+            vertx[i] = mesh.vertices[i] + (evaluatedNoise * maxHeight - (maxHeight * .5f * heightCurve.Evaluate(0f))) * Vector3.up ;
+        }
+        //newMesh.vertices = mesh.vertices;
+        newMesh.vertices = vertx;
+        newMesh.triangles = mesh.triangles;
+        newMesh.uv = mesh.uv;
+        newMesh.RecalculateNormals();
+        newMesh.RecalculateBounds();
+        newMesh.RecalculateTangents();
+        return newMesh;
+    }
+
+    public void ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, AnimationCurve heightCurve)
+    {
+        float width;
+        var farestX = 0f;
+        var farestZ = 0f;
+        var closestX = 0f;
+        var closestZ = 0f;
+
+
+        foreach (var holder in tileHolders)
+        {
+            if (holder.transform.position.x > farestX) farestX = holder.transform.position.x;
+            if (holder.transform.position.x < closestX) closestX = holder.transform.position.x;
+            if (holder.transform.position.z > farestZ) farestZ = holder.transform.position.z;
+            if (holder.transform.position.z < closestZ) closestZ = holder.transform.position.z;
+        }
+
+        width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
+
+
+
+        foreach (var holder in tileHolders)
+        {
+            holder.GetComponent<MeshFilter>().mesh = ModifyTileWithHeightMap(holder, noise, maxHeight, width, heightCurve);
+        }
+    }
 }
 
