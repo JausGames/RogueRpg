@@ -139,8 +139,9 @@ public class MeshModifier
         return newMesh;
     }
 
-    private Mesh CalculateNormal(Tile tile)
+    private Mesh CalculateNormal(TileHolder holder)
     {
+        var tile = holder.Tile;
         var mesh = tile.mesh;
         Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
         mesh.triangles = mesh.triangles;
@@ -159,8 +160,7 @@ public class MeshModifier
             var points = new int[] { vertexIndexA, vertexIndexB, vertexIndexC };
             foreach (var ptIndex in points)
             {
-                //var instancePtOnMesh = PointOnQuad.GetPointOnQuad2D(pt, dict);
-                var pt = mesh.vertices[ptIndex];
+                var pt = mesh.vertices[ptIndex] + holder.transform.position;
 
                 if (dict.ContainsKey(pt))
                 {
@@ -170,19 +170,20 @@ public class MeshModifier
                         var connectedMesh = dict[pt].tile[x].mesh;
 
                         int triangleCount = connectedMesh.triangles.Length / 3;
-                        for (int y = 0; i < triangleCount; i++)
+                        for (int y = 0; y < triangleCount; y++)
                         {
                             int TrisIndex = i * 3;
                                 int A = connectedMesh.triangles[TrisIndex];
                                 int B = connectedMesh.triangles[TrisIndex + 1];
                                 int C = connectedMesh.triangles[TrisIndex + 2];
 
-                            if(connectedMesh.vertices[A] == pt 
-                                || connectedMesh.vertices[B ] == pt
-                                || connectedMesh.vertices[C] == pt)
+                            if(connectedMesh.vertices[A] + dict[pt].tile[x].Center == pt 
+                                || connectedMesh.vertices[B] + dict[pt].tile[x].Center == pt
+                                || connectedMesh.vertices[C] + dict[pt].tile[x].Center == pt)
                             {
                                 Vector3 TrisIndexNormal = SurfaceNormalFromIndices(connectedMesh.vertices, A, B, C);
                                 vertexNormals[ptIndex] += TrisIndexNormal;
+                                //vertexNormals[ptIndex] = Vector3.up;
                                 //vertexNormals[ptIndex] = Vector3.zero;
                             }
                         }
@@ -221,9 +222,9 @@ public class MeshModifier
 
         foreach (var holder in tileHolders)
         {
-            if (holder.transform.position.x > farestX) farestX = holder.transform.position.x;
+            if (holder.transform.position.x > farestX)  farestX  = holder.transform.position.x;
             if (holder.transform.position.x < closestX) closestX = holder.transform.position.x;
-            if (holder.transform.position.z > farestZ) farestZ = holder.transform.position.z;
+            if (holder.transform.position.z > farestZ)  farestZ  = holder.transform.position.z;
             if (holder.transform.position.z < closestZ) closestZ = holder.transform.position.z;
         }
 
@@ -242,17 +243,20 @@ public class MeshModifier
         {
             for (int i = 0; i < holder.Tile.mesh.vertices.Length; i++)
             {
-                if (!dict.ContainsKey(holder.Tile.mesh.vertices[i]))
+                var pointPosition = holder.Tile.mesh.vertices[i];
+                var offset = holder.transform.position;
+
+                if (!dict.ContainsKey(pointPosition + offset))
                 {
-                    var pt = new PointOnMesh(holder.Tile.mesh.vertices[i] + holder.transform.position);
-                    dict.Add(holder.Tile.mesh.vertices[i], pt);
+                    var pt = new PointOnMesh(pointPosition + offset);
+                    dict.Add(pointPosition + offset, pt);
                     ptOnMesh.Add(pt);
 
                 }
-                var pointOnMesh = PointOnMesh.GetPointOnQuad(holder.Tile.mesh.vertices[i] + holder.transform.position, ptOnMesh);
+                var pointOnMesh = PointOnMesh.GetPointOnQuad(pointPosition + offset, ptOnMesh);
                 pointOnMesh.tile.Add(holder.Tile);
                 pointOnMesh.ptNb.Add(i);
-                dict[holder.Tile.mesh.vertices[i]] = pointOnMesh;
+                dict[pointPosition + offset] = pointOnMesh;
             }
         }
 
@@ -265,8 +269,9 @@ public class MeshModifier
 
         foreach (var holder in tileHolders)
         {
-            holder.Tile.mesh = CalculateNormal(holder.Tile);
-            holder.GetComponent<MeshFilter>().mesh = CalculateNormal(holder.Tile);
+            holder.Tile.Center = holder.transform.position;
+            holder.Tile.mesh = CalculateNormal(holder);
+            holder.GetComponent<MeshFilter>().mesh = holder.Tile.mesh;
         }
 
     }

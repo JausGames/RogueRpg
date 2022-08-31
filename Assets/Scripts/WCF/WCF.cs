@@ -155,14 +155,6 @@ namespace WCF
 
             if (!retry)
             {
-                /*foreach (var pt in ptOnQuad)
-                    for (int i = 0; i < pt.Quad.Count; i++)
-                    {
-                        for(int k = 0; k <  quadTiled.Length; k++)
-                        if (pt.Quad[i] == quadTiled[k])
-                            pt.tile.Add(gridTiled[k]);
-                    }*/
-
                 var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
                 meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 20f, heightCurve);

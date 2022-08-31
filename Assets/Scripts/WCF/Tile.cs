@@ -23,7 +23,9 @@ namespace WCF
         public int id;
         public Symetry symetry;
         public Mesh mesh;
+        private Vector3 center;
 
+        public Vector3 Center { get; set; }
 
         public Tile(Tile tile)
         {
