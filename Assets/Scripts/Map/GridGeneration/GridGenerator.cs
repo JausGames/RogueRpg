@@ -43,36 +43,10 @@ namespace GridGenerator
             //meshData.SubdivideGrid();
             InitializeBorders();
 
-            meshData.SmoothGrid();
-
+            var ptsOnQuad = meshData.SmoothGrid();
             StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+            //StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial, null));
 
-        }
-
-
-        private void Start()
-        {
-            //InitializeBorders();
-
-
-            /*meshData = new MeshData(new List<Vector3>(), radius, layerNb, tiling);
-            GenerateLayers(layerNb, radius);
-            InitializeBorders();
-            GenerateBaseMesh();
-
-            foreach (MeshData.v3Tris triangles in meshData.TrianglesV3)
-            {
-                triangles.FindNeighbours(meshData);
-            }
-
-            meshData.DeleteTrisRandomly();
-
-            meshData.SubdivideGrid();
-            meshData.SubdivideGrid();
-            meshData.SubdivideGrid();
-
-
-            StartCoroutine(meshData.SmoothGrid());*/
         }
 
         private void GenerateBaseMesh()

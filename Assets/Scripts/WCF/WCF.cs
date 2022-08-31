@@ -108,7 +108,7 @@ namespace WCF
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
             yield return new WaitForSeconds(2f);*/
 
-            var nbPlain = 1;
+            /*var nbPlain = 1;
             var maxCellPlain = 50;
             var tilePlain = asset.Tiles[0];
 
@@ -121,7 +121,7 @@ namespace WCF
 
 
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(2f);*/
 
             var retryCount = 0;
             while(treated.Count < grid.Length)
@@ -155,6 +155,14 @@ namespace WCF
 
             if (!retry)
             {
+                /*foreach (var pt in ptOnQuad)
+                    for (int i = 0; i < pt.Quad.Count; i++)
+                    {
+                        for(int k = 0; k <  quadTiled.Length; k++)
+                        if (pt.Quad[i] == quadTiled[k])
+                            pt.tile.Add(gridTiled[k]);
+                    }*/
+
                 var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
                 meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 20f, heightCurve);
@@ -230,6 +238,7 @@ namespace WCF
                 tiles.Add(go);
                 rend.material = mapMaterial;
                 var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh, chosenQuad.Position);
+                holder.Tile.mesh = modifiedMesh;
                 filter.mesh = modifiedMesh;
                 col.sharedMesh = modifiedMesh;
             }
@@ -238,11 +247,11 @@ namespace WCF
         private bool PickTileToAdd(v3Quad[] grid, List<int> treated, v3Quad chosenQuad)
         {
             // We pick a tile from the available list of the chosen quad
-            int i = FindIndexOfQuad(chosenQuad, grid);
-            var rndTile = UnityEngine.Random.Range(0, availableTiles[i].Count);
-            var pickedTile = availableTiles[i][rndTile];
+            int index = FindIndexOfQuad(chosenQuad, grid);
+            var rndTile = UnityEngine.Random.Range(0, availableTiles[index].Count);
+            var pickedTile = availableTiles[index][rndTile];
 
-            var retry = AddTileToGrid(grid, treated, i, pickedTile);
+            var retry = AddTileToGrid(grid, treated, index, pickedTile);
             return retry;
         }
 

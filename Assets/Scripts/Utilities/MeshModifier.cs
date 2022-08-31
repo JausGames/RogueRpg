@@ -2,12 +2,15 @@ using GridGenerator;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WCF;
 using static GridGenerator.MeshData;
 
 public class MeshModifier
 {
     public Mesh mesh;
     public MeshFilter filter;
+    public Dictionary<Vector3, PointOnMesh> dict = new Dictionary<Vector3, PointOnMesh>();
+    public List<PointOnMesh> ptOnMesh = new List<PointOnMesh>();
 
     public Vector3[] newVerticies;
     private float height = 50f;
@@ -35,6 +38,7 @@ public class MeshModifier
         float lenght = (irregularCell[0] - irregularCell[2]).magnitude > (irregularCell[1] - irregularCell[3]).magnitude ? (irregularCell[0] - irregularCell[2]).magnitude : (irregularCell[1] - irregularCell[3]).magnitude;
 
         modMesh.vertices = newVerticies;
+
         modMesh.uv = new Vector2[newVerticies.Length];
         modMesh.triangles = mesh.triangles;
         /*for (int i = 0; i < modMesh.vertices.Length; i++)
@@ -122,8 +126,8 @@ public class MeshModifier
             var z = Mathf.RoundToInt((vertex.z + offset.z) * ratio) + (width / 2) + 1;
             var y = vertex.y;
             Debug.Log("ModifyTileWithHeightMap : x = " + x + ", y = " + z);
-            var evaluatedNoise = noise[x, z] * heightCurve.Evaluate(y / 1f); 
-            vertx[i] = mesh.vertices[i] + (evaluatedNoise * maxHeight - (maxHeight * .5f * heightCurve.Evaluate(0f))) * Vector3.up ;
+            var evaluatedNoise = noise[x, z] * heightCurve.Evaluate(y / 1f);
+            vertx[i] = mesh.vertices[i] + (evaluatedNoise * maxHeight - (maxHeight * .5f * heightCurve.Evaluate(0f))) * Vector3.up;
         }
         //newMesh.vertices = mesh.vertices;
         newMesh.vertices = vertx;
@@ -135,14 +139,85 @@ public class MeshModifier
         return newMesh;
     }
 
+    private Mesh CalculateNormal(Tile tile)
+    {
+        var mesh = tile.mesh;
+        Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
+        mesh.triangles = mesh.triangles;
+        for (int i = 0; i < mesh.triangles.Length / 3; i++)
+        {
+            int normalTriangleIndex = i * 3;
+            int vertexIndexA = mesh.triangles[normalTriangleIndex];
+            int vertexIndexB = mesh.triangles[normalTriangleIndex + 1];
+            int vertexIndexC = mesh.triangles[normalTriangleIndex + 2];
+
+            Vector3 triangleNormal = SurfaceNormalFromIndices(mesh.vertices, vertexIndexA, vertexIndexB, vertexIndexC);
+            vertexNormals[vertexIndexA] += triangleNormal;
+            vertexNormals[vertexIndexB] += triangleNormal;
+            vertexNormals[vertexIndexC] += triangleNormal;
+
+            var points = new int[] { vertexIndexA, vertexIndexB, vertexIndexC };
+            foreach (var ptIndex in points)
+            {
+                //var instancePtOnMesh = PointOnQuad.GetPointOnQuad2D(pt, dict);
+                var pt = mesh.vertices[ptIndex];
+
+                if (dict.ContainsKey(pt))
+                {
+                    Debug.Log("MeshModifier, CalculateNormal : dict[pt].tile.Count = " + dict[pt].tile.Count);
+                    for (int x = 0; x < dict[pt].tile.Count; x++)
+                    {
+                        var connectedMesh = dict[pt].tile[x].mesh;
+
+                        int triangleCount = connectedMesh.triangles.Length / 3;
+                        for (int y = 0; i < triangleCount; i++)
+                        {
+                            int TrisIndex = i * 3;
+                                int A = connectedMesh.triangles[TrisIndex];
+                                int B = connectedMesh.triangles[TrisIndex + 1];
+                                int C = connectedMesh.triangles[TrisIndex + 2];
+
+                            if(connectedMesh.vertices[A] == pt 
+                                || connectedMesh.vertices[B ] == pt
+                                || connectedMesh.vertices[C] == pt)
+                            {
+                                Vector3 TrisIndexNormal = SurfaceNormalFromIndices(connectedMesh.vertices, A, B, C);
+                                vertexNormals[ptIndex] += TrisIndexNormal;
+                                //vertexNormals[ptIndex] = Vector3.zero;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < vertexNormals.Length; i++)
+        {
+            vertexNormals[i].Normalize();
+            //vertexNormals[i] = Vector3.up;
+        }
+        mesh.normals = vertexNormals;
+        mesh.RecalculateTangents();
+        return mesh;
+    }
+    Vector3 SurfaceNormalFromIndices(Vector3[] vertices, int indexA, int indexB, int indexC)
+    {
+        Vector3 pointA = vertices[indexA];
+        Vector3 pointB = vertices[indexB];
+        Vector3 pointC = vertices[indexC];
+
+        Vector3 sideAB = pointB - pointA;
+        Vector3 sideAC = pointC - pointA;
+        return Vector3.Cross(sideAB, sideAC).normalized;
+    }
+
     public void ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, AnimationCurve heightCurve)
     {
+        dict.Clear();
         float width;
         var farestX = 0f;
         var farestZ = 0f;
         var closestX = 0f;
         var closestZ = 0f;
-
 
         foreach (var holder in tileHolders)
         {
@@ -152,98 +227,46 @@ public class MeshModifier
             if (holder.transform.position.z < closestZ) closestZ = holder.transform.position.z;
         }
 
-        width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
 
-
+            width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
 
         foreach (var holder in tileHolders)
         {
             var modMesh = ModifyTileWithHeightMap(holder, noise, maxHeight, width, heightCurve);
             holder.GetComponent<MeshFilter>().mesh = modMesh;
+            holder.Tile.mesh = modMesh;
             holder.GetComponent<MeshCollider>().sharedMesh = modMesh;
         }
 
-        var dict = new Dictionary<Vector3, List<pointOnQuad>>();
-        var dictHolderKey = new Dictionary<Vector3, List<int>>();
-        var keys = new List<Vector3>();
-
-        for (int i = 0; i < tileHolders.Count; i++)
-            for (int j = 0; j < tileHolders.Count; j++)
-            {
-                if (i != j)
-                {
-                    for (int a = 0; a < tileHolders[i].Tile.mesh.vertices.Length; a++)
-                        for (int b = 0; b < tileHolders[j].Tile.mesh.vertices.Length; b++)
-                        {
-                            // need to iterate on mesh.pts 
-                            if (v3.isSamePoint(tileHolders[i].Tile.mesh.vertices[a], tileHolders[j].Tile.mesh.vertices[b]))
-                            {
-                                if (!dict.ContainsKey(tileHolders[i].Tile.mesh.vertices[a]))
-                                {
-                                    dict.Add(tileHolders[i].Tile.mesh.vertices[a], new List<pointOnQuad>());
-                                    dictHolderKey.Add(tileHolders[i].Tile.mesh.vertices[a], new List<int>());
-                                    keys.Add(tileHolders[i].Tile.mesh.vertices[a]);
-                                }
-                                var poq1 = new pointOnQuad(tileHolders[i].Quad, a);
-                                var poq2 = new pointOnQuad(tileHolders[j].Quad, b);
-
-                                dict[tileHolders[i].Tile.mesh.vertices[a]].Add(poq1);
-                                dict[tileHolders[j].Tile.mesh.vertices[b]].Add(poq2);
-
-                                dictHolderKey[tileHolders[i].Tile.mesh.vertices[a]].Add(i);
-                                dictHolderKey[tileHolders[j].Tile.mesh.vertices[b]].Add(j);
-
-                            }
-                        }
-                }
-            }
-
-        
-        Debug.Log("MeshModifier, ModifyMeshWithHeigthgMap : keys lenght = " + keys.Count);
-        foreach(var key in keys)
+        foreach (var holder in tileHolders)
         {
-            var averageNormal = Vector3.zero;
-            var ptIndexes = new List<int>();
-
-            foreach(int tileIndex in dictHolderKey[key])
+            for (int i = 0; i < holder.Tile.mesh.vertices.Length; i++)
             {
-                var mesh = tileHolders[tileIndex].GetComponent<MeshFilter>().mesh;
-                for(int i = 0; i < mesh.vertices.Length; i++)
+                if (!dict.ContainsKey(holder.Tile.mesh.vertices[i]))
                 {
-                    var vert = mesh.vertices[i] + tileHolders[tileIndex].transform.position;
-                    if (vert.x == key.x 
-                        //&& vert.y == key.y 
-                        && vert.z == key.z)
-                    {
-                        averageNormal += mesh.normals[i];
-                        ptIndexes.Add(i);
-                    }
-                }
-            }
+                    var pt = new PointOnMesh(holder.Tile.mesh.vertices[i] + holder.transform.position);
+                    dict.Add(holder.Tile.mesh.vertices[i], pt);
+                    ptOnMesh.Add(pt);
 
-            averageNormal /= (float)(dict[key].Count);
-            averageNormal = averageNormal.normalized;
-
-            foreach (int tileIndex in dictHolderKey[key])
-            {
-                var mesh = tileHolders[tileIndex].GetComponent<MeshFilter>().mesh;
-                var normals = new Vector3[mesh.normals.Length];
-                //var normals = mesh.normals;
-                
-                //foreach(var index in ptIndexes)
-                for(int i = 0; i < mesh.normals.Length; i ++)
-                {
-                    if (ptIndexes.Contains(i))
-                        //normals[i] = averageNormal;
-                        normals[i] = Vector3.up;
-                    else normals[i] = mesh.normals[i];
                 }
-            
-                mesh.normals = normals;
-                mesh.RecalculateTangents();
-                tileHolders[tileIndex].GetComponent<MeshFilter>().mesh = mesh;
-                tileHolders[tileIndex].GetComponent<MeshCollider>().sharedMesh = mesh;
+                var pointOnMesh = PointOnMesh.GetPointOnQuad(holder.Tile.mesh.vertices[i] + holder.transform.position, ptOnMesh);
+                pointOnMesh.tile.Add(holder.Tile);
+                pointOnMesh.ptNb.Add(i);
+                dict[holder.Tile.mesh.vertices[i]] = pointOnMesh;
             }
+        }
+
+        var filteredDict = new Dictionary<Vector3, PointOnMesh>();
+        foreach (var key in dict.Keys)
+        {
+            if (dict[key].tile.Count > 1) filteredDict.Add(key, dict[key]);
+        }
+        dict = filteredDict;
+
+        foreach (var holder in tileHolders)
+        {
+            holder.Tile.mesh = CalculateNormal(holder.Tile);
+            holder.GetComponent<MeshFilter>().mesh = CalculateNormal(holder.Tile);
         }
 
     }

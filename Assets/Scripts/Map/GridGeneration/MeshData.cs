@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using WCF;
 
 namespace GridGenerator
 {
@@ -257,10 +257,11 @@ namespace GridGenerator
             else return quad.pts;
         }
 
-        internal void SmoothGrid()
+        internal List<PointOnQuad> SmoothGrid()
         {
-            var dict = new Dictionary<Vector3, List<pointOnQuad>>();
-            var dictBasicPos = new Dictionary<Vector3, List<pointOnQuad>>();
+            //var dict = new Dictionary<Vector3, List<PointOnQuad>>();
+            var pointsOnMesh = new List<PointOnQuad>();
+            var dictBasicPos = new Dictionary<Vector3, List<PointOnQuad>>();
             var keys = new List<Vector3>();
             var borderKeys = new List<Vector3>();
 
@@ -274,69 +275,125 @@ namespace GridGenerator
                             {
                                 if (v3.isSamePoint(quads[i].pts[a], quads[j].pts[b]))
                                 {
-                                    if (!dict.ContainsKey(quads[i].pts[a]))
+                                    if (PointOnQuad.GetPointOnQuad(quads[i].pts[a], pointsOnMesh) == null)
                                     {
-                                        dict.Add(quads[i].pts[a], new List<pointOnQuad>());
+                                        pointsOnMesh.Add(new PointOnQuad(quads[i].pts[a]));
                                         keys.Add(quads[i].pts[a]);
                                     }
-                                    var poq1 = new pointOnQuad(quads[i], a);
-                                    var poq2 = new pointOnQuad(quads[j], b);
+                                    var ptOnMesh = PointOnQuad.GetPointOnQuad(quads[i].pts[a], pointsOnMesh);
+                                    ptOnMesh.Quad.Add(quads[i]);
+                                    ptOnMesh.ptNb.Add(a);
+                                    ptOnMesh.Quad.Add(quads[j]);
+                                    ptOnMesh.ptNb.Add(b);
+
+                                    /*var poq1 = new PointOnQuad(quads[i], a);
+                                    var poq2 = new PointOnQuad(quads[j], b);
                                     dict[quads[i].pts[a]].Add(poq1);
-                                    dict[quads[j].pts[b]].Add(poq2);
+                                    dict[quads[j].pts[b]].Add(poq2);*/
+
 
                                 }
                             }
                     }
                 }
+            Debug.Log("MeshData, SmoothGrid : ptOnQuad length = " + pointsOnMesh.Count);
 
 
                 var it = 0;
-                while (it < 100)
+                while (it < 500)
                 {
                     foreach (v3Quad quad in Quads)
                     {
-                        quad.SelfSmooth(border);
+                        quad.SelfSmooth(new List<Vector3>());
                     }
-
 
                     it++;
                 }
-                for (int i = 0; i < keys.Count; i++)
+                for (int i = 0; i < pointsOnMesh.Count; i++)
                 {
-                    var ptsOnQuad = dict[keys[i]];
+                    var ptOnQuad = pointsOnMesh[i];
                     var mid = Vector3.zero;
-                    foreach (var ptOnQuad in ptsOnQuad)
+
+                    for (int j = 0; j < ptOnQuad.Quad.Count; j++)
                     {
-                        mid += ptOnQuad.quad.pts[ptOnQuad.ptNb];
+                        mid += ptOnQuad.Quad[j].pts[ptOnQuad.ptNb[j]];
                     }
-                    mid /= ptsOnQuad.Count;
-                    foreach (var ptOnQuad in ptsOnQuad)
+                    mid /= ptOnQuad.Quad.Count;
+
+                for (int j = 0; j < ptOnQuad.Quad.Count; j++)
                     {
-                        ptOnQuad.quad.pts[ptOnQuad.ptNb] = mid;
+                        ptOnQuad.Quad[j].pts[ptOnQuad.ptNb[j]] = mid;
                     }
                 }
-
+            return pointsOnMesh;
             }
 
 
-        public class pointOnQuad
+        public class PointOnQuad
         {
-            public v3Quad quad;
-            public int ptNb;
+            public Vector3 pt;
+            private List<v3Quad> quad;
+            public List<Tile> tile;
+            public List<int> ptNb;
 
-            public pointOnQuad(v3Quad quad, int ptNb)
+            public List<v3Quad> Quad { get => quad; set => quad = value; }
+
+            public PointOnQuad(Vector3 pt)
             {
-                this.quad = quad;
-                this.ptNb = ptNb;
+                this.pt = pt;
+                this.quad = new List <v3Quad>();
+                this.tile = new List<Tile>();
+                this.ptNb = new List<int>();
+            }
+
+            public static PointOnQuad GetPointOnQuad(Vector3 pt, List<PointOnQuad> points)
+            {
+                foreach(var point in points)
+                {
+                    if (v3.isSamePoint(point.pt, pt)) return point;
+                }
+                return null;
+            }
+
+            internal static PointOnQuad GetPointOnQuad2D(Vector3 pt, List<PointOnQuad> points)
+            {
+                foreach (var point in points)
+                {
+                    if (point.pt.x == pt.x && point.pt.y == pt.y) return point;
+                }
+                return null;
             }
         }
-        public class ConnectedPoints
+        public class PointOnMesh
         {
-            public List<Vector3> points = new List<Vector3>();
-        }
-        public class ConnectedCrossPoints
-        {
-            public List<Vector3> points = new List<Vector3>();
+            public Vector3 pt;
+            public List<Tile> tile;
+            public List<int> ptNb;
+
+            public PointOnMesh(Vector3 pt)
+            {
+                this.pt = pt;
+                this.tile = new List<Tile>();
+                this.ptNb = new List<int>();
+            }
+
+            public static PointOnMesh GetPointOnQuad(Vector3 pt, List<PointOnMesh> points)
+            {
+                foreach(var point in points)
+                {
+                    if (v3.isSamePoint(point.pt, pt)) return point;
+                }
+                return null;
+            }
+
+            internal static PointOnMesh GetPointOnQuad2D(Vector3 pt, List<PointOnMesh> points)
+            {
+                foreach (var point in points)
+                {
+                    if (point.pt.x == pt.x && point.pt.y == pt.y) return point;
+                }
+                return null;
+            }
         }
     }
 }

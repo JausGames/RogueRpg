@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5050033, g: 0.5927552, b: 0.61516696, a: 1}
+  m_IndirectSpecularColor: {r: 0.5049956, g: 0.592747, b: 0.6151627, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -369,7 +369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: -5495902117074765545, guid: 4d0e40957b4858a4ebef76bb2fc6b2f7, type: 3}
   wcf: {fileID: 672969055}
-  layerNb: 5
+  layerNb: 3
   meshData:
     vertices: []
     triangles: 
