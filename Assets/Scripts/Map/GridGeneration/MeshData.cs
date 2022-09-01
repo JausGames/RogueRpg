@@ -369,12 +369,14 @@ namespace GridGenerator
             public Vector3 pt;
             public List<Tile> tile;
             public List<int> ptNb;
+            public List<List<int[]>> connectedTris;
 
             public PointOnMesh(Vector3 pt)
             {
                 this.pt = pt;
                 this.tile = new List<Tile>();
                 this.ptNb = new List<int>();
+                this.connectedTris = new List<List<int[]>>();
             }
 
             public static PointOnMesh GetPointOnQuad(Vector3 pt, List<PointOnMesh> points)

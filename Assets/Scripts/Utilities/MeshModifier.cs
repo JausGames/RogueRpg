@@ -141,10 +141,10 @@ public class MeshModifier
 
     private Mesh CalculateNormal(TileHolder holder)
     {
-        var tile = holder.Tile;
+        /*var tile = holder.Tile;
         var mesh = tile.mesh;
-        Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
         mesh.triangles = mesh.triangles;
+        Debug.Log("MeshModifier, CalculateNormal : holderTile = " + holder.gameObject.name);
         for (int i = 0; i < mesh.triangles.Length / 3; i++)
         {
             int normalTriangleIndex = i * 3;
@@ -157,40 +157,53 @@ public class MeshModifier
             vertexNormals[vertexIndexB] += triangleNormal;
             vertexNormals[vertexIndexC] += triangleNormal;
 
-            var points = new int[] { vertexIndexA, vertexIndexB, vertexIndexC };
-            foreach (var ptIndex in points)
+            var points = new int[] { vertexIndexA, vertexIndexB, vertexIndexC };*/
+
+
+            var tile = holder.Tile;
+            var mesh = tile.mesh;
+            Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
+            for(int i = 0; i < mesh.vertices.Length; i++)
             {
-                var pt = mesh.vertices[ptIndex] + holder.transform.position;
+                var pt = mesh.vertices[i] + tile.Center;
 
                 if (dict.ContainsKey(pt))
                 {
-                    Debug.Log("MeshModifier, CalculateNormal : dict[pt].tile.Count = " + dict[pt].tile.Count);
+                    Debug.Log("MeshModifier, CalculateNormal : pt = " + pt);
                     for (int x = 0; x < dict[pt].tile.Count; x++)
                     {
-                        var connectedMesh = dict[pt].tile[x].mesh;
+                        //if(tile != dict[pt].tile[x]) 
+                        //{ 
+                            var connectedMesh = dict[pt].tile[x].mesh;
+                            Vector3 offset = dict[pt].tile[x].Center;
+                            List<int[]> trisList = dict[pt].connectedTris[x];
 
-                        int triangleCount = connectedMesh.triangles.Length / 3;
-                        for (int y = 0; y < triangleCount; y++)
-                        {
-                            int TrisIndex = i * 3;
-                                int A = connectedMesh.triangles[TrisIndex];
-                                int B = connectedMesh.triangles[TrisIndex + 1];
-                                int C = connectedMesh.triangles[TrisIndex + 2];
-
-                            if(connectedMesh.vertices[A] + dict[pt].tile[x].Center == pt 
-                                || connectedMesh.vertices[B] + dict[pt].tile[x].Center == pt
-                                || connectedMesh.vertices[C] + dict[pt].tile[x].Center == pt)
+                            //int triangleCount = connectedMesh.triangles.Length / 3;
+                            Debug.Log("MeshModifier, CalculateNormal : .trisList.Count = " + trisList.Count);
+                            for (int y = 0; y < trisList.Count; y++)
                             {
-                                Vector3 TrisIndexNormal = SurfaceNormalFromIndices(connectedMesh.vertices, A, B, C);
-                                vertexNormals[ptIndex] += TrisIndexNormal;
-                                //vertexNormals[ptIndex] = Vector3.up;
-                                //vertexNormals[ptIndex] = Vector3.zero;
+                                //int TrisIndex = i * 3;
+                                int A = connectedMesh.triangles[trisList[y][0]];
+                                int B = connectedMesh.triangles[trisList[y][1]];
+                                int C = connectedMesh.triangles[trisList[y][2]];
+
+                                /*if (connectedMesh.vertices[A] + offset == pt
+                                    || connectedMesh.vertices[B] + offset == pt
+                                    || connectedMesh.vertices[C] + offset == pt)
+                                {*/
+                                    Vector3 TrisIndexNormal = SurfaceNormalFromIndices(connectedMesh.vertices, A, B, C);
+                                    vertexNormals[i] += TrisIndexNormal;
+                                    //vertexNormals[ptIndex] = Vector3.up;
+                                    //vertexNormals[ptIndex] = Vector3.zero;
+                                //}
                             }
-                        }
+                        
+                        //}
                     }
                 }
-            }
+            
         }
+        //}
         for (int i = 0; i < vertexNormals.Length; i++)
         {
             vertexNormals[i].Normalize();
@@ -211,7 +224,7 @@ public class MeshModifier
         return Vector3.Cross(sideAB, sideAC).normalized;
     }
 
-    public void ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, AnimationCurve heightCurve)
+    public IEnumerator ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, AnimationCurve heightCurve)
     {
         dict.Clear();
         float width;
@@ -237,14 +250,19 @@ public class MeshModifier
             holder.GetComponent<MeshFilter>().mesh = modMesh;
             holder.Tile.mesh = modMesh;
             holder.GetComponent<MeshCollider>().sharedMesh = modMesh;
+            yield return null;
         }
 
+        yield return new WaitForSeconds(2f);
         foreach (var holder in tileHolders)
         {
-            for (int i = 0; i < holder.Tile.mesh.vertices.Length; i++)
+            var offset = holder.transform.position;
+            holder.Tile.Center = offset;
+            var mesh = holder.Tile.mesh;
+
+            for (int i = 0; i < mesh.vertices.Length; i++)
             {
-                var pointPosition = holder.Tile.mesh.vertices[i];
-                var offset = holder.transform.position;
+                var pointPosition = mesh.vertices[i];
 
                 if (!dict.ContainsKey(pointPosition + offset))
                 {
@@ -253,25 +271,46 @@ public class MeshModifier
                     ptOnMesh.Add(pt);
 
                 }
+                var trisList = new List<int[]>();
+
+
+                int triangleCount = mesh.triangles.Length / 3;
+                for (int y = 0; y < triangleCount; y++)
+                {
+                    int TrisIndex = i * 3;
+                    int A = mesh.triangles[TrisIndex];
+                    int B = mesh.triangles[TrisIndex + 1];
+                    int C = mesh.triangles[TrisIndex + 2];
+
+                    if (mesh.vertices[A] == pointPosition
+                        || mesh.vertices[B] == pointPosition
+                        || mesh.vertices[C] == pointPosition)
+                    {
+                        trisList.Add(new int[] { TrisIndex, TrisIndex + 1, TrisIndex + 2 });
+                    }
+                }
+
                 var pointOnMesh = PointOnMesh.GetPointOnQuad(pointPosition + offset, ptOnMesh);
                 pointOnMesh.tile.Add(holder.Tile);
                 pointOnMesh.ptNb.Add(i);
+                pointOnMesh.connectedTris.Add(trisList);
                 dict[pointPosition + offset] = pointOnMesh;
             }
+            yield return null;
         }
 
-        var filteredDict = new Dictionary<Vector3, PointOnMesh>();
+        /*var filteredDict = new Dictionary<Vector3, PointOnMesh>();
         foreach (var key in dict.Keys)
         {
             if (dict[key].tile.Count > 1) filteredDict.Add(key, dict[key]);
         }
-        dict = filteredDict;
+        dict = filteredDict;*/
 
         foreach (var holder in tileHolders)
         {
-            holder.Tile.Center = holder.transform.position;
             holder.Tile.mesh = CalculateNormal(holder);
             holder.GetComponent<MeshFilter>().mesh = holder.Tile.mesh;
+            yield return null;
         }
 
     }

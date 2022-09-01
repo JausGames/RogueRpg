@@ -157,7 +157,7 @@ namespace WCF
             {
                 var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
-                meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 20f, heightCurve);
+                StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 20f, heightCurve));
             }
             
             Debug.Log("End Time = " + Time.time);

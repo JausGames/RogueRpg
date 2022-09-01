@@ -25,7 +25,7 @@ namespace WCF
         public Mesh mesh;
         private Vector3 center;
 
-        public Vector3 Center { get; set; }
+        public Vector3 Center { get => center; set => center = value; }
 
         public Tile(Tile tile)
         {
