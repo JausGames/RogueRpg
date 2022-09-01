@@ -163,13 +163,13 @@ public class MeshModifier
             var tile = holder.Tile;
             var mesh = tile.mesh;
             Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
-            for(int i = 0; i < mesh.vertices.Length; i++)
+            Debug.Log("MeshModifier, CalculateNormal : Tile = " + tile.Center);
+        for (int i = 0; i < mesh.vertices.Length; i++)
             {
                 var pt = mesh.vertices[i] + tile.Center;
 
                 if (dict.ContainsKey(pt))
                 {
-                    Debug.Log("MeshModifier, CalculateNormal : pt = " + pt);
                     for (int x = 0; x < dict[pt].tile.Count; x++)
                     {
                         //if(tile != dict[pt].tile[x]) 
@@ -179,7 +179,10 @@ public class MeshModifier
                             List<int[]> trisList = dict[pt].connectedTris[x];
 
                             //int triangleCount = connectedMesh.triangles.Length / 3;
-                            Debug.Log("MeshModifier, CalculateNormal : .trisList.Count = " + trisList.Count);
+                            if(tile != dict[pt].tile[x])
+                            {
+                                Debug.Log("MeshModifier, CalculateNormal : Tile = " + dict[pt].tile[x].Center + ", trisList.Count = " + trisList.Count + ", pt = " + pt);
+                            }
                             for (int y = 0; y < trisList.Count; y++)
                             {
                                 //int TrisIndex = i * 3;
@@ -235,14 +238,14 @@ public class MeshModifier
 
         foreach (var holder in tileHolders)
         {
-            if (holder.transform.position.x > farestX)  farestX  = holder.transform.position.x;
+            if (holder.transform.position.x > farestX) farestX = holder.transform.position.x;
             if (holder.transform.position.x < closestX) closestX = holder.transform.position.x;
-            if (holder.transform.position.z > farestZ)  farestZ  = holder.transform.position.z;
+            if (holder.transform.position.z > farestZ) farestZ = holder.transform.position.z;
             if (holder.transform.position.z < closestZ) closestZ = holder.transform.position.z;
         }
 
 
-            width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
+        width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
 
         foreach (var holder in tileHolders)
         {
@@ -254,50 +257,8 @@ public class MeshModifier
         }
 
         yield return new WaitForSeconds(2f);
-        foreach (var holder in tileHolders)
-        {
-            var offset = holder.transform.position;
-            holder.Tile.Center = offset;
-            var mesh = holder.Tile.mesh;
-
-            for (int i = 0; i < mesh.vertices.Length; i++)
-            {
-                var pointPosition = mesh.vertices[i];
-
-                if (!dict.ContainsKey(pointPosition + offset))
-                {
-                    var pt = new PointOnMesh(pointPosition + offset);
-                    dict.Add(pointPosition + offset, pt);
-                    ptOnMesh.Add(pt);
-
-                }
-                var trisList = new List<int[]>();
-
-
-                int triangleCount = mesh.triangles.Length / 3;
-                for (int y = 0; y < triangleCount; y++)
-                {
-                    int TrisIndex = i * 3;
-                    int A = mesh.triangles[TrisIndex];
-                    int B = mesh.triangles[TrisIndex + 1];
-                    int C = mesh.triangles[TrisIndex + 2];
-
-                    if (mesh.vertices[A] == pointPosition
-                        || mesh.vertices[B] == pointPosition
-                        || mesh.vertices[C] == pointPosition)
-                    {
-                        trisList.Add(new int[] { TrisIndex, TrisIndex + 1, TrisIndex + 2 });
-                    }
-                }
-
-                var pointOnMesh = PointOnMesh.GetPointOnQuad(pointPosition + offset, ptOnMesh);
-                pointOnMesh.tile.Add(holder.Tile);
-                pointOnMesh.ptNb.Add(i);
-                pointOnMesh.connectedTris.Add(trisList);
-                dict[pointPosition + offset] = pointOnMesh;
-            }
-            yield return null;
-        }
+        SetPointOnMesh(tileHolders);
+        yield return null;
 
         /*var filteredDict = new Dictionary<Vector3, PointOnMesh>();
         foreach (var key in dict.Keys)
@@ -313,6 +274,55 @@ public class MeshModifier
             yield return null;
         }
 
+    }
+
+    private void SetPointOnMesh(List<TileHolder> tileHolders)
+    {
+        foreach (var holder in tileHolders)
+        {
+            var offset = holder.transform.position;
+            holder.Tile.Center = offset;
+            var mesh = holder.Tile.mesh;
+
+            for (int v = 0; v < mesh.vertices.Length; v++)
+            {
+                var pointPosition = mesh.vertices[v];
+
+                if (!dict.ContainsKey(pointPosition + offset))
+                {
+                    var pt = new PointOnMesh(pointPosition + offset);
+                    dict.Add(pointPosition + offset, pt);
+                    ptOnMesh.Add(pt);
+
+                }
+                var trisList = new List<int[]>();
+
+                int triangleCount = mesh.triangles.Length / 3;
+                for (int t = 0; t < triangleCount; t++)
+                {
+                    int TrisIndex = t * 3;
+                    int A = mesh.triangles[TrisIndex];
+                    int B = mesh.triangles[TrisIndex + 1];
+                    int C = mesh.triangles[TrisIndex + 2];
+
+                    /*if (mesh.vertices[A] == pointPosition
+                        || mesh.vertices[B] == pointPosition
+                        || mesh.vertices[C] == pointPosition)*/
+                    if ((mesh.vertices[A] - pointPosition).magnitude < 0.1f
+                        || (mesh.vertices[B] - pointPosition).magnitude < 0.1f
+                        || (mesh.vertices[C] - pointPosition).magnitude < 0.1f)
+                    {
+                        trisList.Add(new int[] { TrisIndex, TrisIndex + 1, TrisIndex + 2 });
+                    }
+                }
+
+                var pointOnMesh = dict[pointPosition + offset];
+                pointOnMesh.tile.Add(holder.Tile);
+                pointOnMesh.ptNb.Add(v);
+                pointOnMesh.connectedTris.Add(trisList);
+                //dict[pointPosition + offset] = pointOnMesh;
+            }
+        }
     }
 }
 

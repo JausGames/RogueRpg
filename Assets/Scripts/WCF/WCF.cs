@@ -70,7 +70,7 @@ namespace WCF
                         availableTiles[i].Add(new Tile(tile, 1));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 90";
                     }
-                    if (tile.symetry != Symetry.Half)
+                    if (tile.symetry == Symetry.None)
                     {
                         availableTiles[i].Add(new Tile(tile, 2));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 180";

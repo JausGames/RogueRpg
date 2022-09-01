@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AssetTest
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 6b36699c245732a4b9dbef0c4bfcd9bc, type: 2}
+  - {fileID: 11400000, guid: b32dd3a9b3e679b408c8792103b9644a, type: 2}
   backUpTiles: []

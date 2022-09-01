@@ -380,7 +380,7 @@ MonoBehaviour:
   radius: 15
   DebugDrawer: {fileID: 721139559}
   corners: []
-  mapMaterial: {fileID: 2100000, guid: 568726658f0b4ad4cb9dc1986c9ce3e3, type: 2}
+  mapMaterial: {fileID: 2100000, guid: b0623bb3e8fc3af44afaf2124cd72968, type: 2}
 --- !u!4 &721139558
 Transform:
   m_ObjectHideFlags: 0
