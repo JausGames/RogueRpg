@@ -13,21 +13,8 @@ public class MeshModifier
     public List<PointOnMesh> ptOnMesh = new List<PointOnMesh>();
 
     public Vector3[] newVerticies;
-    private float height = 50f;
+    private float height = 100f;
     private float noiseCoef = 20f;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        /*var modMesh = new Mesh();
-        newVerticies = ModifyMesh(irrPoints, mesh.vertices);
-        modMesh.vertices = newVerticies;
-        modMesh.triangles = mesh.triangles;
-        modMesh.RecalculateNormals();
-        modMesh.RecalculateBounds();
-        modMesh.RecalculateTangents();
-        filter.mesh = modMesh;*/
-    }
 
     public Mesh ModifyMesh(Vector3[] irregularCell, Mesh mesh, Vector3 offset)
     {
@@ -236,9 +223,8 @@ public class MeshModifier
             yield return null;
         }
 
-        yield return new WaitForSeconds(.5f);
-        SetPointOnMesh(tileHolders);
-        yield return null;
+        
+        yield return SetPointOnMesh(tileHolders);;
 
         /*var filteredDict = new Dictionary<Vector3, PointOnMesh>();
         foreach (var key in dict.Keys)
@@ -267,7 +253,7 @@ public class MeshModifier
             Mathf.Round(vector.y * multiplier) / multiplier,
             Mathf.Round(vector.z * multiplier) / multiplier);
     }
-    private void SetPointOnMesh(List<TileHolder> tileHolders)
+    private bool SetPointOnMesh(List<TileHolder> tileHolders)
     {
         foreach (var holder in tileHolders)
         {
@@ -314,6 +300,8 @@ public class MeshModifier
                 //dict[pointPosition + offset] = pointOnMesh;
             }
         }
+        Debug.Log("SetPointOnMesh");
+        return true;
     }
 }
 

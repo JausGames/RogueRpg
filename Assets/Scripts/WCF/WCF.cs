@@ -18,6 +18,7 @@ namespace WCF
         v3Quad[] quadTiled;
         [SerializeField]
         List<Tile>[] availableTiles;
+        List<Tile>[] backupTiles;
         [SerializeField]
         private Tile tilesTest;
         [SerializeField]
@@ -33,18 +34,7 @@ namespace WCF
         public List<Tile> Tiles { get => asset.Tiles;}
         private void Awake()
         {
-           /* var list = new List<Tile>();
-            list.AddRange(asset.BackUpTiles);
-            foreach (Tile tile in list)
-            {
-                asset.BackUpTiles.Add(new Tile(tile, 1));
-                asset.BackUpTiles[asset.BackUpTiles.Count - 1].name = tile.name + " - rot 90";
-                asset.BackUpTiles.Add(new Tile(tile, 2));
-                asset.BackUpTiles[asset.BackUpTiles.Count - 1].name = tile.name + " - rot 180";
-                asset.BackUpTiles.Add(new Tile(tile, 3));
-                asset.BackUpTiles[asset.BackUpTiles.Count - 1].name = tile.name + " - rot 270";
-
-            }*/
+            
         }
 
         public IEnumerator StartWave(v3Quad[] grid, Material mapMaterial)
@@ -54,18 +44,21 @@ namespace WCF
             quadTiled = new v3Quad[grid.Length];
             hasBackUpTile = new bool[grid.Length];
             availableTiles = new List<Tile>[grid.Length];
+            backupTiles = new List<Tile>[grid.Length];
             var treated = new List<int>();
 
+            //Set up available tiles
             for (int i = 0; i < availableTiles.Length; i++)
             {
                 hasBackUpTile[i] = false;
                 availableTiles[i] = new List<Tile>();
+                backupTiles[i] = new List<Tile>();
                 //Add all tiles to the available tile for each cell of the grid
-                foreach(Tile tile in asset.Tiles)
+                foreach (Tile tile in asset.Tiles)
                 {
                     availableTiles[i].Add(new Tile(tile));
                     availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
-                    if(tile.symetry != Symetry.Full)
+                    if (tile.symetry != Symetry.Full)
                     {
                         availableTiles[i].Add(new Tile(tile, 1));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 90";
@@ -80,7 +73,12 @@ namespace WCF
                         availableTiles[i].Add(new Tile(tile, 3));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 270";
                     }
-                    
+
+                }
+                foreach (Tile tile in asset.BackUpTiles)
+                {
+                    backupTiles[i].Add(new Tile(tile));
+                    backupTiles[i][backupTiles[i].Count - 1].name = tile.name;
                 }
             }
 
@@ -93,7 +91,7 @@ namespace WCF
             var meshModifier = new MeshModifier();
             var retry = false;
 
-            /*var nbPlain = 1;
+            var nbPlain = 1;
             var maxCellPlain = 50;
             var tilePlain = asset.Tiles[0];
 
@@ -106,7 +104,6 @@ namespace WCF
 
 
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
-            yield return new WaitForSeconds(2f);*/
 
             /*var nbPlain = 1;
             var maxCellPlain = 50;
@@ -157,7 +154,7 @@ namespace WCF
             {
                 var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
-                StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 20f, heightCurve));
+                StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 15f, heightCurve));
             }
             
             Debug.Log("End Time = " + Time.time);
@@ -280,7 +277,7 @@ namespace WCF
                         }
                         else if (!hasBackUpTile[j])
                         {
-                            availableTiles[j].AddRange(asset.BackUpTiles);
+                            availableTiles[j].AddRange(backupTiles[j]);
                             hasBackUpTile[j] = true;
                         }
                     }
@@ -314,7 +311,7 @@ namespace WCF
                         }
                         else if (!hasBackUpTile[j])
                         {
-                            availableTiles[j].AddRange(asset.BackUpTiles);
+                            availableTiles[j].AddRange(backupTiles[j]);
                             hasBackUpTile[j] = true;
                         }
                     }
@@ -345,7 +342,7 @@ namespace WCF
                 {
                     if(!hasBackUpTile[quadIndex])
                     {
-                        availableTiles[quadIndex].AddRange(asset.BackUpTiles);
+                        availableTiles[quadIndex].AddRange(backupTiles[quadIndex]);
                         hasBackUpTile[quadIndex] = true;
                     }
                     else
