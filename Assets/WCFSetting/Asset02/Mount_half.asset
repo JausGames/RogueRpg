@@ -26,5 +26,5 @@ MonoBehaviour:
     blackList: []
     whiteList: []
   id: 3
-  symetry: 1
+  symetry: 0
   mesh: {fileID: 6001449841411486646, guid: fa3fd1ea5947d27439c78235d6223f89, type: 3}

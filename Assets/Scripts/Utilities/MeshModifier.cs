@@ -125,7 +125,6 @@ public class MeshModifier
             var x = Mathf.RoundToInt((vertex.x + offset.x) * ratio) + (width / 2) + 1;
             var z = Mathf.RoundToInt((vertex.z + offset.z) * ratio) + (width / 2) + 1;
             var y = vertex.y;
-            Debug.Log("ModifyTileWithHeightMap : x = " + x + ", y = " + z);
             var evaluatedNoise = noise[x, z] * heightCurve.Evaluate(y / 1f);
             vertx[i] = mesh.vertices[i] + (evaluatedNoise * maxHeight - (maxHeight * .5f * heightCurve.Evaluate(0f))) * Vector3.up;
         }
@@ -141,32 +140,13 @@ public class MeshModifier
 
     private Mesh CalculateNormal(TileHolder holder)
     {
-        /*var tile = holder.Tile;
-        var mesh = tile.mesh;
-        mesh.triangles = mesh.triangles;
-        Debug.Log("MeshModifier, CalculateNormal : holderTile = " + holder.gameObject.name);
-        for (int i = 0; i < mesh.triangles.Length / 3; i++)
-        {
-            int normalTriangleIndex = i * 3;
-            int vertexIndexA = mesh.triangles[normalTriangleIndex];
-            int vertexIndexB = mesh.triangles[normalTriangleIndex + 1];
-            int vertexIndexC = mesh.triangles[normalTriangleIndex + 2];
-
-            Vector3 triangleNormal = SurfaceNormalFromIndices(mesh.vertices, vertexIndexA, vertexIndexB, vertexIndexC);
-            vertexNormals[vertexIndexA] += triangleNormal;
-            vertexNormals[vertexIndexB] += triangleNormal;
-            vertexNormals[vertexIndexC] += triangleNormal;
-
-            var points = new int[] { vertexIndexA, vertexIndexB, vertexIndexC };*/
-
-
             var tile = holder.Tile;
             var mesh = tile.mesh;
             Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
-            Debug.Log("MeshModifier, CalculateNormal : Tile = " + tile.Center);
+            Debug.Log("MeshModifier, CalculateNormal : Calculating Tile in " + tile.Center);
         for (int i = 0; i < mesh.vertices.Length; i++)
             {
-                var pt = mesh.vertices[i] + tile.Center;
+                var pt = Round(mesh.vertices[i] + tile.Center);
 
                 if (dict.ContainsKey(pt))
                 {
@@ -256,7 +236,7 @@ public class MeshModifier
             yield return null;
         }
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(.5f);
         SetPointOnMesh(tileHolders);
         yield return null;
 
@@ -275,7 +255,18 @@ public class MeshModifier
         }
 
     }
-
+    public Vector2 Round(Vector3 vector, int decimalPlaces = 2)
+    {
+        float multiplier = 1;
+        for (int i = 0; i < decimalPlaces; i++)
+        {
+            multiplier *= 10f;
+        }
+        return new Vector3(
+          Mathf.Round(vector.x * multiplier) / multiplier,
+            Mathf.Round(vector.y * multiplier) / multiplier,
+            Mathf.Round(vector.z * multiplier) / multiplier);
+    }
     private void SetPointOnMesh(List<TileHolder> tileHolders)
     {
         foreach (var holder in tileHolders)
@@ -288,10 +279,10 @@ public class MeshModifier
             {
                 var pointPosition = mesh.vertices[v];
 
-                if (!dict.ContainsKey(pointPosition + offset))
+                if (!dict.ContainsKey(Round(pointPosition + offset, 2)))
                 {
-                    var pt = new PointOnMesh(pointPosition + offset);
-                    dict.Add(pointPosition + offset, pt);
+                    var pt = new PointOnMesh(Round(pointPosition + offset, 2));
+                    dict.Add(Round(pointPosition + offset, 2), pt);
                     ptOnMesh.Add(pt);
 
                 }
@@ -316,7 +307,7 @@ public class MeshModifier
                     }
                 }
 
-                var pointOnMesh = dict[pointPosition + offset];
+                var pointOnMesh = dict[Round(pointPosition + offset, 2)];
                 pointOnMesh.tile.Add(holder.Tile);
                 pointOnMesh.ptNb.Add(v);
                 pointOnMesh.connectedTris.Add(trisList);
