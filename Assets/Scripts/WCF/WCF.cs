@@ -63,15 +63,33 @@ namespace WCF
                         availableTiles[i].Add(new Tile(tile, 1));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 90";
                     }
+                    else
+                    {
+                    availableTiles[i].Add(new Tile(tile));
+                    availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
+
+                    }
                     if (tile.symetry == Symetry.None)
                     {
                         availableTiles[i].Add(new Tile(tile, 2));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 180";
                     }
+                    else
+                    {
+                        availableTiles[i].Add(new Tile(tile));
+                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
+
+                    }
                     if (tile.symetry == Symetry.None)
                     {
                         availableTiles[i].Add(new Tile(tile, 3));
                         availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 270";
+                    }
+                    else
+                    {
+                        availableTiles[i].Add(new Tile(tile));
+                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
+
                     }
 
                 }
@@ -154,7 +172,7 @@ namespace WCF
             {
                 var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
-                StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 15f, heightCurve));
+                StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 25f, heightCurve));
             }
             
             Debug.Log("End Time = " + Time.time);

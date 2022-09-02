@@ -114,26 +114,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Material
     second: {fileID: 2100000, guid: 20fb6c0956433cf4f9196a1c3a3890a7, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Pant
-    second: {fileID: 2100000, guid: 81c84d5bc47a3234aaf9a2e6b5228a44, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Shirt
-    second: {fileID: 2100000, guid: 083a6fd32f6dfe34d8741e78684df35c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Shoes
-    second: {fileID: 2100000, guid: b9ab367596d5c234d86ae22e1814ed8d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Skin
-    second: {fileID: 2100000, guid: 11715c7dde200fc4fa77077ff00e72a1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
