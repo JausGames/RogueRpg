@@ -54,30 +54,22 @@ public class MeshModifier
         float maxX, maxZ;
         maxX = maxZ = -Mathf.Infinity;
 
-        float xOffset = 0;
-        float zOffset = 0;
-        float xFactor = 1;
-        float zFactor = 1;
         for (int i = 0; i < points.Length; i++)
         {
             var X = points[i].x;
             var Z = points[i].y;
             //var Z = cell[i].z;
-            if (X < minX)
-                minX = X;
-            if (X > maxX)
-                maxX = X;
-            if (Z < minZ)
-                minZ = Z;
-            if (Z > maxZ)
-                maxZ = Z;
+            if (X < minX) minX = X;
+            if (X > maxX) maxX = X;
+            if (Z < minZ) minZ = Z;
+            if (Z > maxZ) maxZ = Z;
         }
 
 
-        xFactor = 1f / (maxX - minX);
-        zFactor = 1f / (maxZ - minZ);
-        xOffset = -minX;
-        zOffset = -minZ;
+        float xFactor = 1f / (maxX - minX);
+        float zFactor = 1f / (maxZ - minZ);
+        float xOffset = -minX;
+        float zOffset = -minZ;
 
         for (int i = 0; i < points.Length; i++)
         {
