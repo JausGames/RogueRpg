@@ -181,6 +181,7 @@ public class MeshModifier
         }
         mesh.normals = vertexNormals;
         mesh.RecalculateTangents();
+        mesh.RecalculateUVDistributionMetrics();
         return mesh;
     }
     Vector3 SurfaceNormalFromIndices(Vector3[] vertices, int indexA, int indexB, int indexC)
