@@ -8,7 +8,7 @@ public class SpriteModifier : MonoBehaviour
     [SerializeField] Image image;
 
     [SerializeField] Texture2D img;
-    Vector3[] quad = new Vector3[] { Vector3.up, Vector3.up + Vector3.right, Vector3.right, Vector3.zero };
+    [SerializeField] Vector3[] quad = new Vector3[] { Vector3.up, Vector3.up + Vector3.right, Vector3.right, Vector3.zero};
 
     private void OnDrawGizmos()
     {
@@ -29,12 +29,48 @@ public class SpriteModifier : MonoBehaviour
     }
     Texture2D TestDrawSprite(Texture2D image, Vector3[] quad)
     {
-        var A = quad[0] * image.width;
-        var B = quad[1] * image.width;
-        var C = quad[2] * image.width;
-        var D = quad[3] * image.width;
+        var A = quad[0];
+        var B = quad[1];
+        var C = quad[2];
+        var D = quad[3];
+
+        float minusX = 0f, minusY = 0f;
+        foreach(var pt in quad)
+        {
+            if (pt.x < minusX) minusX = pt.x;
+            if (pt.y < minusY) minusY = pt.y;
+        }
+
+        A -= Vector3.right * minusX + Vector3.up * minusY;
+        B -= Vector3.right * minusX + Vector3.up * minusY;
+        C -= Vector3.right * minusX + Vector3.up * minusY;
+        D -= Vector3.right * minusX + Vector3.up * minusY;
+
+        var AB = quad[1] - quad[0];
+        var BC = quad[2] - quad[1];
+        var CD = quad[3] - quad[2];
+        var DA = quad[0] - quad[3];
+
+        var edges = new Vector3[]{ AB, BC, CD, DA };
+
+        var maxEdgeLenght = 0f;
+        foreach(var edge in edges)
+            if (edge.magnitude > maxEdgeLenght) maxEdgeLenght = edge.magnitude;
+
+        A = (A * image.width) / maxEdgeLenght;
+        B = (B * image.width) / maxEdgeLenght;
+        C = (C * image.width) / maxEdgeLenght;
+        D = (D * image.width) / maxEdgeLenght;
 
         Texture2D modTexture = new Texture2D(image.width, image.height);
+
+        for (int x = 0; x < image.width; x++)
+        {
+            for (int y = 0; y < image.height; y++)
+            {
+                modTexture.SetPixel(x, y, new Color(0,0,0,0));
+            }
+        }
 
         for (int x = 0; x < image.width; x ++)
         {
