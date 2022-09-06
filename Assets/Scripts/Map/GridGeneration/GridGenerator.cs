@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using WCF;
 using static UnityEngine.Mathf;
 
@@ -24,6 +25,8 @@ namespace GridGenerator
         //texture
         float tiling = 1 / 10f;
         public Material mapMaterial;
+        public Camera minimapCamera = null;
+        public Image minimapImage = null;
 
 
 
@@ -44,9 +47,22 @@ namespace GridGenerator
             InitializeBorders();
 
             var ptsOnQuad = meshData.SmoothGrid();
+            var coroutWithdata =  new CoroutineWithData(this, )
             StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
             //StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial, null));
 
+            StartCoroutine(WaitForMapEnd());
+
+        }
+
+        private IEnumerator WaitForMapEnd()
+        {
+            while (!wcf.Done)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            var cameraSaver = new CameraSaver();
+            minimapImage.sprite = cameraSaver.CameraToSprite(minimapCamera);
         }
 
         private void GenerateBaseMesh()

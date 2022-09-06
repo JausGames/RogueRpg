@@ -20,7 +20,7 @@ public class SpriteModifier : MonoBehaviour
             Gizmos.DrawLine(quad[i], quad[(i+1)%quad.Length]);
         }
     }
-    private void Awake()
+    private void OnValidate()
     {
         var modTexture = TestDrawSprite(img, quad);
         var sprite = Sprite.Create(modTexture, new Rect(0, 0, modTexture.width, modTexture.height), new Vector2(0.5f, 0.5f), Mathf.Max(modTexture.width, modTexture.height));

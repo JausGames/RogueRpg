@@ -31,7 +31,11 @@ namespace WCF
         [SerializeField]
         AnimationCurve heightCurve;
 
+        private bool done = false;
+
         public List<Tile> Tiles { get => asset.Tiles;}
+        public bool Done { get => done; set => done = value; }
+
         private void Awake()
         {
             
@@ -170,9 +174,11 @@ namespace WCF
 
             if (!retry)
             {
+                return the retry for coroutwithdata
                 var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
                 StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 15f, heightCurve));
+                done = true;
             }
             
             Debug.Log("End Time = " + Time.time);
