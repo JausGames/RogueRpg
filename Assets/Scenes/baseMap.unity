@@ -177,7 +177,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 75
   m_Depth: 0
   m_CullingMask:
@@ -582,7 +582,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1210946661}
   - component: {fileID: 1210946660}
-  - component: {fileID: 1210946659}
   - component: {fileID: 1210946658}
   m_Layer: 0
   m_Name: Camera
@@ -683,7 +682,7 @@ MonoBehaviour:
   invertFaceCulling: 0
   probeLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
   hasPersistentHistory: 0
   exposureTarget: {fileID: 0}
   m_RenderingPathCustomFrameSettings:
@@ -705,14 +704,6 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
---- !u!81 &1210946659
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1210946657}
-  m_Enabled: 1
 --- !u!20 &1210946660
 Camera:
   m_ObjectHideFlags: 0
@@ -744,7 +735,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 1c8fd9ba9989a464180c1ac3d8e478d0, type: 2}
   m_TargetDisplay: 0

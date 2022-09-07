@@ -47,23 +47,36 @@ namespace GridGenerator
             InitializeBorders();
 
             var ptsOnQuad = meshData.SmoothGrid();
-            var coroutWithdata =  new CoroutineWithData(this, )
-            StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+            StartCoroutine(WaitForTrue(coroutWithdata, delegate { SetUpMinimapPicture(); }));
             //StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial, null));
 
-            StartCoroutine(WaitForMapEnd());
+            //StartCoroutine(WaitForMapEnd());
 
         }
 
-        private IEnumerator WaitForMapEnd()
+        private IEnumerator WaitForTrue(CoroutineWithData coroutWithdata, Action method)
+        {
+            while (coroutWithdata.result == null || coroutWithdata.result.GetType() != typeof(bool) || (bool)coroutWithdata.result != true)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            method();
+        }
+
+        void SetUpMinimapPicture()
+        {
+            var cameraSaver = new CameraSaver();
+            minimapImage.sprite = cameraSaver.CameraToSprite(minimapCamera);
+
+        }
+        /*private IEnumerator WaitForMapEnd()
         {
             while (!wcf.Done)
             {
                 yield return new WaitForEndOfFrame();
             }
-            var cameraSaver = new CameraSaver();
-            minimapImage.sprite = cameraSaver.CameraToSprite(minimapCamera);
-        }
+        }*/
 
         private void GenerateBaseMesh()
         {

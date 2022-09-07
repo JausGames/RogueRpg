@@ -174,11 +174,11 @@ namespace WCF
 
             if (!retry)
             {
-                return the retry for coroutwithdata
-                var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
+                yield return true;
+                /*var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
                 StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 15f, heightCurve));
-                done = true;
+                done = true;*/
             }
             
             Debug.Log("End Time = " + Time.time);
