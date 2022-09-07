@@ -28,6 +28,10 @@ namespace GridGenerator
         public Camera minimapCamera = null;
         public Image minimapImage = null;
 
+        [SerializeField]
+        NoiseSettings noiseSettings;
+        [SerializeField]
+        AnimationCurve heightCurve;
 
 
 
@@ -47,22 +51,34 @@ namespace GridGenerator
             InitializeBorders();
 
             var ptsOnQuad = meshData.SmoothGrid();
-            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
-            StartCoroutine(WaitForTrue(coroutWithdata, delegate { SetUpMinimapPicture(); }));
-            //StartCoroutine(wcf.StartWave(meshData.Quads.ToArray(), mapMaterial, null));
-
-            //StartCoroutine(WaitForMapEnd());
+            StartCoroutine(StartWfc());
 
         }
-
-        private IEnumerator WaitForTrue(CoroutineWithData coroutWithdata, Action method)
+        private IEnumerator StartWfc()
         {
-            while (coroutWithdata.result == null || coroutWithdata.result.GetType() != typeof(bool) || (bool)coroutWithdata.result != true)
+            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+            while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
             {
+                if (coroutWithdata.result != null && (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
+                {
+                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+                }
                 yield return new WaitForEndOfFrame();
             }
-            method();
+            StartCoroutine(StartNoiseMapping((List<TileHolder>)coroutWithdata.result));
         }
+
+        private IEnumerator StartNoiseMapping(List<TileHolder> tiles)
+        {
+            var meshModifier = new MeshModifier();
+            var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
+            var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 15f, heightCurve));
+            while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
+                yield return new WaitForEndOfFrame();
+            
+            SetUpMinimapPicture();
+        }
+
 
         void SetUpMinimapPicture()
         {
@@ -184,7 +200,7 @@ namespace GridGenerator
         new Vector3(Cos(offset + (3 * PI) / 3f), 0, Sin(offset + (3 * PI) / 3f)) * radius + origin,
         new Vector3(Cos(offset + (4 * PI) / 3f), 0, Sin(offset + (4 * PI) / 3f)) * radius + origin,
         new Vector3(Cos(offset + (5 * PI) / 3f), 0, Sin(offset + (5 * PI) / 3f)) * radius + origin
-    };
+        };
             int v = 6 * (subDivision + 1);
             int p = 0;
             var result = new Vector3[v];

@@ -166,20 +166,17 @@ namespace WCF
                         Destroy(tile);
                     tileHolders.Clear();
                     tiles.Clear();
-                    StartCoroutine(StartWave(grid, mapMaterial));
+                    //yield return StartCoroutine(StartWave(grid, mapMaterial));
                     break;
                 }
 
             }
-
-            if (!retry)
-            {
-                yield return true;
+            if (retry) yield return false;
+            else yield return tileHolders;
+                //yield return !retry;
                 /*var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
 
-                StartCoroutine(meshModifier.ModifyMeshWithHeightMap(tileHolders, noise, 15f, heightCurve));
                 done = true;*/
-            }
             
             Debug.Log("End Time = " + Time.time);
         }

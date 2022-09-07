@@ -216,8 +216,13 @@ public class MeshModifier
             yield return null;
         }
 
+        var coroutWithdata = new CoroutineWithData(tileHolders[0], SetPointOnMesh(tileHolders));
+        while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
+            yield return new WaitForEndOfFrame();
+
         
-        yield return SetPointOnMesh(tileHolders);;
+
+        //yield return SetPointOnMesh(tileHolders);;
 
         /*var filteredDict = new Dictionary<Vector3, PointOnMesh>();
         foreach (var key in dict.Keys)
@@ -232,6 +237,7 @@ public class MeshModifier
             holder.GetComponent<MeshFilter>().mesh = holder.Tile.mesh;
             yield return null;
         }
+        yield return true;
 
     }
     public Vector2 Round(Vector3 vector, int decimalPlaces = 2)
@@ -246,7 +252,7 @@ public class MeshModifier
             Mathf.Round(vector.y * multiplier) / multiplier,
             Mathf.Round(vector.z * multiplier) / multiplier);
     }
-    private bool SetPointOnMesh(List<TileHolder> tileHolders)
+    private IEnumerator SetPointOnMesh(List<TileHolder> tileHolders)
     {
         foreach (var holder in tileHolders)
         {
@@ -291,10 +297,11 @@ public class MeshModifier
                 pointOnMesh.ptNb.Add(v);
                 pointOnMesh.connectedTris.Add(trisList);
                 //dict[pointPosition + offset] = pointOnMesh;
+
             }
+            yield return null;
         }
-        Debug.Log("SetPointOnMesh");
-        return true;
+        yield return true;
     }
 }
 

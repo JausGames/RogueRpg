@@ -13,6 +13,11 @@ public class CoroutineWithData
         this.coroutine = owner.StartCoroutine(Run());
     }
 
+    public void ChangeTarget(IEnumerator target)
+    {
+        this.target = target;
+    }
+
     private IEnumerator Run()
     {
         while (target.MoveNext())
