@@ -65,6 +65,7 @@ namespace GridGenerator
                 }
                 yield return new WaitForEndOfFrame();
             }
+
             StartCoroutine(StartNoiseMapping((List<TileHolder>)coroutWithdata.result));
         }
 

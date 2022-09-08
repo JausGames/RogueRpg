@@ -218,7 +218,7 @@ public class MeshModifier
 
         var coroutWithdata = new CoroutineWithData(tileHolders[0], SetPointOnMesh(tileHolders));
         while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
-            yield return new WaitForEndOfFrame();
+            yield return null;
 
         
 
