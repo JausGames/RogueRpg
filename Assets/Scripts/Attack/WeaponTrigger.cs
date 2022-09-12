@@ -17,7 +17,16 @@ public class WeaponTrigger : MonoBehaviour
             touchedList.Clear();
             if (value)
                 foreach (ParticleSystem prtcl in particles)
-                    prtcl.Play();
+                {
+                    var em = prtcl.emission;
+                    em.enabled = true;
+                }
+            else
+                foreach (ParticleSystem prtcl in particles)
+                {
+                    var em = prtcl.emission;
+                    em.enabled = false;
+                }
         }
     }
 

@@ -10,7 +10,7 @@ public class FolloMainCameraRotation : MonoBehaviour
     [SerializeField] float rotationSpeed = 0.01f;
     [SerializeField] Vector3 offset;
         // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.position = Vector3.Lerp(transform.position, target.position + offset, 0.8f);
         if(look.x != 0) transform.rotation *= Quaternion.AngleAxis(look.x + rotationSpeed * Time.deltaTime, Vector3.up);

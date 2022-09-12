@@ -445,7 +445,8 @@ MonoBehaviour:
   diffusionProfileSettingsList:
   - {fileID: 11400000, guid: 51412e788eeabd949a2fe88bdfd51b85, type: 2}
   - {fileID: 11400000, guid: a51225d4d9da0e648a105d96a61d457d, type: 2}
-  beforeTransparentCustomPostProcesses: []
+  beforeTransparentCustomPostProcesses:
+  - CellShadingPP, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   beforeTAACustomPostProcesses: []
   beforePostProcessCustomPostProcesses: []
   afterPostProcessCustomPostProcesses: []

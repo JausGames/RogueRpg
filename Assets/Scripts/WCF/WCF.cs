@@ -113,6 +113,8 @@ namespace WCF
             var meshModifier = new MeshModifier();
             var retry = false;
 
+
+/*
             var nbPlain = 1;
             var maxCellPlain = 50;
             var tilePlain = asset.Tiles[0];
@@ -126,8 +128,9 @@ namespace WCF
 
 
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
+*/
 
-            /*var nbPlain = 1;
+            var nbPlain = 1;
             var maxCellPlain = 50;
             var tilePlain = asset.Tiles[0];
 
@@ -135,12 +138,11 @@ namespace WCF
             SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
 
             var nbMount = 2;
-            var maxCellMount = 50;
-            var tileMount = asset.BackUpTiles[0];
+            var maxCellMount = 4;
+            var tileMount = asset.Tiles[0];
 
 
             SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
-            yield return new WaitForSeconds(2f);*/
 
             var retryCount = 0;
             while(treated.Count < grid.Length)
@@ -196,7 +198,7 @@ namespace WCF
                     if(!AddTileToGrid(grid, treated, rnd, newTile, false))
                     {
                         GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
-                        //if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
+                        if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
                     }
                 }
 

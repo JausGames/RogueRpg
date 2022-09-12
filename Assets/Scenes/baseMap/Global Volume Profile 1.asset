@@ -16,7 +16,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   quality:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 3
   focusMode:
     m_OverrideState: 1
     m_Value: 2
@@ -42,33 +42,65 @@ MonoBehaviour:
     min: 0
   m_NearSampleCount:
     m_OverrideState: 1
-    m_Value: 3
+    m_Value: 4
     min: 3
     max: 8
   m_NearMaxBlur:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 4
     min: 0
     max: 8
   m_FarSampleCount:
     m_OverrideState: 1
-    m_Value: 4
+    m_Value: 7
     min: 3
     max: 16
   m_FarMaxBlur:
     m_OverrideState: 1
-    m_Value: 5
+    m_Value: 8
     min: 0
     max: 16
   m_HighQualityFiltering:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   m_Resolution:
     m_OverrideState: 1
-    m_Value: 4
+    m_Value: 2
   m_PhysicallyBased:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-6932201230169004960
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16a9cbde79ddb0e429721ca02407e922, type: 3}
+  m_Name: CellShadingPP
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  _posterizeAmount:
+    m_OverrideState: 1
+    m_Value: 3
+  _isEnabled:
+    m_OverrideState: 1
+    m_Value: 1
+  _shadowValue:
+    m_OverrideState: 1
+    m_Value: 0.07
+  _shadowThreshold:
+    m_OverrideState: 1
+    m_Value: 0.05
+  _shadowColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.035, g: 0.0150000015, b: 0.0150000015, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
 --- !u!114 &-5920790788509971993
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -88,11 +120,11 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 3
+    m_Value: 2
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.8
+    m_Value: 0.3
     min: 0
     max: 1
   scatter:
@@ -102,7 +134,7 @@ MonoBehaviour:
     max: 1
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0.49803925, g: 0.25882354, b: 0.15294118, a: 1}
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
     hdr: 0
     showAlpha: 0
     showEyeDropper: 1
@@ -153,7 +185,7 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.37}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.183
+    m_Value: 0.108
     min: 0
     max: 1
   smoothness:
@@ -310,8 +342,8 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.27146924, z: 0.4658718}
   desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
+    m_OverrideState: 1
+    m_Value: 40000
   updateMode:
     m_OverrideState: 1
     m_Value: 0
@@ -344,7 +376,7 @@ MonoBehaviour:
     max: 360
   scrollSpeed:
     m_OverrideState: 1
-    m_Value: 29.63
+    m_Value: 8
     min: 0
   enableBackplate:
     m_OverrideState: 0
@@ -407,11 +439,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 953beb541740ddc499d005ee80c9ff29, type: 3}
   m_Name: Fog
   m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
+  active: 0
+  m_AdvancedMode: 1
   quality:
     m_OverrideState: 0
-    m_Value: 1
+    m_Value: 3
   enabled:
     m_OverrideState: 1
     m_Value: 1
@@ -449,16 +481,16 @@ MonoBehaviour:
     min: 0
   baseHeight:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 3.5
   maximumHeight:
     m_OverrideState: 1
     m_Value: 40.5
   meanFreePath:
     m_OverrideState: 1
-    m_Value: 34.37
+    m_Value: 38.62
     min: 1
   enableVolumetricFog:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   albedo:
     m_OverrideState: 1
@@ -468,12 +500,12 @@ MonoBehaviour:
     showEyeDropper: 1
   globalLightProbeDimmer:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
     min: 0
     max: 1
   depthExtent:
     m_OverrideState: 1
-    m_Value: 120
+    m_Value: 0.1
     min: 0.1
   denoisingMode:
     m_OverrideState: 1
@@ -485,7 +517,7 @@ MonoBehaviour:
     max: 1
   sliceDistributionUniformity:
     m_OverrideState: 0
-    m_Value: 0.75
+    m_Value: 0
     min: 0
     max: 1
   m_FogControlMode:
@@ -508,7 +540,7 @@ MonoBehaviour:
     max: 1
   m_ResolutionDepthRatio:
     m_OverrideState: 0
-    m_Value: 0.666
+    m_Value: 1
     min: 0
     max: 1
   directionalLightsOnly:
@@ -538,6 +570,10 @@ MonoBehaviour:
   - {fileID: -2643313707782960813}
   - {fileID: 112853023236906396}
   - {fileID: 4333720171393683915}
+  - {fileID: -6932201230169004960}
+  - {fileID: 7364834947960042633}
+  - {fileID: 1214239875775951836}
+  - {fileID: 9020301191682735429}
 --- !u!114 &112853023236906396
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -562,6 +598,36 @@ MonoBehaviour:
     m_Value: 0
     min: -100
     max: 100
+--- !u!114 &1214239875775951836
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 598e2d32e2c7b0c418e030c3236d663a, type: 3}
+  m_Name: ChromaticAberration
+  m_EditorClassIdentifier: 
+  active: 0
+  m_AdvancedMode: 0
+  quality:
+    m_OverrideState: 1
+    m_Value: 3
+  spectralLut:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.3
+    min: 0
+    max: 1
+  m_MaxSamples:
+    m_OverrideState: 1
+    m_Value: 3
+    min: 3
+    max: 24
 --- !u!114 &4333720171393683915
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -578,14 +644,14 @@ MonoBehaviour:
   m_AdvancedMode: 0
   postExposure:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 1
   contrast:
     m_OverrideState: 1
     m_Value: -10
     min: -100
     max: 100
   colorFilter:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
     hdr: 1
     showAlpha: 0
@@ -600,3 +666,199 @@ MonoBehaviour:
     m_Value: 15
     min: -100
     max: 100
+--- !u!114 &7364834947960042633
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d08ce26990eb1a4a9177b860541e702, type: 3}
+  m_Name: Exposure
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  mode:
+    m_OverrideState: 1
+    m_Value: 0
+  meteringMode:
+    m_OverrideState: 0
+    m_Value: 2
+  luminanceSource:
+    m_OverrideState: 0
+    m_Value: 1
+  fixedExposure:
+    m_OverrideState: 1
+    m_Value: 14
+  compensation:
+    m_OverrideState: 0
+    m_Value: -1.7
+  limitMin:
+    m_OverrideState: 0
+    m_Value: -1
+  limitMax:
+    m_OverrideState: 0
+    m_Value: 14
+  curveMap:
+    m_OverrideState: 0
+    m_Value:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -10
+        value: -10
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 20
+        value: 20
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  limitMinCurveMap:
+    m_OverrideState: 0
+    m_Value:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -10
+        value: -12
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 20
+        value: 18
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  limitMaxCurveMap:
+    m_OverrideState: 0
+    m_Value:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -10
+        value: -8
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 20
+        value: 22
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  adaptationMode:
+    m_OverrideState: 0
+    m_Value: 1
+  adaptationSpeedDarkToLight:
+    m_OverrideState: 0
+    m_Value: 3
+    min: 0.001
+  adaptationSpeedLightToDark:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0.001
+  weightTextureMask:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+  histogramPercentages:
+    m_OverrideState: 0
+    m_Value: {x: 40, y: 90}
+    min: 0
+    max: 100
+  histogramUseCurveRemapping:
+    m_OverrideState: 0
+    m_Value: 0
+  targetMidGray:
+    m_OverrideState: 0
+    m_Value: 0
+  centerAroundExposureTarget:
+    m_OverrideState: 0
+    m_Value: 0
+  proceduralCenter:
+    m_OverrideState: 0
+    m_Value: {x: 0.5, y: 0.5}
+  proceduralRadii:
+    m_OverrideState: 0
+    m_Value: {x: 0.3, y: 0.3}
+  maskMinIntensity:
+    m_OverrideState: 0
+    m_Value: -30
+  maskMaxIntensity:
+    m_OverrideState: 0
+    m_Value: 30
+  proceduralSoftness:
+    m_OverrideState: 0
+    m_Value: 0.5
+    min: 0
+--- !u!114 &9020301191682735429
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b24b200358312b4fa1004e2431c2f1f, type: 3}
+  m_Name: ShadowsMidtonesHighlights
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  shadows:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0.08241912}
+  midtones:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0.0000000030829987}
+  highlights:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0.106654614}
+  shadowsStart:
+    m_OverrideState: 1
+    m_Value: 0.42
+    min: 0
+  shadowsEnd:
+    m_OverrideState: 1
+    m_Value: 0.42
+    min: 0
+  highlightsStart:
+    m_OverrideState: 1
+    m_Value: 0.85
+    min: 0
+  highlightsEnd:
+    m_OverrideState: 1
+    m_Value: 1.15
+    min: 0

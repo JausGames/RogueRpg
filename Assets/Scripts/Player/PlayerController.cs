@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
     internal void SetSpeed(float speed)
     {
-        maxSpeed = 5f * speed;
+        maxSpeed = 12f * speed;
         this.speed = 3f * speed;
     }
 
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isMoving)
         {
-            if(canStop) body.velocity /= 1.1f;
+            if(canStop) body.velocity = new Vector3(body.velocity.x / 1.1f, body.velocity.y, body.velocity.z / 1.1f );
             return;
         }
         var currSpeed = body.velocity.sqrMagnitude;
@@ -81,8 +81,15 @@ public class PlayerController : MonoBehaviour
             lastTimeNoLook = Time.time;
             //body.angularVelocity /= 10f;
         }*/
+        var origin = transform.position + Vector3.up;
+        var dir = Vector3.down;
+        var ray = new Ray(origin, dir);
+        var hit = new RaycastHit();
+        var onFloor = Physics.Raycast(origin, dir, out hit, 1.1f, 1, QueryTriggerInteraction.UseGlobal);
+        var impulseFromFloor = 0f;
+        if(onFloor) impulseFromFloor = hit.normal.x + hit.normal.y;
 
-        var v3Move = move.x * cameraContainer.right + move.y * cameraContainer.forward;
+        var v3Move = move.x * cameraContainer.right + move.y * cameraContainer.forward + impulseFromFloor*Vector3.up;
 
         var maxSpeed = (running ? this.maxRunSpeed : this.maxSpeed);
         if (move.magnitude > 0.1f && currSpeed < maxSpeed)
@@ -146,7 +153,7 @@ public class PlayerController : MonoBehaviour
     internal void SetMaxSpeed(float speed)
     {
         maxSpeed = speed;
-        maxRunSpeed = speed * 2f;
+        maxRunSpeed = speed * 4f;
     }
 
     public void RotateWithLook(bool value)
@@ -166,7 +173,7 @@ public class PlayerController : MonoBehaviour
         var velocity = body.velocity.sqrMagnitude / PlayerSettings.MaxAnimationSpeed;
         /*var frontRatio = Vector3.Dot(body.velocity.normalized, transform.forward);
         var sideRatio = Vector3.Dot(body.velocity.normalized, transform.right);*/
-        var frontRatio = 1f;
+        var frontRatio = body.velocity.sqrMagnitude / PlayerSettings.MaxAnimationSpeed;
         var sideRatio = 0f;
 
         /*Debug.Log("PlayerControlelr, UpdateAnimator : ratio front = " + frontRatio);

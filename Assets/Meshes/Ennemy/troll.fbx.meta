@@ -37,6 +37,21 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Eye
+    second: {fileID: 2100000, guid: f335f6aaf5c14c040b8e1a7bc1a2c115, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: 962442f2fb762a341aeb786f3b2379df, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pupil
+    second: {fileID: 2100000, guid: 8f44d9a420eefb14c86a1fe7f7e3e132, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: TrollSkin
     second: {fileID: 2100000, guid: a7f2d58c5d2ec3843b05fd1340fd9478, type: 2}
   materials:
