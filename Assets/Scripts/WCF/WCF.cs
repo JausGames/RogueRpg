@@ -33,6 +33,7 @@ namespace WCF
         AnimationCurve heightCurve;
 
         private bool done = false;
+        private List<Tile>[] borderTiles;
 
         public List<Tile> Tiles { get => asset.Tiles;}
         public bool Done { get => done; set => done = value; }
@@ -45,7 +46,48 @@ namespace WCF
             quadTiled = new v3Quad[grid.Length];
             hasBackUpTile = new bool[grid.Length];
             availableTiles = new List<Tile>[grid.Length];
+            var baseAvailableTiles = new List<Tile>();
+
+            foreach (var tile in asset.Tiles)
+            {
+                baseAvailableTiles.Add(new Tile(tile));
+                baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name;
+                if (tile.symetry != Symetry.Full) {
+                    baseAvailableTiles.Add(new Tile(tile, 1));
+                    baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name + " - rot 90"; }
+                else {
+                    baseAvailableTiles.Add(new Tile(tile));
+                    baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name; }
+                if (tile.symetry == Symetry.None) {
+                    baseAvailableTiles.Add(new Tile(tile, 2));
+                    baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name + " - rot 180"; }
+                else {
+                    baseAvailableTiles.Add(new Tile(tile));
+                    baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name; }
+                if (tile.symetry == Symetry.None) {
+                    baseAvailableTiles.Add(new Tile(tile, 3));
+                    baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name + " - rot 270"; }
+                else {
+                    baseAvailableTiles.Add(new Tile(tile));
+                    baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name; }
+
+            }
+
             backupTiles = new List<Tile>[grid.Length];
+            var baseBackupTiles = new List<Tile>();
+            
+            foreach(var tile in asset.BackUpTiles)
+            {
+                baseBackupTiles.Add(new Tile(tile));
+                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name;
+                baseBackupTiles.Add(new Tile(tile, 1));
+                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 90";
+                baseBackupTiles.Add(new Tile(tile, 2));
+                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 180";
+                baseBackupTiles.Add(new Tile(tile, 3));
+                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 270";
+            }
+
             var treated = new List<int>();
 
             //Set up available tiles
@@ -55,46 +97,12 @@ namespace WCF
                 availableTiles[i] = new List<Tile>();
                 backupTiles[i] = new List<Tile>();
                 //Add all tiles to the available tile for each cell of the grid
-                foreach (Tile tile in asset.Tiles)
+                foreach (Tile tile in baseAvailableTiles)
                 {
                     availableTiles[i].Add(new Tile(tile));
                     availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
-                    if (tile.symetry != Symetry.Full)
-                    {
-                        availableTiles[i].Add(new Tile(tile, 1));
-                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 90";
-                    }
-                    else
-                    {
-                    availableTiles[i].Add(new Tile(tile));
-                    availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
-
-                    }
-                    if (tile.symetry == Symetry.None)
-                    {
-                        availableTiles[i].Add(new Tile(tile, 2));
-                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 180";
-                    }
-                    else
-                    {
-                        availableTiles[i].Add(new Tile(tile));
-                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
-
-                    }
-                    if (tile.symetry == Symetry.None)
-                    {
-                        availableTiles[i].Add(new Tile(tile, 3));
-                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name + " - rot 270";
-                    }
-                    else
-                    {
-                        availableTiles[i].Add(new Tile(tile));
-                        availableTiles[i][availableTiles[i].Count - 1].name = tile.name;
-
-                    }
-
                 }
-                foreach (Tile tile in asset.BackUpTiles)
+                foreach(var tile in baseBackupTiles)
                 {
                     backupTiles[i].Add(new Tile(tile));
                     backupTiles[i][backupTiles[i].Count - 1].name = tile.name;
@@ -129,7 +137,7 @@ namespace WCF
 
             SetUpBorders(meshData.BorderQuads, treated, grid);
 
-            var nbPlain = 1;
+            /*var nbPlain = 1;
             var maxCellPlain = 50;
             var tilePlain = asset.Tiles[0];
 
@@ -141,16 +149,26 @@ namespace WCF
             var tileMount = asset.Tiles[0];
 
 
-            SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
+            SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);*/
 
-            var retryCount = 0;
             while(treated.Count < grid.Length)
             {
                 // Get the list of cells where the entropy is the lowest
                 List<v3Quad> lowestEntropy = GetLowestEntropyCells(treated, grid, out int lowestEntropyNb);
                 Debug.Log("lowest entropy = " + lowestEntropyNb + ", quad = " + lowestEntropy[0].Position);
-                if (lowestEntropy.Count == 0 || lowestEntropyNb == 0) 
-                    retry = true;
+                if (lowestEntropyNb == 0)
+                {
+                    foreach(var quad in lowestEntropy)
+                    {
+                        var id = FindIndexOfQuad(quad, grid);
+                        if (hasBackUpTile[id]) retry = true;
+                        else
+                        {
+                            availableTiles[id].AddRange(backupTiles[id]);
+                            hasBackUpTile[id] = true;
+                        }
+                    }
+                }
                 else
                 {
                     var rndCell = UnityEngine.Random.Range(0, lowestEntropy.Count);
@@ -205,7 +223,7 @@ namespace WCF
                         GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
                     }
                 }
-                else if (borders[i].points.Length == 1)
+                /*else if (borders[i].points.Length == 1)
                 {
                     int id = FindIndexOfQuad(borders[i].quad, grid);
                     var tile = new Tile(asset.BorderTiles[2], borders[i].quad.FindCommonPointIndex(borders[i].points[0]));
@@ -213,7 +231,7 @@ namespace WCF
                     {
                         GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
                     }
-                }
+                }*/
             }
         }
 
