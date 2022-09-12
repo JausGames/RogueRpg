@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isMoving)
         {
-            if(canStop) body.velocity = new Vector3(body.velocity.x / 1.1f, body.velocity.y, body.velocity.z / 1.1f );
+            //if(canStop) body.velocity = new Vector3(body.velocity.x / 1.1f, body.velocity.y, body.velocity.z / 1.1f );
             return;
         }
         var currSpeed = body.velocity.sqrMagnitude;
@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
         }
         else if(canStop)
         {
-            body.velocity /= 10f;
+            body.velocity = new Vector3(body.velocity.x / 5f, body.velocity.y, body.velocity.z / 5f);
         }
 
         if (target != null)
