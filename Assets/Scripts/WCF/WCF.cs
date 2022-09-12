@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GridGenerator;
+using static GridGenerator.MeshData;
 
 namespace WCF
 {
@@ -36,13 +37,9 @@ namespace WCF
         public List<Tile> Tiles { get => asset.Tiles;}
         public bool Done { get => done; set => done = value; }
 
-        private void Awake()
+        public IEnumerator StartWave(MeshData meshData, Material mapMaterial)
         {
-            
-        }
-
-        public IEnumerator StartWave(v3Quad[] grid, Material mapMaterial)
-        {
+            v3Quad[] grid = meshData.Quads.ToArray();
             this.mapMaterial = mapMaterial;
             gridTiled = new Tile[grid.Length];
             quadTiled = new v3Quad[grid.Length];
@@ -114,21 +111,23 @@ namespace WCF
             var retry = false;
 
 
-/*
-            var nbPlain = 1;
-            var maxCellPlain = 50;
-            var tilePlain = asset.Tiles[0];
+            /*
+                        var nbPlain = 1;
+                        var maxCellPlain = 50;
+                        var tilePlain = asset.Tiles[0];
 
 
-            SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
+                        SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
 
-            var nbMount = 2;
-            var maxCellMount = 5;
-            var tileMount = asset.BackUpTiles[0];
+                        var nbMount = 2;
+                        var maxCellMount = 5;
+                        var tileMount = asset.BackUpTiles[0];
 
 
-            SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
-*/
+                        SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);
+            */
+
+            SetUpBorders(meshData.BorderQuads, treated, grid);
 
             var nbPlain = 1;
             var maxCellPlain = 50;
@@ -181,6 +180,41 @@ namespace WCF
                 done = true;*/
             
             Debug.Log("End Time = " + Time.time);
+        }
+
+        private void SetUpBorders(List<BorderQuad> borders, List<int> treated, v3Quad[] grid)
+        {
+            var meshModifier = new MeshModifier();
+            for(int i = 0; i < borders.Count; i++)
+            {
+                if (borders[i].edges.Length == 2)
+                {
+                    int id = FindIndexOfQuad(borders[i].quad, grid);
+                    var tile = new Tile(asset.BorderTiles[1], borders[i].edges[0] > borders[i].edges[1] ? borders[i].edges[0] : borders[i].edges[1]);
+                    if (!AddTileToGrid(grid, treated, id, tile, false))
+                    {
+                        GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                    }
+                }
+                else if (borders[i].edges.Length == 1)
+                {
+                    int id = FindIndexOfQuad(borders[i].quad, grid);
+                    var tile = new Tile(asset.BorderTiles[0], borders[i].edges[0]);
+                    if (!AddTileToGrid(grid, treated, id, tile, false))
+                    {
+                        GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                    }
+                }
+                else if (borders[i].points.Length == 1)
+                {
+                    int id = FindIndexOfQuad(borders[i].quad, grid);
+                    var tile = new Tile(asset.BorderTiles[2], borders[i].quad.FindCommonPointIndex(borders[i].points[0]));
+                    if (!AddTileToGrid(grid, treated, id, tile, false))
+                    {
+                        GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                    }
+                }
+            }
         }
 
         private void SetUpSomeTile(int nbIteration, int maxCell, Tile tile, List<int> treated, v3Quad[] grid, GameObject prefab = null)

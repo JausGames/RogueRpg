@@ -104,6 +104,7 @@ public class MeshModifier
             var x = Mathf.RoundToInt((vertex.x + offset.x) * ratio) + (width / 2) + 1;
             var z = Mathf.RoundToInt((vertex.z + offset.z) * ratio) + (width / 2) + 1;
             var y = vertex.y;
+            Debug.Log("MeshModifier, ModifyTileWithHeightMap : x = " + x + ", z = " + z);
             var evaluatedNoise = noise[x, z] * heightCurve.Evaluate(y / 1f);
             vertx[i] = mesh.vertices[i] + (evaluatedNoise * maxHeight - (maxHeight * .5f * heightCurve.Evaluate(0f))) * Vector3.up;
         }

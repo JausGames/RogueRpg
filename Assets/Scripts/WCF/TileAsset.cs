@@ -11,8 +11,12 @@ namespace WCF
         List<Tile> tiles = new List<Tile>();
         [SerializeField]
         List<Tile> backUpTiles = new List<Tile>();
+        [SerializeField]
+        List<Tile> borderTiles = new List<Tile>();
 
         public List<Tile> Tiles { get => tiles; }
         public List<Tile> BackUpTiles { get => backUpTiles; }
+        public List<Tile> BorderTiles { get => borderTiles; }
+
     }
 }

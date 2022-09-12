@@ -143,21 +143,6 @@ namespace GridGenerator
 
             return result;
         }
-
-        private List<Vector3> RemoveDoubles(List<Vector3> list)
-        {
-            var result = new List<Vector3>();
-
-            foreach (Vector3 vect in list)
-            {
-                var doAdd = true;
-                foreach (Vector3 res in result)
-                    if (isSamePoint(res, vect))
-                        doAdd = false;
-                if (doAdd) result.Add(vect);
-            }
-            return result;
-        }
     }
 
 
@@ -273,37 +258,20 @@ namespace GridGenerator
             bool[] canMove = new bool[] { !haveCommonPoint(blackList, pts[0]), !haveCommonPoint(blackList, pts[1]), !haveCommonPoint(blackList, pts[2]), !haveCommonPoint(blackList, pts[3]) };
 
             var differenceSign = edge1.magnitude > edge2.magnitude ? -1 : +1;
-            /*
-                        if (canMove[0])
-                            pts[0] += differenceSign * edge1 * 0.1f;
-                        if (canMove[1])
-                            pts[1] += -differenceSign * edge2 * 0.1f;
-                        if (canMove[2])
-                            pts[2] += differenceSign * edge1 * 0.1f;
-                        if (canMove[3])
-                            pts[3] += -differenceSign * edge2 * 0.1f;
-            */
+
             if (edge1.magnitude > edge2.magnitude)
             {
-                if (canMove[0])
-                    pts[0] -= edge1 * 0.2f;
-                if (canMove[1])
-                    pts[1] += edge2 * 0.2f;
-                if (canMove[2])
-                    pts[2] += edge1 * 0.2f;
-                if (canMove[3])
-                    pts[3] -= edge2 * 0.2f;
+                if (canMove[0]) pts[0] -= edge1.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
+                if (canMove[1]) pts[1] += edge2.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
+                if (canMove[2]) pts[2] += edge1.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
+                if (canMove[3]) pts[3] -= edge2.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
             }
             else
             {
-                if (canMove[0])
-                    pts[0] += edge1 * 0.2f;
-                if (canMove[1])
-                    pts[1] -= edge2 * 0.2f;
-                if (canMove[2])
-                    pts[2] -= edge1 * 0.2f;
-                if (canMove[3])
-                    pts[3] += edge2 * 0.2f;
+                if (canMove[0]) pts[0] += edge1.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
+                if (canMove[1]) pts[1] -= edge2.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
+                if (canMove[2]) pts[2] -= edge1.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
+                if (canMove[3]) pts[3] += edge2.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
             }
         }
 

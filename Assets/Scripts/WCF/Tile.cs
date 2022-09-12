@@ -33,6 +33,7 @@ namespace WCF
             this.mesh = tile.mesh;
             this.id = tile.id;
         }
+        
         public Tile(Tile tile, int nbRotation)
         {
             this.connectors = tile.RotateTile(nbRotation);
@@ -150,7 +151,8 @@ namespace WCF
     {
         Low,
         Mid,
-        High
+        High,
+        Border
     }
 
 }

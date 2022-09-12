@@ -19,3 +19,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c5d7e95ae01b6424480ef6b50d6f04f1, type: 2}
   - {fileID: 11400000, guid: ba6e7ea72a7f79140868a4eaf7e8ae7e, type: 2}
   backUpTiles: []
+  borderTiles:
+  - {fileID: 11400000, guid: c85c56efa88455c4e9e2ec83b4d065d7, type: 2}
+  - {fileID: 11400000, guid: 9f6ee3c3ceb106147a7612ccf695f3a7, type: 2}

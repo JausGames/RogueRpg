@@ -15,6 +15,7 @@ namespace GridGenerator
         List<int> triangles = new List<int>();
 
         private List<Vector3[]> layers = new List<Vector3[]>();
+        private List<BorderQuad> borderQuads = new List<BorderQuad>();
 
         //first phase
         private List<v3> v3Poly = new List<v3>();
@@ -46,6 +47,7 @@ namespace GridGenerator
         public List<v3Quad> Quads { get => quads; set => quads = value; }
         public List<v3Tris> ToBeProcess { get => toBeProcessTris; set => toBeProcessTris = value; }
         public List<v3> V3Poly { get => v3Poly; set => v3Poly = value; }
+        public List<BorderQuad> BorderQuads { get => borderQuads; set => borderQuads = value; }
 
         public MeshData(List<Vector3> vertices, float radius, int layerNb, float tiling, List<Vector3[]> layers = null)
         {
@@ -261,9 +263,7 @@ namespace GridGenerator
         {
             //var dict = new Dictionary<Vector3, List<PointOnQuad>>();
             var pointsOnMesh = new List<PointOnQuad>();
-            var dictBasicPos = new Dictionary<Vector3, List<PointOnQuad>>();
             var keys = new List<Vector3>();
-            var borderKeys = new List<Vector3>();
 
             for (int i = 0; i < quads.Count; i++)
                 for (int j = 0; j < quads.Count; j++)
@@ -299,16 +299,15 @@ namespace GridGenerator
             Debug.Log("MeshData, SmoothGrid : ptOnQuad length = " + pointsOnMesh.Count);
 
 
-                var it = 0;
-                while (it < 500)
+            var it = 0;
+            while (it < 500)
+            {
+                foreach (v3Quad quad in Quads)
                 {
-                    foreach (v3Quad quad in Quads)
-                    {
-                        quad.SelfSmooth(new List<Vector3>());
-                    }
-
-                    it++;
+                    quad.SelfSmooth(new List<Vector3>());
                 }
+
+
                 for (int i = 0; i < pointsOnMesh.Count; i++)
                 {
                     var ptOnQuad = pointsOnMesh[i];
@@ -320,13 +319,17 @@ namespace GridGenerator
                     }
                     mid /= ptOnQuad.Quad.Count;
 
-                for (int j = 0; j < ptOnQuad.Quad.Count; j++)
+                    for (int j = 0; j < ptOnQuad.Quad.Count; j++)
                     {
-                        ptOnQuad.Quad[j].pts[ptOnQuad.ptNb[j]] = mid;
+                        var pt = ptOnQuad.Quad[j].pts[ptOnQuad.ptNb[j]];
+                        if (!ptOnQuad.Quad[j].haveCommonPoint(border, pt)) 
+                            ptOnQuad.Quad[j].pts[ptOnQuad.ptNb[j]] = mid;
                     }
                 }
-            return pointsOnMesh;
+                it++;
             }
+            return pointsOnMesh;
+        }
 
 
         public class PointOnQuad
@@ -395,6 +398,19 @@ namespace GridGenerator
                     if (point.pt.x == pt.x && point.pt.y == pt.y) return point;
                 }
                 return null;
+            }
+        }
+        public class BorderQuad
+        {
+            public int[] edges;
+            public Vector3[] points;
+            public v3Quad quad;
+
+            public BorderQuad(Vector3[] points, int[] edges, v3Quad quad)
+            {
+                this.points = points;
+                this.edges = edges;
+                this.quad = quad;
             }
         }
     }

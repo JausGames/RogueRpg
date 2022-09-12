@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b6cbc7b1ce9574982fadd1eed20673, type: 3}
-  m_Name: J
+  m_Name: A3-Flat
   m_EditorClassIdentifier: 
   connectors:
   - connection: 000000000000000000000000
@@ -19,11 +19,12 @@ MonoBehaviour:
   - connection: 000000000000000000000000
     blackList: []
     whiteList: []
-  - connection: 000000000200000000000000
+  - connection: 000000000000000000000000
     blackList: []
     whiteList: []
-  - connection: 000000000200000000000000
+  - connection: 000000000000000000000000
     blackList: []
     whiteList: []
-  id: 2
-  mesh: {fileID: 490409679415635083, guid: 5a54a044cce718044babcc2e3dfb6725, type: 3}
+  id: 0
+  symetry: 2
+  mesh: {fileID: -1337776429404523579, guid: 5a54a044cce718044babcc2e3dfb6725, type: 3}

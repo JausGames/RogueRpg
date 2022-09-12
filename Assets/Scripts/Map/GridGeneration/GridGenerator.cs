@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using WCF;
+using static GridGenerator.MeshData;
 using static UnityEngine.Mathf;
 
 namespace GridGenerator
@@ -51,17 +52,18 @@ namespace GridGenerator
             InitializeBorders();
 
             var ptsOnQuad = meshData.SmoothGrid();
+
             StartCoroutine(StartWfc());
 
         }
         private IEnumerator StartWfc()
         {
-            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, mapMaterial));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
             {
                 if (coroutWithdata.result != null && (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 {
-                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData.Quads.ToArray(), mapMaterial));
+                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, mapMaterial));
                 }
                 yield return new WaitForEndOfFrame();
             }
@@ -72,7 +74,7 @@ namespace GridGenerator
         private IEnumerator StartNoiseMapping(List<TileHolder> tiles)
         {
             var meshModifier = new MeshModifier();
-            var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
+            var noise = Noise.GenerateNoiseMap(550, 550, noiseSettings, Vector3.zero);
             var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 15f, heightCurve));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 yield return new WaitForEndOfFrame();
@@ -151,27 +153,54 @@ namespace GridGenerator
 
         private void InitializeBorders()
         { 
-            var border = new List<Vector3>();
+            var border = new List<BorderQuad>();
+            var borderPt = new List<Vector3>();
+            var notBorderQuad = new List<v3Quad>();
+            notBorderQuad.AddRange(meshData.Quads);
+
             for(int i = 0; i < meshData.Quads.Count; i++)
             {
                 if(meshData.Quads[i].Neighbours.Count < 4)
                 {
+                    notBorderQuad.Remove(meshData.Quads[i]);
                     var edgeIndex = new List<int>();
+                    var pointList = new List<Vector3>();
+                    var quadToAdd = meshData.Quads[i];
+
                     edgeIndex.AddRange(new int[] { 0, 1, 2, 3 });
                     foreach (Neighbour neigh in meshData.Quads[i].Neighbours)
                         edgeIndex.Remove(neigh.edge);
+
                     foreach(int index in edgeIndex)
                     {
                         var ptIndex = GetPointIndexByEdge(index);
-                        border.Add(meshData.Quads[i].pts[ptIndex[0]]);
-                        border.Add(meshData.Quads[i].pts[ptIndex[1]]);
+                        pointList.AddRange(new Vector3[] { meshData.Quads[i].pts[ptIndex[0]], meshData.Quads[i].pts[ptIndex[0]]});
+                        borderPt.AddRange(new Vector3[] { meshData.Quads[i].pts[ptIndex[0]], meshData.Quads[i].pts[ptIndex[0]]});
+                    }
+
+                    var borderPoint = new BorderQuad(pointList.ToArray(), edgeIndex.ToArray(), quadToAdd);
+                    border.Add(borderPoint);
+                }
+            }
+
+            for (int i = 0; i < notBorderQuad.Count; i++)
+            {
+                for(int p = 0; p < notBorderQuad[i].pts.Length; p++)
+                {
+                    for (int b = 0; b < borderPt.Count; b++)
+                    {
+                        if (notBorderQuad[i].pts[p] == borderPt[b])
+                        {
+                            var borderPoint = new BorderQuad(new Vector3[] { notBorderQuad[i].pts[p] }, new int[0], notBorderQuad[i]);
+                            border.Add(borderPoint);
+                        }
                     }
                 }
             }
 
-
-            corners = border.ToArray();
-            meshData.border = border;
+                meshData.BorderQuads.AddRange(border.ToArray());
+            corners = borderPt.ToArray();
+            meshData.border = borderPt;
         }
         public int[] GetPointIndexByEdge(int edge)
         {

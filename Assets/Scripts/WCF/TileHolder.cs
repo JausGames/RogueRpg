@@ -26,7 +26,6 @@ public class TileHolder : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        return;
         var basecolor = Color.blue;
 
         var quad0Pos = quad.pts[0] + (quad.pts[2] - quad.pts[0]).normalized + Vector3.up;
