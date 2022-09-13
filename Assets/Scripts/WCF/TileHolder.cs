@@ -33,33 +33,92 @@ public class TileHolder : MonoBehaviour
         var quad2Pos = quad.pts[2] + (quad.pts[0] - quad.pts[2]).normalized + Vector3.up;
         var quad3Pos = quad.pts[3] + (quad.pts[1] - quad.pts[3]).normalized + Vector3.up;
 
-        Gizmos.color = Color.Lerp(basecolor, Color.white, 1f);
-        Gizmos.DrawSphere(quad0Pos, .1f);
+        //Debug edge nb
+        //Gizmos.color = Color.Lerp(basecolor, Color.white, 1f);
+
         Gizmos.color = basecolor;
+        Gizmos.DrawSphere(quad0Pos, .1f);
+
+        //Debug connectors
+        if (tile.connectors[0].connection[0] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine(quad0Pos, (2 * quad0Pos + 1*  quad1Pos) / 3f);
+        
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[0].connection[1] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((2 * quad0Pos + 1 * quad1Pos) / 3f, (1 * quad0Pos + 2*  quad1Pos) / 3f);
+        
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[0].connection[2] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((1 * quad0Pos + 2 * quad1Pos) / 3f, quad1Pos);
+
+        //check neigbbours
         /*foreach(Neighbour neigh in quad.Neighbours)
             if(neigh.edge == 0) Gizmos.color = Color.red;*/
-        Gizmos.DrawLine(quad0Pos, quad1Pos);
+
+        //draw single line
+        //Gizmos.DrawLine(quad0Pos, quad1Pos);
 
         Gizmos.color = Color.Lerp(basecolor, Color.white, 0.66f);
         Gizmos.DrawSphere(quad1Pos, .1f);
+        //Debug connectors
         Gizmos.color = basecolor;
+        if (tile.connectors[1].connection[0] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine(quad1Pos, (2 * quad1Pos + 1 * quad2Pos) / 3f);
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[1].connection[1] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((2 * quad1Pos + 1 * quad2Pos) / 3f, (1 * quad1Pos + 2 * quad2Pos) / 3f);
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[1].connection[2] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((1 * quad1Pos + 2 * quad2Pos) / 3f, quad2Pos);
+
         /*foreach(Neighbour neigh in quad.Neighbours)
             if(neigh.edge == 1) Gizmos.color = Color.red;*/
-        Gizmos.DrawLine(quad1Pos, quad2Pos);
+        //Gizmos.DrawLine(quad1Pos, quad2Pos);
 
-        Gizmos.color = Color.Lerp(basecolor, Color.white, 0.33f);
+        //Gizmos.color = Color.Lerp(basecolor, Color.white, 0.33f);
         Gizmos.DrawSphere(quad2Pos, .1f);
+
+        //Debug connectors
         Gizmos.color = basecolor;
+        if (tile.connectors[2].connection[0] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine(quad2Pos, (2 * quad2Pos + 1 * quad3Pos) / 3f);
+        
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[2].connection[1] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((2 * quad2Pos + 1 * quad3Pos) / 3f, (1 * quad2Pos + 2 * quad3Pos) / 3f);
+        
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[2].connection[2] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((1 * quad2Pos + 2 * quad3Pos) / 3f, quad3Pos);
+        
         /*foreach(Neighbour neigh in quad.Neighbours)
             if(neigh.edge == 2) Gizmos.color = Color.red;*/
-        Gizmos.DrawLine(quad2Pos, quad3Pos);
+        //Gizmos.DrawLine(quad2Pos, quad3Pos);
 
-        Gizmos.color = Color.Lerp(basecolor, Color.white, 0.0f);
+        //Gizmos.color = Color.Lerp(basecolor, Color.white, 0.0f);
         Gizmos.DrawSphere(quad3Pos, .1f);
+
         Gizmos.color = basecolor;
+        if (tile.connectors[3].connection[0] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine(quad3Pos, (2 * quad3Pos + 1 * quad0Pos) / 3f);
+
+        Gizmos.color = basecolor;
+        if (tile.connectors[3].connection[1] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((2 * quad3Pos + 1 * quad0Pos) / 3f, (1 * quad3Pos + 2 * quad0Pos) / 3f);
+        
+        Gizmos.color = basecolor;
+        if (tile.connectors[3].connection[2] == Connection.Border) Gizmos.color = Color.red;
+        Gizmos.DrawLine((1 * quad3Pos + 2 * quad0Pos) / 3f, quad0Pos);
+        
         /*foreach(Neighbour neigh in quad.Neighbours)
             if(neigh.edge == 3) Gizmos.color = Color.red;*/
-        Gizmos.DrawLine(quad0Pos, quad3Pos);
+        //Gizmos.DrawLine(quad0Pos, quad3Pos);
 
         Gizmos.color = Color.yellow;
         if(center)Gizmos.DrawSphere(center.transform.position, .5f);

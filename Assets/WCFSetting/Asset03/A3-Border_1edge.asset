@@ -16,13 +16,13 @@ MonoBehaviour:
   - connection: 030000000300000003000000
     blackList: []
     whiteList: []
-  - connection: 000000000000000003000000
+  - connection: 030000000000000000000000
     blackList: []
     whiteList: []
   - connection: 000000000000000000000000
     blackList: []
     whiteList: []
-  - connection: 030000000000000000000000
+  - connection: 000000000000000003000000
     blackList: []
     whiteList: []
   id: 5

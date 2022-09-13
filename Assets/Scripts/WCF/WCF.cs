@@ -205,33 +205,34 @@ namespace WCF
             var meshModifier = new MeshModifier();
             for(int i = 0; i < borders.Count; i++)
             {
-                if (borders[i].edges.Length == 2)
+                int id = FindIndexOfQuad(borders[i].quad, grid);
+                if (!treated.Contains(id))
                 {
-                    int id = FindIndexOfQuad(borders[i].quad, grid);
-                    var tile = new Tile(asset.BorderTiles[1], borders[i].edges[0] > borders[i].edges[1] ? borders[i].edges[0] : borders[i].edges[1]);
-                    if (!AddTileToGrid(grid, treated, id, tile, false))
+                    if (borders[i].edges.Length == 2)
                     {
-                        GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                        var tile = new Tile(asset.BorderTiles[1], borders[i].edges[0] > borders[i].edges[1] ? borders[i].edges[0] : borders[i].edges[1]);
+                        if (!AddTileToGrid(grid, treated, id, tile, false, false))
+                        {
+                            GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                        }
+                    }
+                    else if (borders[i].edges.Length == 1)
+                    {
+                        var tile = new Tile(asset.BorderTiles[0], borders[i].edges[0]);
+                        if (!AddTileToGrid(grid, treated, id, tile, false, false))
+                        {
+                            GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                        }
+                    }
+                    else if (borders[i].points.Length == 1)
+                    {
+                        var tile = new Tile(asset.BorderTiles[2], 3);
+                        if (!AddTileToGrid(grid, treated, id, tile, false, false))
+                        {
+                            GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                        }
                     }
                 }
-                else if (borders[i].edges.Length == 1)
-                {
-                    int id = FindIndexOfQuad(borders[i].quad, grid);
-                    var tile = new Tile(asset.BorderTiles[0], borders[i].edges[0]);
-                    if (!AddTileToGrid(grid, treated, id, tile, false))
-                    {
-                        GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
-                    }
-                }
-                /*else if (borders[i].points.Length == 1)
-                {
-                    int id = FindIndexOfQuad(borders[i].quad, grid);
-                    var tile = new Tile(asset.BorderTiles[2], borders[i].quad.FindCommonPointIndex(borders[i].points[0]));
-                    if (!AddTileToGrid(grid, treated, id, tile, false))
-                    {
-                        GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
-                    }
-                }*/
             }
         }
 
@@ -319,7 +320,7 @@ namespace WCF
             return retry;
         }
 
-        private bool AddTileToGrid(v3Quad[] grid, List<int> treated, int quadIndex, Tile pickedTile, bool autoComplete = true)
+        private bool AddTileToGrid(v3Quad[] grid, List<int> treated, int quadIndex, Tile pickedTile, bool autoComplete = true, bool checkNeigbours = true)
         {
             var retry = false;
             var rollBack = false;
@@ -329,74 +330,79 @@ namespace WCF
             var crossNeighbours = chosenQuad.CrossNeighbours;
 
             var onlyOneAvailableIndexes = new List<int>();
-            for (int x = 0; x < neighbours.Count; x++)
+            if (checkNeigbours)
             {
-                int j = FindIndexOfQuad((v3Quad)neighbours[x].neighbour, grid);
-                if (gridTiled[j] == null)
+                for (int x = 0; x < neighbours.Count; x++)
                 {
+                    int j = FindIndexOfQuad((v3Quad)neighbours[x].neighbour, grid);
+                    if (gridTiled[j] == null)
+                    {
+                        var oldList = new List<Tile>();
+                        oldList.AddRange(availableTiles[j]);
+                        RemoveUnavailableTiles(pickedTile, neighbours, x, j);
+                        if (availableTiles[j].Count == 0)
+                        {
+                            Debug.Log("------ BUG NEIGHB ---------");
+                            Debug.Log("picked tile = " + pickedTile.id);
+                            Debug.Log("available count = " + availableTiles[quadIndex].Count);
+                            Debug.Log("chosen quad = " + chosenQuad.Position);
+                            Debug.Log("neighbour nb = " + x);
+                            Debug.Log("------ END ---------");
+                            if (autoComplete)
+                            {
+                                availableTiles[j] = oldList;
+                                rollBack = true;
+                            }
+                            else if (!hasBackUpTile[j])
+                            {
+                                availableTiles[j].AddRange(backupTiles[j]);
+                                hasBackUpTile[j] = true;
+                            }
+                            else retry = true;
+                        }
+                        else
+                        if (availableTiles[j].Count == 1)
+                        {
+                            onlyOneAvailableIndexes.Add(j);
+                        }
+                    }
+                }
+                for (int x = 0; x < crossNeighbours.Count; x++)
+                {
+                    int j = FindIndexOfQuad((v3Quad)crossNeighbours[x].neighbour, grid);
                     var oldList = new List<Tile>();
                     oldList.AddRange(availableTiles[j]);
-                    RemoveUnavailableTiles(pickedTile, neighbours, x, j);
-                    if (availableTiles[j].Count == 0)
+                    if (gridTiled[j] == null)
                     {
-                        Debug.Log("------ BUG NEIGHB ---------");
-                        Debug.Log("picked tile = " + pickedTile.id);
-                        Debug.Log("available count = " + availableTiles[quadIndex].Count);
-                        Debug.Log("chosen quad = " + chosenQuad.Position);
-                        Debug.Log("neighbour nb = " + x);
-                        Debug.Log("------ END ---------");
-                        if(autoComplete)
+                        RemoveUnavailableTilesFromCross(pickedTile, crossNeighbours, x, j);
+                        if (availableTiles[j].Count == 0)
                         {
-                            availableTiles[j] = oldList;
-                            rollBack = true;
+                            Debug.Log("------ BUG CROSS ---------");
+                            Debug.Log("picked tile = " + pickedTile.id);
+                            Debug.Log("available count = " + availableTiles[quadIndex].Count);
+                            Debug.Log("chosen quad = " + chosenQuad.Position);
+                            Debug.Log("neighbour nb = " + x);
+                            Debug.Log("------ END ---------");
+                            if (autoComplete)
+                            {
+                                availableTiles[j] = oldList;
+                                rollBack = true;
+                            }
+                            else if (!hasBackUpTile[j])
+                            {
+                                availableTiles[j].AddRange(backupTiles[j]);
+                                hasBackUpTile[j] = true;
+                            }
+                            else retry = true;
                         }
-                        else if (!hasBackUpTile[j])
+                        else if (availableTiles[j].Count == 1)
                         {
-                            availableTiles[j].AddRange(backupTiles[j]);
-                            hasBackUpTile[j] = true;
+                            onlyOneAvailableIndexes.Add(j);
                         }
-                    }
-                    else 
-                    if (availableTiles[j].Count == 1)
-                    {
-                        onlyOneAvailableIndexes.Add(j);
                     }
                 }
             }
-            for (int x = 0; x < crossNeighbours.Count; x++)
-            {
-                int j = FindIndexOfQuad((v3Quad)crossNeighbours[x].neighbour, grid);
-                var oldList = new List<Tile>();
-                oldList.AddRange(availableTiles[j]);
-                if (gridTiled[j] == null)
-                {
-                    RemoveUnavailableTilesFromCross(pickedTile, crossNeighbours, x, j);
-                    if (availableTiles[j].Count == 0)
-                    {
-                        Debug.Log("------ BUG CROSS ---------");
-                        Debug.Log("picked tile = " + pickedTile.id);
-                        Debug.Log("available count = " + availableTiles[quadIndex].Count);
-                        Debug.Log("chosen quad = " + chosenQuad.Position);
-                        Debug.Log("neighbour nb = " + x);
-                        Debug.Log("------ END ---------");
-                        if (autoComplete)
-                        {
-                            availableTiles[j] = oldList;
-                            rollBack = true;
-                        }
-                        else if (!hasBackUpTile[j])
-                        {
-                            availableTiles[j].AddRange(backupTiles[j]);
-                            hasBackUpTile[j] = true;
-                        }
-                    }
-                    else if (availableTiles[j].Count == 1)
-                    {
-                        onlyOneAvailableIndexes.Add(j);
-                    }
-                }
-            }
-            if(!rollBack)
+            if(!rollBack && !retry)
             {
                 availableTiles[quadIndex].Clear();
                 gridTiled[quadIndex] = pickedTile;
@@ -420,8 +426,7 @@ namespace WCF
                         availableTiles[quadIndex].AddRange(backupTiles[quadIndex]);
                         hasBackUpTile[quadIndex] = true;
                     }
-                    else
-                        retry = true;
+                    else retry = true;
                 }
             }
 

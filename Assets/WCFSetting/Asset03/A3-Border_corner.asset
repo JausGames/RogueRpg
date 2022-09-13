@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: A3-Border_corner
   m_EditorClassIdentifier: 
   connectors:
-  - connection: 030000000000000000000000
+  - connection: 000000000000000003000000
     blackList: []
     whiteList:
     - {fileID: 11400000, guid: c85c56efa88455c4e9e2ec83b4d065d7, type: 2}
     - {fileID: 11400000, guid: 9f6ee3c3ceb106147a7612ccf695f3a7, type: 2}
-  - connection: 000000000000000003000000
+  - connection: 030000000000000000000000
     blackList: []
     whiteList:
     - {fileID: 11400000, guid: c85c56efa88455c4e9e2ec83b4d065d7, type: 2}

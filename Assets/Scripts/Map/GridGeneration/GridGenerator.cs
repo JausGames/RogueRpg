@@ -183,7 +183,7 @@ namespace GridGenerator
                 }
             }
 
-            /*for (int i = 0; i < notBorderQuad.Count; i++)
+            for (int i = 0; i < notBorderQuad.Count; i++)
             {
                 for(int p = 0; p < notBorderQuad[i].pts.Length; p++)
                 {
@@ -196,7 +196,7 @@ namespace GridGenerator
                         }
                     }
                 }
-            }*/
+            }
 
             meshData.BorderQuads.AddRange(border.ToArray());
             corners = borderPt.ToArray();
