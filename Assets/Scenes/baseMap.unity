@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6efddf93f25dbea46a3f397b8a2ab354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  asset: {fileID: 11400000, guid: e4bd7d706d346fb449a99693938d1bb1, type: 2}
+  asset: {fileID: 11400000, guid: 34b1304c4496c1f4dab1a6d540f8ab4b, type: 2}
   gridTiled: []
   tilesTest: {fileID: 11400000, guid: 8985f4883c5f33f47b1f9171383080b2, type: 2}
   home: {fileID: 4278267385950720005, guid: c2123438fdfcb784785cc41ab5f79936, type: 3}
@@ -409,10 +409,10 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: -1
+      time: -0.0001
       value: 0
-      inSlope: 0.17548354
-      outSlope: 0.17548354
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -420,14 +420,14 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0.12
-      inSlope: 0.17939867
-      outSlope: 0.17939867
+      inSlope: 0.0370739
+      outSlope: 0.0370739
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.1820897
       outWeight: 0.09077598
     - serializedVersion: 3
-      time: 0.1
+      time: 0.09645996
       value: 0.2
       inSlope: 0
       outSlope: 0

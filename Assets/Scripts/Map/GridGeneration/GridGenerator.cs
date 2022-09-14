@@ -59,7 +59,7 @@ namespace GridGenerator
         private IEnumerator StartWfc()
         {
             var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, mapMaterial));
-            while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
+            while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false) || coroutWithdata.result.GetType() == typeof(WaitForSeconds))
             {
                 if (coroutWithdata.result != null && (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 {
@@ -74,7 +74,7 @@ namespace GridGenerator
         private IEnumerator StartNoiseMapping(List<TileHolder> tiles)
         {
             var meshModifier = new MeshModifier();
-            var noise = Noise.GenerateNoiseMap(550, 550, noiseSettings, Vector3.zero);
+            var noise = Noise.GenerateNoiseMap(600, 600, noiseSettings, Vector3.zero);
             var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 15f, heightCurve));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 yield return new WaitForEndOfFrame();

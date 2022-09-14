@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b6cbc7b1ce9574982fadd1eed20673, type: 3}
-  m_Name: A3-Border_corner
+  m_Name: Border_2_edges
   m_EditorClassIdentifier: 
   connectors:
-  - connection: 030000000100000000000000
+  - connection: 030000000300000003000000
     blackList: []
     whiteList: []
-  - connection: 000000000100000003000000
+  - connection: 000000000000000003000000
     blackList: []
     whiteList: []
-  - connection: 000000000000000000000000
+  - connection: 030000000000000000000000
     blackList: []
     whiteList: []
-  - connection: 000000000000000000000000
+  - connection: 030000000300000003000000
     blackList: []
     whiteList: []
-  id: 7
+  id: 6
   symetry: 0
-  mesh: {fileID: -5000772258107784523, guid: 5a54a044cce718044babcc2e3dfb6725, type: 3}
+  mesh: {fileID: 960017251298084561, guid: fa3fd1ea5947d27439c78235d6223f89, type: 3}

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b6cbc7b1ce9574982fadd1eed20673, type: 3}
-  m_Name: Test
+  m_Name: Border_corner
   m_EditorClassIdentifier: 
   connectors:
   - connection: 000000000000000000000000
@@ -19,12 +19,12 @@ MonoBehaviour:
   - connection: 000000000000000000000000
     blackList: []
     whiteList: []
-  - connection: 000000000000000000000000
+  - connection: 030000000000000000000000
     blackList: []
     whiteList: []
-  - connection: 000000000000000000000000
+  - connection: 000000000000000003000000
     blackList: []
     whiteList: []
-  id: 0
-  symetry: 2
-  mesh: {fileID: -4758330144004573201, guid: 909cc3e4c46610b4a9c455ad993cd2f2, type: 3}
+  id: 8
+  symetry: 0
+  mesh: {fileID: -8190916614831273328, guid: fa3fd1ea5947d27439c78235d6223f89, type: 3}

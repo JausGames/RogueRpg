@@ -36,9 +36,18 @@ namespace WCF
         
         public Tile(Tile tile, int nbRotation)
         {
-            this.connectors = tile.RotateTile(nbRotation);
-            this.mesh = tile.RotateMesh(nbRotation);
-            this.id = tile.id;
+            if (nbRotation == 0)
+            {
+                this.connectors = tile.connectors;
+                this.mesh = tile.mesh;
+                this.id = tile.id;
+            }
+            else
+            {
+                this.connectors = tile.RotateTile(nbRotation);
+                this.mesh = tile.RotateMesh(nbRotation);
+                this.id = tile.id;
+            }
         }
 
         private Mesh RotateMesh(int rotation)
