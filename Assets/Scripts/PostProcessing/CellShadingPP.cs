@@ -16,7 +16,7 @@ public sealed class CellShadingPP : CustomPostProcessVolumeComponent, IPostProce
 
     public bool IsActive() => m_Material != null && _isEnabled.value;
 
-    public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.BeforePostProcess;
+    public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.AfterOpaqueAndSky;
 
     const string kShaderName = "Hidden/Shader/CellShadingPP";
 

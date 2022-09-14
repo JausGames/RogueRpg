@@ -193,10 +193,9 @@ Material:
     - _ZWrite: 1
     - testScale: 10
     m_Colors:
-    - Color_a4f1d122174448fe933603372e18c5ed: {r: 0.73333335, g: 0.3647059, b: 0.21960786,
-        a: 0}
-    - Color_caa7c43c6d2e476b8d750d9f39a0e08f: {r: 0.86666673, g: 0.69411767, b: 0.54509807,
-        a: 0}
+    - Color_a4f1d122174448fe933603372e18c5ed: {r: 0.8773585, g: 0.53725743, b: 0.376602,
+        a: 1}
+    - Color_caa7c43c6d2e476b8d750d9f39a0e08f: {r: 1, g: 0.7742092, b: 0.5613208, a: 0}
     - _BaseColor: {r: 0.5, g: 0.3854384, b: 0.2004717, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
