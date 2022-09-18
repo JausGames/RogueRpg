@@ -9,7 +9,7 @@ public class Stage : MonoBehaviour
     [SerializeField] List<int[,]> spotList = new List<int[,]>();
     [SerializeField] Room[,] roomMatrix = new Room[50, 50];
     [SerializeField] GameObject startGO, endGO;
-    [SerializeField] MapUI mapUi;
+    [SerializeField] MapDungeonUI mapUi;
 
     private Room startRoom;
     private int[,] startPos = new int[1, 2];

@@ -22,14 +22,16 @@ public class CameraSaver
         RenderTexture.active = outputMap;
         GL.Clear(true, true, Color.black);
         Graphics.Blit(mainTexture, outputMap, rtMat);*/
-
+        //RenderTexture rendText = new RenderTexture(256,256,8);
+        cam.Render();
         RenderTexture rendText = RenderTexture.active;
         RenderTexture.active = cam.targetTexture;
 
         cam.Render();
 
 
-        Texture2D cameraImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.ARGB32, false, true);
+        Texture2D cameraImage = new Texture2D(cam.targetTexture.width, cam.targetTexture.height, TextureFormat.RGB24, false, true);
+        cameraImage.filterMode = FilterMode.Point;
         cameraImage.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         cameraImage.Apply();
         //RenderTexture.active = rendText;

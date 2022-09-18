@@ -23,7 +23,7 @@ public class Player : Hitable
     [SerializeField] LayerMask pickableLayer;
 
     [Header("Player - UI")]
-    [SerializeField] MapUI mapUi;
+    [SerializeField] MapUi mapUi;
     [SerializeField] HealthBar healthUI;
     [SerializeField] List<GameObject> hidableGo;
     [SerializeField] Text walletTxt;
@@ -94,7 +94,12 @@ public class Player : Hitable
     }
     private void Update()
     {
-        mapUi.SetPlayerPosition(transform.position.x / GridSettings.gridSize.x, transform.position.z / GridSettings.gridSize.y);
+        var gridGen = FindObjectOfType<GridGenerator.GridGenerator>();
+        if (gridGen)
+            mapUi.SetPlayerPosition(transform.position.x , transform.position.z, gridGen.minimapCamera.orthographicSize);
+        else
+            mapUi.SetPlayerPosition(transform.position.x / GridSettings.gridSize.x, transform.position.z / GridSettings.gridSize.y);
+
         //Check for pickable
         var cols = Physics.OverlapSphere(transform.position, PlayerSettings.PickableRadiusCheck, pickableLayer);
         if(cols.Length > 0)

@@ -51,6 +51,7 @@ namespace WCF
             foreach (var tile in asset.Tiles)
             {
                 baseAvailableTiles.Add(new Tile(tile));
+                //baseAvailableTiles.Add(new Tile(tile));
                 baseAvailableTiles[baseAvailableTiles.Count - 1].name = tile.name;
                 if (tile.symetry != Symetry.Full) {
                     baseAvailableTiles.Add(new Tile(tile, 1));
@@ -80,12 +81,21 @@ namespace WCF
             {
                 baseBackupTiles.Add(new Tile(tile));
                 baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name;
-                baseBackupTiles.Add(new Tile(tile, 1));
-                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 90";
-                baseBackupTiles.Add(new Tile(tile, 2));
-                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 180";
-                baseBackupTiles.Add(new Tile(tile, 3));
-                baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 270";
+                if (tile.symetry != Symetry.Full)
+                {
+                    baseBackupTiles.Add(new Tile(tile, 1));
+                    baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 90";
+                }
+                if (tile.symetry == Symetry.None)
+                {
+                    baseBackupTiles.Add(new Tile(tile, 2));
+                    baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 180";
+                }
+                if (tile.symetry == Symetry.None)
+                    {
+                    baseBackupTiles.Add(new Tile(tile, 3));
+                    baseBackupTiles[baseBackupTiles.Count - 1].name = tile.name + " - rot 270";
+                }
             }
 
             var treated = new List<int>();
@@ -138,9 +148,14 @@ namespace WCF
 
                         SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);*/
             
-
             SetUpBorders(meshData.BorderQuads, treated, grid);
             RecalculateAvailables(treated, grid);
+
+            foreach(var constantTiles in asset.ConstantTiles)
+            {
+                SetUpSomeTile(constantTiles.nbIteration, constantTiles.maxPerIt, constantTiles.tile, treated, grid, constantTiles.prefab);
+            }
+
 
             /*var nbPlain = 1;
             var maxCellPlain = 50;
@@ -343,7 +358,7 @@ namespace WCF
                 {
                     var newTile = new Tile(tile);
                     newTile.name = tile.name + " - static";
-                    if(!AddTileToGrid(grid, treated, rnd, newTile, false))
+                    if(!AddTileToGrid(grid, treated, rnd, newTile, false, false))
                     {
                         GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
                         if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
@@ -367,7 +382,7 @@ namespace WCF
                     {
                         var newTile = new Tile(tile);
                         newTile.name = tile.name + " - static";
-                        if (!AddTileToGrid(grid, treated, id, newTile, false))
+                        if (!AddTileToGrid(grid, treated, id, newTile, false, false))
                             GenerateMesh(grid, mapMaterial, meshModifier, quad);
                         
                         nbDone++;

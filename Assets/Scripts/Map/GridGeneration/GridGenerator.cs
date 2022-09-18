@@ -26,6 +26,7 @@ namespace GridGenerator
         //texture
         float tiling = 1 / 10f;
         public Material mapMaterial;
+        public Material miniMapMaterial;
         public Camera minimapCamera = null;
         public Image minimapImage = null;
 
@@ -58,15 +59,16 @@ namespace GridGenerator
         }
         private IEnumerator StartWfc()
         {
-            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, mapMaterial));
+            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, miniMapMaterial));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false) || coroutWithdata.result.GetType() == typeof(WaitForSeconds))
             {
                 if (coroutWithdata.result != null && (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 {
-                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, mapMaterial));
+                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, miniMapMaterial));
                 }
                 yield return new WaitForEndOfFrame();
             }
+
 
             StartCoroutine(StartNoiseMapping((List<TileHolder>)coroutWithdata.result));
         }
@@ -75,18 +77,47 @@ namespace GridGenerator
         {
             var meshModifier = new MeshModifier();
             var noise = Noise.GenerateNoiseMap(600, 600, noiseSettings, Vector3.zero);
-            var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 15f, heightCurve));
+
+
+            float width;
+            var farestX = 0f;
+            var farestZ = 0f;
+            var closestX = 0f;
+            var closestZ = 0f;
+
+            foreach (var holder in tiles)
+            {
+                if (holder.transform.position.x > farestX) farestX = holder.transform.position.x;
+                if (holder.transform.position.x < closestX) closestX = holder.transform.position.x;
+                if (holder.transform.position.z > farestZ) farestZ = holder.transform.position.z;
+                if (holder.transform.position.z < closestZ) closestZ = holder.transform.position.z;
+            }
+
+
+            width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
+
+
+            var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 15f, width, heightCurve));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 yield return new WaitForEndOfFrame();
+
+            SetUpMinimapPicture(width);
+            foreach(var holder in tiles)
+            {
+                holder.GetComponent<MeshRenderer>().material = mapMaterial;
+            }
             
-            SetUpMinimapPicture();
         }
 
 
-        void SetUpMinimapPicture()
+        void SetUpMinimapPicture(float mapWidth)
         {
             var cameraSaver = new CameraSaver();
+            //minimapCamera.orthographicSize = (mapWidth + radius) * .5f;
+            minimapCamera.orthographicSize = 100f;
             minimapImage.sprite = cameraSaver.CameraToSprite(minimapCamera);
+
+            
 
         }
         /*private IEnumerator WaitForMapEnd()

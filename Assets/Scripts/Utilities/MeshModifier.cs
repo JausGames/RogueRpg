@@ -93,7 +93,7 @@ public class MeshModifier
         var mesh = holder.GetComponent<MeshFilter>().mesh;
         var offset = holder.transform.position;
         var width = noise.GetLength(0);
-        var ratio = width / (terrainWidth + 15);
+        var ratio = width / (terrainWidth + 25);
 
         var newMesh = new Mesh();
         newMesh.vertices = new Vector3[mesh.vertices.Length];
@@ -188,29 +188,13 @@ public class MeshModifier
         return Vector3.Cross(sideAB, sideAC).normalized;
     }
 
-    public IEnumerator ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, AnimationCurve heightCurve)
+    public IEnumerator ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, float mapWidth, AnimationCurve heightCurve)
     {
+
         dict.Clear();
-        float width;
-        var farestX = 0f;
-        var farestZ = 0f;
-        var closestX = 0f;
-        var closestZ = 0f;
-
         foreach (var holder in tileHolders)
         {
-            if (holder.transform.position.x > farestX) farestX = holder.transform.position.x;
-            if (holder.transform.position.x < closestX) closestX = holder.transform.position.x;
-            if (holder.transform.position.z > farestZ) farestZ = holder.transform.position.z;
-            if (holder.transform.position.z < closestZ) closestZ = holder.transform.position.z;
-        }
-
-
-        width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
-
-        foreach (var holder in tileHolders)
-        {
-            var modMesh = ModifyTileWithHeightMap(holder, noise, maxHeight, width, heightCurve);
+            var modMesh = ModifyTileWithHeightMap(holder, noise, maxHeight, mapWidth, heightCurve);
             holder.GetComponent<MeshFilter>().mesh = modMesh;
             holder.Tile.mesh = modMesh;
             holder.GetComponent<MeshCollider>().sharedMesh = modMesh;

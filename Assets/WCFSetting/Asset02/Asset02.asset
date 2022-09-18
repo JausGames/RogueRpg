@@ -18,7 +18,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ef2e79a1d0f2f9408c9cd390232bd21, type: 2}
   backUpTiles:
   - {fileID: 11400000, guid: 43ff97d64d8ca07438ca86e2d79f9d9f, type: 2}
+  - {fileID: 11400000, guid: 410fcef04461a1c49bb06e42e2e0b9e2, type: 2}
+  - {fileID: 11400000, guid: 423d12278ac97ba419fd0a089edfcba4, type: 2}
   borderTiles:
   - {fileID: 11400000, guid: 5023518da2d621a4791a5f5c99051a45, type: 2}
   - {fileID: 11400000, guid: e0c38247aa3c43646a531d6b8726fa38, type: 2}
   - {fileID: 11400000, guid: cb935769d28dc8e4ca5f845c66e565ad, type: 2}
+  constantTiles:
+  - nbIteration: 1
+    maxPerIt: 50
+    tile: {fileID: 11400000, guid: 6b36699c245732a4b9dbef0c4bfcd9bc, type: 2}
+    prefab: {fileID: 4278267385950720005, guid: c2123438fdfcb784785cc41ab5f79936,
+      type: 3}
+  - nbIteration: 2
+    maxPerIt: 4
+    tile: {fileID: 11400000, guid: 43ff97d64d8ca07438ca86e2d79f9d9f, type: 2}
+    prefab: {fileID: 0}
