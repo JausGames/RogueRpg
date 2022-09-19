@@ -403,6 +403,7 @@ namespace WCF
                 var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
                 go.transform.parent = transform;
                 go.transform.position = chosenQuad.Position;
+                go.layer = LayerMask.NameToLayer("Terrain");
                 var filter = go.GetComponent<MeshFilter>();
                 var rend = go.GetComponent<MeshRenderer>();
                 var col = go.GetComponent<MeshCollider>();

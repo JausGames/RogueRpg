@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16a9cbde79ddb0e429721ca02407e922, type: 3}
   m_Name: CellShadingPP
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   _posterizeAmount:
     m_OverrideState: 1
@@ -691,7 +691,7 @@ MonoBehaviour:
     m_Value: 1
   fixedExposure:
     m_OverrideState: 1
-    m_Value: 14
+    m_Value: 13.3
   compensation:
     m_OverrideState: 1
     m_Value: 0.23

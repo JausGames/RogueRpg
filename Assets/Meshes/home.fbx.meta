@@ -6,7 +6,37 @@ ModelImporter:
   - first:
       74: -3182161550827825029
     second: Flag|FlagAction
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gold
+    second: {fileID: 2100000, guid: d9b7643e12747a544be277570f49a9ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rocks
+    second: {fileID: 2100000, guid: c2a2483f0166d964f9820b14fd97ef4b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Roof
+    second: {fileID: 2100000, guid: ded6451897c840d44ac52e5c22a836ec, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Window
+    second: {fileID: 2100000, guid: 7200eda9951149e4a86285f9dc4564f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: 06278b3699cd0f64cba857e6246b0298, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: whiteFlag
+    second: {fileID: 2100000, guid: fa8dd955de20b4c4fb1016575b5d1909, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
