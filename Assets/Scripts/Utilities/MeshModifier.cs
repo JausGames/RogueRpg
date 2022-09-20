@@ -205,17 +205,6 @@ public class MeshModifier
         while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
             yield return null;
 
-        
-
-        //yield return SetPointOnMesh(tileHolders);;
-
-        /*var filteredDict = new Dictionary<Vector3, PointOnMesh>();
-        foreach (var key in dict.Keys)
-        {
-            if (dict[key].tile.Count > 1) filteredDict.Add(key, dict[key]);
-        }
-        dict = filteredDict;*/
-
         foreach (var holder in tileHolders)
         {
             holder.Tile.mesh = CalculateNormal(holder);

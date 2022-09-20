@@ -39,12 +39,12 @@ MonoBehaviour:
     min: 0.1
   aperture:
     m_OverrideState: 1
-    m_Value: 15.5
+    m_Value: 32
     min: 1
     max: 32
   focalLength:
     m_OverrideState: 1
-    m_Value: 149
+    m_Value: 163
     min: 1
     max: 300
   bladeCount:

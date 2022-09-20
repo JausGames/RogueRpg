@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 77874dbfcee9b034fb544786292018c3, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1995225645}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.2187573, g: 0.30954418, b: 0.33648145, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &113652981
 Transform:
   m_ObjectHideFlags: 0
@@ -714,8 +714,8 @@ MonoBehaviour:
   - {x: 67.50001, y: 0, z: -12.990377}
   - {x: 60.000008, y: 0, z: -25.980755}
   - {x: 63.750008, y: 0, z: -19.485565}
-  mapMaterial: {fileID: 2100000, guid: 53edc4437f9a8bc47adeb646b38704b8, type: 2}
-  miniMapMaterial: {fileID: 2100000, guid: f4886b6220c16e74fb6b4248251d044a, type: 2}
+  mapMaterial: {fileID: 2100000, guid: 2df36f17ba932004789824f1b8dce8e7, type: 2}
+  miniMapMaterial: {fileID: 2100000, guid: 979681e417f73c343a9d88b732f93ed3, type: 2}
   minimapCamera: {fileID: 1210946660}
   minimapImage: {fileID: 1307517446}
   noiseSettings:
@@ -5615,7 +5615,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &851952083
 Transform:
   m_ObjectHideFlags: 0

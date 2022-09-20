@@ -100,12 +100,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_6eb58fa6d5034e18a80641c553fa641b_Texture_1:
+        m_Texture: {fileID: 2800000, guid: dcaa943f0920fe54c8e323ae1e468c1c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_7f04c5cfa07a4531a9039e5cafc4a745_Texture_1:
         m_Texture: {fileID: 2800000, guid: a928eb40511b5ec449e515f6be2cc577, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_9e1d94fdc04440bcac17a32e682ffb6e_Texture_1:
         m_Texture: {fileID: 2800000, guid: a928eb40511b5ec449e515f6be2cc577, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_eae7331e38a54484bfa66839fc80ebac_Texture_1:
+        m_Texture: {fileID: 2800000, guid: dcaa943f0920fe54c8e323ae1e468c1c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -130,6 +138,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _TerrainHolesTexture:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_36228fb5631b46d0b96ec331ce2ebdc5_Texture_1:
+        m_Texture: {fileID: 2800000, guid: ba5925874368df74bb265805745b5182, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_ff820a0e84134082bbf3094770946c0a_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 2efeae5dd56f26548bdba5436ab9decd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - testTexture:

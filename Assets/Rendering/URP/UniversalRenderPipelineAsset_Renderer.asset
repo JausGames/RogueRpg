@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7f2b5eee24aa6a46a23fa703a72e059, type: 3}
-  m_Name: NewPPSRFCellShading
+  m_Name: PPSRFCellShading
   m_EditorClassIdentifier: 
   m_Active: 0
   settings:
