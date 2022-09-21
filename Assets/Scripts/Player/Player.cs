@@ -27,6 +27,7 @@ public class Player : Hitable
     [SerializeField] HealthBar healthUI;
     [SerializeField] List<GameObject> hidableGo;
     [SerializeField] Text walletTxt;
+    Vector2 oldPos;
 
     [Header("Player - VFX")]
     [SerializeField] ParticleSystem actionParticle;
@@ -94,11 +95,18 @@ public class Player : Hitable
     }
     private void Update()
     {
-        var gridGen = FindObjectOfType<GridGenerator.GridGenerator>();
-        if (gridGen)
-            mapUi.SetPlayerPosition(transform.position.x , transform.position.z, gridGen.minimapCamera.orthographicSize);
-        else
-            mapUi.SetPlayerPosition(transform.position.x / GridSettings.gridSize.x, transform.position.z / GridSettings.gridSize.y);
+        /*var gridGen = FindObjectOfType<GridGenerator.GridGenerator>();
+        if(Mathf.Abs(oldPos.x - transform.position.x) > .2f || Mathf.Abs(oldPos.y - transform.position.z) > .2f)
+        {
+            oldPos.x = transform.position.x;
+            oldPos.y = transform.position.z;
+
+            if (gridGen)
+                mapUi.SetPlayerPosition(transform.position.x , transform.position.z, gridGen.minimapCamera.orthographicSize);
+            else
+                mapUi.SetPlayerPosition(transform.position.x / GridSettings.gridSize.x, transform.position.z / GridSettings.gridSize.y);
+
+        }
 
         //Check for pickable
         var cols = Physics.OverlapSphere(transform.position, PlayerSettings.PickableRadiusCheck, pickableLayer);
@@ -114,7 +122,7 @@ public class Player : Hitable
                     pick.AddToPlayer(this);
                 }
             }
-        }
+        }*/
         /*if(Target != null)
         {
 

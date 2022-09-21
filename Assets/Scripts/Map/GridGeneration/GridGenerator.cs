@@ -103,11 +103,14 @@ namespace GridGenerator
                 yield return new WaitForEndOfFrame();
 
             SetUpMinimapPicture(width);
-            foreach(var holder in tiles)
-            {
-                holder.GetComponent<MeshRenderer>().materials[0] = mapMaterial0;
-                holder.GetComponent<MeshRenderer>().materials[1] = mapMaterial1;
-            }
+
+            /*foreach(var holder in tiles)
+            { 
+                if (holder.Tile.id == 0)
+                    holder.GetComponent<MeshRenderer>().sharedMaterial = mapMaterial0;
+                else 
+                    holder.GetComponent<MeshRenderer>().sharedMaterial = mapMaterial1;
+            }*/
             
         }
 
@@ -115,11 +118,13 @@ namespace GridGenerator
         void SetUpMinimapPicture(float mapWidth)
         {
             var cameraSaver = new CameraSaver();
+            minimapCamera.enabled = true;
             //minimapCamera.orthographicSize = (mapWidth + radius) * .5f;
             minimapCamera.orthographicSize = 100f;
             minimapImage.sprite = cameraSaver.CameraToSprite(minimapCamera);
+            minimapCamera.enabled = false;
 
-            
+
 
         }
         /*private IEnumerator WaitForMapEnd()

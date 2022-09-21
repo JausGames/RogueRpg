@@ -401,6 +401,7 @@ namespace WCF
             if(gridTiled[i])
             {
                 var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
+                go.isStatic = true;
                 go.transform.parent = transform;
                 go.transform.position = chosenQuad.Position;
                 go.layer = LayerMask.NameToLayer("Terrain");
@@ -412,7 +413,7 @@ namespace WCF
                 holder.Quad = quadTiled[i];
                 tileHolders.Add(holder);
                 tiles.Add(go);
-                rend.material = mapMaterial;
+                rend.sharedMaterial = mapMaterial;
                 var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh, chosenQuad.Position);
                 holder.Tile.mesh = modifiedMesh;
                 filter.mesh = modifiedMesh;

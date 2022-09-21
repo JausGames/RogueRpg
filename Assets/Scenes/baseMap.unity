@@ -451,7 +451,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &672969055
 MonoBehaviour:
@@ -567,7 +567,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &721139557
 MonoBehaviour:
@@ -714,7 +714,8 @@ MonoBehaviour:
   - {x: 67.50001, y: 0, z: -12.990377}
   - {x: 60.000008, y: 0, z: -25.980755}
   - {x: 63.750008, y: 0, z: -19.485565}
-  mapMaterial: {fileID: 2100000, guid: 2df36f17ba932004789824f1b8dce8e7, type: 2}
+  mapMaterial0: {fileID: 2100000, guid: 4c1818cae8cc00a4ca21d59d605bafab, type: 2}
+  mapMaterial1: {fileID: 2100000, guid: 7338558fe93d3e94dbe0cb69004ccedb, type: 2}
   miniMapMaterial: {fileID: 2100000, guid: 979681e417f73c343a9d88b732f93ed3, type: 2}
   minimapCamera: {fileID: 1210946660}
   minimapImage: {fileID: 1307517446}
@@ -5698,7 +5699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1210946658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5837,7 +5838,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -5855,7 +5856,7 @@ Camera:
   m_GameObject: {fileID: 1210946657}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 4
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -5877,7 +5878,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 262145
+    m_Bits: 786432
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 1c8fd9ba9989a464180c1ac3d8e478d0, type: 2}
   m_TargetDisplay: 0
