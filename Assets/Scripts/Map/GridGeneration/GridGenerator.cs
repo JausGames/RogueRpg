@@ -25,7 +25,8 @@ namespace GridGenerator
 
         //texture
         float tiling = 1 / 10f;
-        public Material mapMaterial;
+        public Material mapMaterial0;
+        public Material mapMaterial1;
         public Material miniMapMaterial;
         public Camera minimapCamera = null;
         public Image minimapImage = null;
@@ -104,7 +105,8 @@ namespace GridGenerator
             SetUpMinimapPicture(width);
             foreach(var holder in tiles)
             {
-                holder.GetComponent<MeshRenderer>().material = mapMaterial;
+                holder.GetComponent<MeshRenderer>().materials[0] = mapMaterial0;
+                holder.GetComponent<MeshRenderer>().materials[1] = mapMaterial1;
             }
             
         }
