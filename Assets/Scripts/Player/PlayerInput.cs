@@ -7,12 +7,14 @@ using static UnityEngine.InputSystem.InputAction;
 public class PlayerInput : MonoBehaviour
 {
     [SerializeField] PlayerController motor = null;
+    [SerializeField] MoveHitable moveBody = null;
     [SerializeField] PlayerCombat combat = null;
     [SerializeField] Player player = null;
     [SerializeField] bool isAiming = false;
     [SerializeField] LayerMask Enemy = 7;
     [SerializeField] FolloMainCameraRotation freeCamera;
     [SerializeField] CinemachineFreeLook _freeLookComponent;
+    [SerializeField] OrbitCamera orbitCamera = null;
     [SerializeField] Vector2 look;
     [Header("Rolling")]
     private float rollWait = 0.25f;
@@ -72,7 +74,8 @@ public class PlayerInput : MonoBehaviour
     {
         if (motor == null) return;
         var move = context.ReadValue<Vector2>();
-        motor.SetMove(move);
+        //motor.SetMove(move);
+        moveBody.SetMovement(move);
     }
     public void OnLook(CallbackContext context)
     {
@@ -83,9 +86,10 @@ public class PlayerInput : MonoBehaviour
         }
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
-        look = new Vector2(stickLookSpeed.x * input.x, stickLookSpeed.y * input.y);
+        //look = new Vector2(stickLookSpeed.x * input.x, stickLookSpeed.y * input.y);
         //motor.SetLook(look);
-        freeCamera.SetLook(look);
+        //freeCamera.SetLook(look);
+        orbitCamera.SetLook(input);
     }
 
 
@@ -98,8 +102,9 @@ public class PlayerInput : MonoBehaviour
         }
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
-        motor.SetLook(look);
-        look = new Vector2(mouseLookSpeed.x * input.x, -mouseLookSpeed.y * input.y);
+        //motor.SetLook(look);
+        //look = new Vector2(mouseLookSpeed.x * input.x, -mouseLookSpeed.y * input.y);
+        orbitCamera.SetLook(input);
     }
     public void OnMouseSwitchAim(CallbackContext context)
     {

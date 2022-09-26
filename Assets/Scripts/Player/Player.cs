@@ -14,6 +14,7 @@ public class Player : Hitable
     Army army;
     PlayerCombat combat;
     PlayerController motor;
+    [SerializeField] MoveHitable moveBody;
     [SerializeField] PlayerWallet wallet;
 
     [Header("Player - Masks")]
@@ -39,13 +40,25 @@ public class Player : Hitable
     public PlayerWallet Wallet { get => wallet;}
     public PlayerController Motor { get => motor; set => motor = value; }
     public Transform Target { get => motor.Target; }
+    [HideInInspector]
     override public bool CanRotate { 
         get => canRotate; 
         set
             {
                 canRotate = value;
-                motor.IsMoving = value;
+                //motor.IsMoving = value;
             } 
+    }
+    [HideInInspector]
+    override public bool Attacking { 
+        get => Attacking; 
+        set
+        {
+            attacking = value;
+            motor.attacking = value;
+            CanRotate = value;
+            if (!value && motor.Running) motor.Running = false;
+        } 
     }
 
     public void ResetForNewStage()
@@ -148,7 +161,7 @@ public class Player : Hitable
     }
     public void StartRollingMovement()
     {
-        AddStatus(new Status(Status.Type.Rolling, .8f, transform.forward * combatData.Speed));
+        AddStatus(new Status(Status.Type.Rolling, .4f, transform.forward * combatData.Speed * (combatData.Agility / 10f)));
         Debug.Log("Player, StartRollingMovement");
         SetIsMoving(false);
     }
@@ -163,13 +176,13 @@ public class Player : Hitable
         combat = GetComponent<PlayerCombat>();
         combat.CombatData = combatData;
         motor = GetComponent<PlayerController>();
+        moveBody = GetComponent<MoveHitable>();
         army = GetComponent<Army>();
         // to set roll speed
         combatData.Agility = combatData.Agility;
 
-        motor.SetSpeed(combatData.Acceleration);
+        motor.SetAcceleration(combatData.Acceleration);
         motor.SetMaxSpeed(combatData.Speed);
-        motor.updateArmyEvent.AddListener(delegate { army.SetMinionsPosition(transform.position, transform.forward); });
 
         healthUI.SetMaxHealth(combatData.MAX_HEALTH);
         healthUI.SetHealth(combatData.Health);
@@ -205,7 +218,13 @@ public class Player : Hitable
     internal void SetRunning(bool isPerformed)
     {
 
-        if(animator.CanRun()) motor.Running = isPerformed;
+        if (isPerformed && animator.CanRun()) motor.Running = isPerformed;
+        else if (isPerformed) motor.WaitToRun = isPerformed;
+        else
+        {
+            motor.WaitToRun = isPerformed;
+            motor.Running = isPerformed;
+        }
     }
 
     private void SetTargetNull()

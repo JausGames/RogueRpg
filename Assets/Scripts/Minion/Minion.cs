@@ -26,7 +26,7 @@ public class Minion : Hitable
     //[SerializeField] public float nextHit = 0f;
     [Header("Minion - Status")]
     [SerializeField] private bool fighting = false;
-    [SerializeField] private bool attacking = false;
+    //[SerializeField] private bool attacking = false;
     [Space]
     [Header("Minion - Ai")]
     [SerializeField] private float DetectionRadius = 8f;
@@ -63,7 +63,8 @@ public class Minion : Hitable
     public LayerMask EnemyLayer { get => enemyLayer; set => enemyLayer = value; }
     public LayerMask FriendLayer { get => friendLayer; set => friendLayer = value; }
     public AiMotor Motor { get => motor; set => motor = value; }
-    public bool Attacking { get => attacking; set => attacking = value; }
+    [HideInInspector]
+    override public bool Attacking { get => attacking; set => attacking = value; }
     public Hitable Target
     {
         get => target; 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerAnimatorController : AnimatorController
@@ -12,9 +13,10 @@ public class PlayerAnimatorController : AnimatorController
         //animator.SetFloat("SpeedForward", (velocity * Mathf.Sign(forwardRatio)));
         animator.SetFloat("SpeedForward", 1f);
         animator.SetFloat("Speed", velocity);
+        animator.SetFloat("WalkAnimationSpeed", velocity < .5f ? 1f : 2f * velocity);
         //animator.SetFloat("SpeedSide", (velocity * Mathf.Sign(sideRatio)));
         animator.SetFloat("SpeedSide", Mathf.Min(1f, Mathf.Abs(sideRatio) / Mathf.Abs(forwardRatio)));
-        animator.SetFloat("SpeedRatio", Mathf.Lerp(animator.GetFloat("SpeedRatio"),Mathf.Min(1f, Mathf.Abs(forwardRatio) / Mathf.Abs(sideRatio)), .5f));
+        animator.SetFloat("SpeedRatio", Mathf.Min(1f, Mathf.Abs(forwardRatio) / Mathf.Abs(sideRatio)));
         animator.SetLayerWeight(PlayerSettings.GetAnimatorLayers("walk"), isMoving || blocking ? 1f : 0f);
     }
     public override void SetBlocking(bool value)

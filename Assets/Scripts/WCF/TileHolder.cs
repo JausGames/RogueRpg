@@ -10,6 +10,7 @@ public class TileHolder : MonoBehaviour
     private Tile tile;
     private v3Quad quad;
     private GameObject center;
+    public GameObject[] meshHolders = new GameObject[2];
     private Color[] borderColors = new Color[] { Color.white, Color.Lerp(Color.yellow, Color.red, 0.5f), Color.red, Color.blue };
 
     public v3Quad Quad 

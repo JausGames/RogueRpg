@@ -42,7 +42,7 @@ public class CombatData
             //@PlayerVsEnemy
             if (animator.GetType() == typeof(PlayerAnimatorController))
             {
-                animator.GetComponentInParent<Player>().Motor.SetSpeed(speed);
+                animator.GetComponentInParent<Player>().Motor.SetMaxSpeed(speed);
             }
         }
     }
