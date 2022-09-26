@@ -55,7 +55,7 @@ public class Player : Hitable
         set
         {
             attacking = value;
-            motor.attacking = value;
+            //motor.attacking = value;
             CanRotate = value;
             if (!value && motor.Running) motor.Running = false;
         } 
@@ -219,10 +219,10 @@ public class Player : Hitable
     {
 
         if (isPerformed && animator.CanRun()) motor.Running = isPerformed;
-        else if (isPerformed) motor.WaitToRun = isPerformed;
+        //else if (isPerformed) motor.WaitToRun = isPerformed;
         else
         {
-            motor.WaitToRun = isPerformed;
+            //motor.WaitToRun = isPerformed;
             motor.Running = isPerformed;
         }
     }

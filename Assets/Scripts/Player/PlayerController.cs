@@ -56,7 +56,7 @@ public class PlayerController : MoveHitable
         {
             var targetDir = target.position - transform.position;
             targetDir -= targetDir.y * Vector3.up;
-            var angle = Vector3.SignedAngle(transform.forward, targetDir.normalized , transform.up);
+            var angle = Vector3.SignedAngle(transform.forward, targetDir.normalized, transform.up);
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);
             transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, 0.2f);
@@ -69,7 +69,7 @@ public class PlayerController : MoveHitable
             transform.Rotate(transform.up * angle * .2f);
             transform.rotation = Quaternion.Lerp(baseRot, transform.rotation, .7f);
         }
-        else if(orbitCamera.Input.magnitude > 0.05f && rotateWithLook)
+        else if (orbitCamera.Input.magnitude > 0.05f && rotateWithLook)
         {
             var angle = Vector3.SignedAngle(transform.forward, Camera.main.transform.forward, transform.up);
             var baseRot = transform.rotation;
@@ -102,7 +102,7 @@ public class PlayerController : MoveHitable
 
     internal void StopMotion(bool isMoving)
     {
-        if(!isMoving)
+        if (!isMoving)
             body.velocity = Vector3.zero;
         this.isMoving = isMoving;
     }
