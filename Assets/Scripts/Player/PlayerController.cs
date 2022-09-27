@@ -10,7 +10,6 @@ public class PlayerController : MoveHitable
     [SerializeField] bool isMoving = true;
     [SerializeField] bool canStop = true;
     [SerializeField] public bool attacking = false;
-    [SerializeField] AnimationCurve accelerationCurve;
     [SerializeField] OrbitCamera orbitCamera;
     [SerializeField] PlayerAnimatorController animator;
     private bool rotateWithLook;
