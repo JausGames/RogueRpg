@@ -8,6 +8,7 @@ public class HitComboBehavior : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool("AttackCombo", false);
+        //animator.GetComponentInParent<PlayerController>().Attacking = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -19,6 +20,10 @@ public class HitComboBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        //var baseLayer = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"));
+        //if (!animator.GetBool("AttackCombo"))
+        /*if(baseLayer[0].clip.name.Contains("Attack") && !animator.GetBool("AttackCombo"))
+            animator.GetComponentInParent<PlayerController>().Attacking = false;*/
         //if (animator.GetBool("AttackCombo")) animator.SetTrigger("Attack");
     }
 

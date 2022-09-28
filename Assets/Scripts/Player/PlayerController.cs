@@ -9,7 +9,7 @@ public class PlayerController : MoveHitable
 {
     [SerializeField] bool isMoving = true;
     [SerializeField] bool canStop = true;
-    [SerializeField] public bool attacking = false;
+    [SerializeField] private bool attacking = false;
     [SerializeField] OrbitCamera orbitCamera;
     [SerializeField] PlayerAnimatorController animator;
     private bool rotateWithLook;
@@ -24,6 +24,9 @@ public class PlayerController : MoveHitable
     public Transform Target { get => target; set => target = value; }
     public bool Running { get => running; set => running = value; }
     public bool WaitToRun { get => waitToRun; set => waitToRun = value; }
+    public bool Attacking { get => attacking; set => attacking = value; }
+    public Vector2 Input { get => input; set => input = value; }
+
     protected override void UpdateState()
     {
         base.UpdateState();
@@ -82,16 +85,26 @@ public class PlayerController : MoveHitable
 
         UpdateAnimator();
     }
-
+    protected override float DetermineMaxSpeed()
+    {
+        return OnGround ? !attacking ? running ? maxRunSpeed : maxSpeed : maxSpeed * .3f : maxSpeed * .1f;
+    }
+    protected override float DetermineMaxSpeedChange()
+    {
+        float acceleration = OnGround ? !attacking ? running ? maxAcceleration * 2f : maxAcceleration : maxAcceleration * 1f : maxAirAcceleration;
+        var currMaxSpeed = DetermineMaxSpeed();
+        float maxSpeedChange = acceleration * accelerationCurve.Evaluate(velocity.magnitude / currMaxSpeed) * Time.deltaTime;
+        return maxSpeedChange;
+    }
     internal void SetMaxSpeed(float speed)
     {
-        /*maxSpeed = speed;
-        maxRunSpeed = speed * 4f;*/
+        maxSpeed = speed;
+        maxRunSpeed = speed * 2f;
     }
     internal void SetAcceleration(float acceleration)
     {
-        /*maxAcceleration = acceleration;
-        maxAirAcceleration = acceleration * .1f;*/
+        maxAcceleration = acceleration;
+        maxAirAcceleration = acceleration * .1f;
     }
 
     public void RotateWithLook(bool value)

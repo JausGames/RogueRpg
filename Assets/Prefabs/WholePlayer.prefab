@@ -20435,7 +20435,6 @@ GameObject:
   - component: {fileID: 1719466076739687933}
   - component: {fileID: 1719466076739687929}
   - component: {fileID: 1719466076739687930}
-  - component: {fileID: 1719466076739687934}
   - component: {fileID: 1719466076739687935}
   - component: {fileID: 1719466076739687928}
   m_Layer: 9
@@ -20541,20 +20540,6 @@ MonoBehaviour:
   inputSpace: {fileID: 1719466076268382879}
   maxAcceleration: 10
   maxAirAcceleration: 1
-  maxSpeed: 15
-  maxGroundAngle: 25
-  maxStairsAngle: 50
-  maxSnapSpeed: 100
-  probeDistance: 1
-  probeMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  stairsMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  isMoving: 1
-  canStop: 1
-  attacking: 0
   accelerationCurve:
     serializedVersion: 2
     m_Curve:
@@ -20579,6 +20564,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  maxSpeed: 15
+  maxGroundAngle: 25
+  maxStairsAngle: 50
+  maxSnapSpeed: 100
+  probeDistance: 1
+  probeMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stairsMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  minDotProductToChangeSpeed: 0.5
+  speedReductionImpact: 0.5
+  speedTranslationImpact: 0.5
+  isMoving: 1
+  canStop: 1
+  attacking: 0
   orbitCamera: {fileID: 7866124690826018457}
   animator: {fileID: 1719466076739687935}
   target: {fileID: 0}
@@ -20900,46 +20902,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!114 &1719466076739687934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1719466076739687429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66b32a04c88c3c147a0699c28377bbca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minions: []
-  sideOffset: 0.35
-  upwardOffset: 0.35
-  nbByLineCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 3
-      inSlope: 0.4
-      outSlope: 0.4
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10
-      value: 7
-      inSlope: 0.4
-      outSlope: 0.4
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  ui: {fileID: 0}
 --- !u!114 &1719466076739687935
 MonoBehaviour:
   m_ObjectHideFlags: 0

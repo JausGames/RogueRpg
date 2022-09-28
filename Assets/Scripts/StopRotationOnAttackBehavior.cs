@@ -19,7 +19,8 @@ public class StopRotationOnAttackBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(!animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"))[0].clip.name.Contains("Attack"))
+        string animationCurrentName = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"))[0].clip.name;
+        if (!animationCurrentName.Contains("Attack"))
             animator.GetComponentInParent<Hitable>().Attacking = false;
     }
 

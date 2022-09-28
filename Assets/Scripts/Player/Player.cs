@@ -14,7 +14,6 @@ public class Player : Hitable
     Army army;
     PlayerCombat combat;
     PlayerController motor;
-    [SerializeField] MoveHitable moveBody;
     [SerializeField] PlayerWallet wallet;
 
     [Header("Player - Masks")]
@@ -55,8 +54,8 @@ public class Player : Hitable
         set
         {
             attacking = value;
-            //motor.attacking = value;
-            CanRotate = value;
+            motor.Attacking = value;
+            //CanRotate = value;
             if (!value && motor.Running) motor.Running = false;
         } 
     }
@@ -161,7 +160,8 @@ public class Player : Hitable
     }
     public void StartRollingMovement()
     {
-        AddStatus(new Status(Status.Type.Rolling, .4f, transform.forward * combatData.Speed * (combatData.Agility / 10f)));
+        var dir = motor.DesiredVelocity.magnitude > .1 ? motor.DesiredVelocity.normalized : transform.forward;
+        AddStatus(new Status(Status.Type.Rolling, 1f, 3 * dir * motor.MaxSpeed * (combatData.Agility / 10f)));
         Debug.Log("Player, StartRollingMovement");
         SetIsMoving(false);
     }
@@ -176,7 +176,6 @@ public class Player : Hitable
         combat = GetComponent<PlayerCombat>();
         combat.CombatData = combatData;
         motor = GetComponent<PlayerController>();
-        moveBody = GetComponent<MoveHitable>();
         army = GetComponent<Army>();
         // to set roll speed
         combatData.Agility = combatData.Agility;

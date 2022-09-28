@@ -9,19 +9,22 @@ public class MoveHitable : MonoBehaviour
     [SerializeField]
     Transform inputSpace = default;
     protected Vector2 input;
-    protected Vector3 velocity, desiredVelocity;
+    protected Vector3 velocity;
+    protected Vector3 desiredVelocity;
     [SerializeField, Range(0f,100f)]
     protected float maxAcceleration = 10f, maxAirAcceleration = 1f;
-    [SerializeField] AnimationCurve accelerationCurve;
+    [SerializeField] protected AnimationCurve accelerationCurve;
     [SerializeField, Range(0f, 100f)]
     protected float maxSpeed = 10f;
     protected Rigidbody body;
-    bool OnGround => groundContactCount > 0;
+    protected bool OnGround => groundContactCount > 0;
     bool ApplyCounterGravity => true;
 
     public Rigidbody Body { get => body; set => body = value; }
+    public Vector3 DesiredVelocity { get => desiredVelocity;}
+    public float MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
 
-    [Header("Ground detection")]
+    [Header("Ground detection / snapping")]
     int groundContactCount, steepContactCount;
 
     [SerializeField, Range(0f, 90f)]
@@ -38,11 +41,14 @@ public class MoveHitable : MonoBehaviour
     [SerializeField]
     LayerMask probeMask = -1, stairsMask = -1;
 
-    [Header("Speed reduction by angle")]
-    [SerializeField, Range(0f, 1f)]
-    protected float minDotProductToReduceSpeed = .5f;
+    [Header("Speed change by angle")]
+    [SerializeField, Range(0f, 180f)]
+    protected float minChangeSpeedAngle = 0f;
+    protected float minChangeSpeedDotProduct = .5f;
     [SerializeField, Range(0f, 1f)]
     protected float speedReductionImpact = .5f;
+    [SerializeField, Range(0f, 1f)]
+    protected float speedTranslationImpact = .5f;
 
     void Awake()
     {
@@ -53,6 +59,7 @@ public class MoveHitable : MonoBehaviour
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         minStairsDotProduct = Mathf.Cos(maxStairsAngle * Mathf.Deg2Rad);
+        minChangeSpeedDotProduct = Mathf.Cos(minChangeSpeedAngle * Mathf.Deg2Rad);
     }
 
 
@@ -67,14 +74,15 @@ public class MoveHitable : MonoBehaviour
                 Vector3 right = inputSpace.right;
                 right.y = 0f;
                 right.Normalize();
-                desiredVelocity = (forward * input.y + right * input.x) * maxSpeed;
+                desiredVelocity = (forward * input.y + right * input.x) * DetermineMaxSpeed();
             }
         }
         else
         {
-            desiredVelocity = new Vector3(input.x, 0f, input.y) * maxSpeed;
+            desiredVelocity = new Vector3(input.x, 0f, input.y) * DetermineMaxSpeed();
         }
     }
+
 
     private void FixedUpdate()
     {
@@ -151,28 +159,40 @@ public class MoveHitable : MonoBehaviour
         float currentZ = Vector3.Dot(velocity, zAxis);
 
         var currenctVect = new Vector2(velocity.x, velocity.z);
-        Debug.DrawLine(transform.position + Vector3.up * 2f, transform.position + Vector3.up * 2f + new Vector3(currenctVect.x, 0,currenctVect.y), Color.red);
+        Debug.DrawLine(transform.position + Vector3.up * 2f, transform.position + Vector3.up * 2f + new Vector3(currenctVect.x, 0, currenctVect.y), Color.red);
         Debug.DrawLine(transform.position + Vector3.up * 3f, transform.position + Vector3.up * 3f + desiredVelocity, Color.blue);
+        float maxSpeedChange = DetermineMaxSpeedChange();
 
-        float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
         Vector3 counterGravity = OnGround && ApplyCounterGravity ? -Physics.gravity * Time.deltaTime : Vector3.zero;
-        float maxSpeedChange = acceleration * accelerationCurve.Evaluate(velocity.magnitude) * Time.deltaTime;
-
         var curentDotProduct = Vector2.Dot(currenctVect.normalized, new Vector2(desiredVelocity.x, desiredVelocity.z).normalized);
         var angle = Vector2.SignedAngle(currenctVect.normalized, new Vector2(desiredVelocity.x, desiredVelocity.z).normalized);
         var counterDir = Vector2.Perpendicular(currenctVect * Mathf.Sign(angle));
         var counterDirV3 = new Vector3(counterDir.x, 0, counterDir.y).normalized;
         Debug.DrawLine(transform.position + Vector3.up * 2f, transform.position + Vector3.up * 2f + counterDirV3, Color.yellow);
-        curentDotProduct = curentDotProduct < minDotProductToReduceSpeed ? (curentDotProduct - minDotProductToReduceSpeed) / -(1 + minDotProductToReduceSpeed) : 0f;
+        curentDotProduct = curentDotProduct < minChangeSpeedDotProduct ? (curentDotProduct - minChangeSpeedDotProduct) / -(1 + minChangeSpeedDotProduct) : 0f;
 
         float newX = Mathf.MoveTowards(currentX, desiredVelocity.x, maxSpeedChange);
         float newZ = Mathf.MoveTowards(currentZ, desiredVelocity.z, maxSpeedChange);
         Debug.Log("Dot product = " + curentDotProduct);
         var perfectVelocity = new Vector3(velocity.x, 0, velocity.z).magnitude * desiredVelocity.normalized + velocity.y * Vector3.up;
 
-        velocity = (speedReductionImpact * (1f-curentDotProduct )* perfectVelocity) + ((1f-speedReductionImpact) * velocity);
+        // reduce speed depending on currenDotProduct and speedReductionImpact I guess
+        velocity -= curentDotProduct * velocity * speedReductionImpact;
+        velocity = (speedTranslationImpact * perfectVelocity) + ((1f - speedTranslationImpact) * velocity);
         velocity += xAxis * (newX - currentX) + zAxis * (newZ - currentZ) + counterGravity;
     }
+
+    virtual protected float DetermineMaxSpeed()
+    {
+        return maxSpeed;
+    }
+    virtual protected float DetermineMaxSpeedChange()
+    {
+        float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
+        float maxSpeedChange = acceleration * accelerationCurve.Evaluate(velocity.magnitude / maxSpeed) * Time.deltaTime;
+        return maxSpeedChange;
+    }
+
     protected void ClearState()
     {
         groundContactCount = steepContactCount = 0;

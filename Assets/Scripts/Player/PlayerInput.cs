@@ -75,7 +75,7 @@ public class PlayerInput : MonoBehaviour
         if (motor == null) return;
         var move = context.ReadValue<Vector2>();
         //motor.SetMove(move);
-        moveBody.SetMovement(move);
+        moveBody.SetMovement(move.magnitude > .1f ? move : Vector2.zero);
     }
     public void OnLook(CallbackContext context)
     {
@@ -86,10 +86,10 @@ public class PlayerInput : MonoBehaviour
         }
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
-        //look = new Vector2(stickLookSpeed.x * input.x, stickLookSpeed.y * input.y);
+        look = new Vector2(stickLookSpeed.x * input.x, stickLookSpeed.y * input.y);
         //motor.SetLook(look);
         //freeCamera.SetLook(look);
-        orbitCamera.SetLook(input);
+        orbitCamera.SetLook(look.magnitude > .1f ? look : Vector2.zero);
     }
 
 
@@ -103,8 +103,8 @@ public class PlayerInput : MonoBehaviour
         if (isAiming) return;
         var input = context.ReadValue<Vector2>();
         //motor.SetLook(look);
-        //look = new Vector2(mouseLookSpeed.x * input.x, -mouseLookSpeed.y * input.y);
-        orbitCamera.SetLook(input);
+        look = new Vector2(mouseLookSpeed.x * input.x, -mouseLookSpeed.y * input.y);
+        orbitCamera.SetLook(look.magnitude > .1f ? look : Vector2.zero);
     }
     public void OnMouseSwitchAim(CallbackContext context)
     {
