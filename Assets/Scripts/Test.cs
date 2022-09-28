@@ -1,4 +1,4 @@
-using GridGenerator;
+/*using GridGenerator;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +23,7 @@ public class Test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        /*var modMesh = new Mesh();
+        *//*var modMesh = new Mesh();
          var newVerticies = modifier.ModifyMesh(pointsA, tile.mesh);
          modMesh.vertices = newVerticies.vertices;
          modMesh.triangles = tile.mesh.triangles;
@@ -51,7 +51,7 @@ public class Test : MonoBehaviour
          modMesh.RecalculateNormals();
          modMesh.RecalculateBounds();
          modMesh.RecalculateTangents();
-         filterC.mesh = modMesh;*/
+         filterC.mesh = modMesh;*//*
 
         var width = 20;
         var height = 20;
@@ -68,15 +68,15 @@ public class Test : MonoBehaviour
                 var d = new Vector3(i, 0, j + 1) * size;
                 quads.Add( new v3Quad(new Vector3[] {a,b,c,d }) );
             }
-        /*quads[0] = new v3Quad(pointsA);
+        *//*quads[0] = new v3Quad(pointsA);
         quads[1] = new v3Quad(pointsB);
         quads[2] = new v3Quad(pointsC);
-        quads[3] = new v3Quad(pointsD);*/
+        quads[3] = new v3Quad(pointsD);*//*
         for (int i = 1; i < quads.Count; i++)
             quads[i].FindNeighbours(quads.ToArray());
             
 
-       /*         Debug.Log("quad = " + 0);
+       *//*         Debug.Log("quad = " + 0);
         Debug.Log("quad = " + 2);
         quads[1].FindNeighbours(quads);
         Debug.Log("quad = " + 3);
@@ -97,7 +97,7 @@ public class Test : MonoBehaviour
         var test09 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 0);
         var test10 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 1);
         var test11 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 2);
-        var test12 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 3);*/
+        var test12 = Tile.CheckIfTileConnect(tiles[2], tiles[2], 3);*//*
         //wcf.Tiles = tiles;
 
         //  StartCoroutine(wcf.StartWave(quads.ToArray(), mat, ptOnQuad));
@@ -159,3 +159,4 @@ public class Test : MonoBehaviour
             Gizmos.DrawWireSphere(pt, .1f);
     }
 }
+*/

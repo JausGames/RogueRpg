@@ -12,7 +12,7 @@ namespace WCF
         //List<Tile> tiles = new List<Tile>();
         [SerializeField]
         TileAsset asset = null;
-        private Material mapMaterial;
+        private Material[] mapMaterials;
         [SerializeField]
         Tile[] gridTiled;
         bool[] hasBackUpTile;
@@ -26,9 +26,11 @@ namespace WCF
         private GameObject home;
         private List<GameObject> tiles = new List<GameObject>();
         private List<TileHolder> tileHolders = new List<TileHolder>();
+        private List<InstanciableObject> objectsToSpawn = new List<InstanciableObject>();
 
         [SerializeField]
         NoiseSettings noiseSettings;
+        MeshModifier meshModifier;
         [SerializeField]
         AnimationCurve heightCurve;
 
@@ -38,10 +40,12 @@ namespace WCF
         public List<Tile> Tiles { get => asset.Tiles;}
         public bool Done { get => done; set => done = value; }
 
-        public IEnumerator StartWave(MeshData meshData, Material mapMaterial)
+        public IEnumerator StartWave(MeshData meshData, Material[] mapMaterials)
         {
+            meshModifier = new MeshModifier();
+            meshModifier.SetValuesToModMesh(asset.Tiles[0].meshGround.vertices);
             v3Quad[] grid = meshData.Quads.ToArray();
-            this.mapMaterial = mapMaterial;
+            this.mapMaterials = mapMaterials;
             gridTiled = new Tile[grid.Length];
             quadTiled = new v3Quad[grid.Length];
             hasBackUpTile = new bool[grid.Length];
@@ -122,54 +126,14 @@ namespace WCF
                     backupTiles[i][backupTiles[i].Count - 1].name = tile.name;
                 }
             }
-
-            /*foreach(var quad in grid)
-            {
-                var go = new GameObject("quad - " + quad.Position,  typeof(TileHolder));
-                go.GetComponent<TileHolder>().Quad = quad;
-                tiles.Add(go);
-            }*/
-            var meshModifier = new MeshModifier();
             var retry = false;
 
-
-            /*
-                        var nbPlain = 1;
-                        var maxCellPlain = 50;
-                        var tilePlain = asset.Tiles[0];
-
-
-                        SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
-
-                        var nbMount = 2;
-                        var maxCellMount = 5;
-                        var tileMount = asset.BackUpTiles[0];
-
-
-                        SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);*/
             
             SetUpBorders(meshData.BorderQuads, treated, grid);
             RecalculateAvailables(treated, grid);
 
             foreach(var constantTiles in asset.ConstantTiles)
-            {
                 SetUpSomeTile(constantTiles.nbIteration, constantTiles.maxPerIt, constantTiles.tile, treated, grid, constantTiles.prefab);
-            }
-
-
-            /*var nbPlain = 1;
-            var maxCellPlain = 50;
-            var tilePlain = asset.Tiles[0];
-
-
-            SetUpSomeTile(nbPlain, maxCellPlain, tilePlain, treated, grid, home);
-
-            var nbMount = 2;
-            var maxCellMount = 4;
-            var tileMount = asset.Tiles[0];
-
-
-            SetUpSomeTile(nbMount, maxCellMount, tileMount, treated, grid);*/
 
             while(treated.Count < grid.Length)
             {
@@ -195,7 +159,7 @@ namespace WCF
                     var chosenQuad = lowestEntropy[rndCell];
                     retry = PickTileToAdd(grid, treated, chosenQuad);
                     if (!retry)
-                        GenerateMesh(grid, mapMaterial, meshModifier, chosenQuad);
+                        GenerateMesh(grid, mapMaterials, meshModifier, chosenQuad);
                     
                     yield return null;
                 }
@@ -203,21 +167,30 @@ namespace WCF
                 {
                     foreach(var tile in tiles)
                         Destroy(tile);
+                    objectsToSpawn.Clear();
                     tileHolders.Clear();
                     tiles.Clear();
-                    //yield return StartCoroutine(StartWave(grid, mapMaterial));
                     break;
                 }
 
             }
             if (retry) yield return false;
-            else yield return tileHolders;
-                //yield return !retry;
-                /*var noise = Noise.GenerateNoiseMap(500, 500, noiseSettings, Vector3.zero);
-
-                done = true;*/
+            else
+                yield return tileHolders;
             
+
             Debug.Log("End Time = " + Time.time);
+        }
+
+        public void SpawnObjects()
+        {
+            foreach (var obj in objectsToSpawn)
+            {
+                if (Physics.Raycast(obj.position + Vector3.up * 100f, Vector3.down, out RaycastHit hit, 500f))
+                    tiles.Add(Instantiate(obj.prefab, hit.point, obj.rotation, obj.parent));
+            }
+
+            objectsToSpawn.Clear();
         }
 
         private void RecalculateAvailables(List<int> treated, v3Quad[] grid)
@@ -282,7 +255,6 @@ namespace WCF
 
         private void SetUpBorders(List<BorderQuad> borders, List<int> treated, v3Quad[] grid)
         {
-            var meshModifier = new MeshModifier();
             for(int i = 0; i < borders.Count; i++)
             {
                 int id = FindIndexOfQuad(borders[i].quad, grid);
@@ -308,7 +280,7 @@ namespace WCF
                         //var tile = new Tile(asset.BorderTiles[0], borders[i].edges[0] > borders[i].edges[1] ? borders[i].edges[0] : borders[i].edges[1]);
                         if (!AddTileToGrid(grid, treated, id, tile, false, false, false))
                         {
-                            GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                            GenerateMesh(grid, mapMaterials, meshModifier, borders[i].quad);
                         }
                     }
                     else if (borders[i].edges.Length == 1)
@@ -324,7 +296,7 @@ namespace WCF
                         // for ASSET 02 var tile = new Tile(asset.BorderTiles[0], borders[i].edges[0] + 2);
                         if (!AddTileToGrid(grid, treated, id, tile, false, false, false))
                         {
-                            GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                            GenerateMesh(grid, mapMaterials, meshModifier, borders[i].quad);
                         }
                     }
                     else if (borders[i].points.Length == 1)
@@ -339,7 +311,7 @@ namespace WCF
                         tile.name = asset.BorderTiles[0].name + " - rot " + (rotation * 90f);
                         if (!AddTileToGrid(grid, treated, id, tile, false, false, false))
                         {
-                            GenerateMesh(grid, mapMaterial, meshModifier, borders[i].quad);
+                            GenerateMesh(grid, mapMaterials, meshModifier, borders[i].quad);
                         }
                     }
                 }
@@ -348,20 +320,28 @@ namespace WCF
 
         private void SetUpSomeTile(int nbIteration, int maxCell, Tile tile, List<int> treated, v3Quad[] grid, GameObject prefab = null)
         {
-            var meshModifier = new MeshModifier();
             var it = 0;
             while (it < nbIteration)
             {
-                var rnd = UnityEngine.Random.Range(0, grid.Length - 1);
+                var rnd = treated[0]; // I know but it goes in the while this way
                 var pickedQuad = grid[rnd];
+                while(treated.Contains(rnd))
+                {
+                    rnd = UnityEngine.Random.Range(0, grid.Length - 1);
+                    pickedQuad = grid[rnd];
+                    
+                }
                 if (!treated.Contains(rnd))
                 {
                     var newTile = new Tile(tile);
                     newTile.name = tile.name + " - static";
                     if(!AddTileToGrid(grid, treated, rnd, newTile, false, false))
                     {
-                        GenerateMesh(grid, mapMaterial, meshModifier, pickedQuad);
-                        if(prefab)  tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));
+                        GenerateMesh(grid, mapMaterials, meshModifier, pickedQuad);
+                        /*if(prefab)  
+                            tiles.Add(Instantiate(prefab, pickedQuad.Position, Quaternion.identity, transform));*/
+                        if(prefab) 
+                            objectsToSpawn.Add(new InstanciableObject(prefab, pickedQuad.Position, Quaternion.identity, transform));
                     }
                 }
 
@@ -383,7 +363,7 @@ namespace WCF
                         var newTile = new Tile(tile);
                         newTile.name = tile.name + " - static";
                         if (!AddTileToGrid(grid, treated, id, newTile, false, false))
-                            GenerateMesh(grid, mapMaterial, meshModifier, quad);
+                            GenerateMesh(grid, mapMaterials, meshModifier, quad);
                         
                         nbDone++;
                     }
@@ -394,29 +374,57 @@ namespace WCF
             }
         }
 
-        private void GenerateMesh(v3Quad[] grid, Material mapMaterial, MeshModifier meshModifier, v3Quad chosenQuad)
+        private void GenerateMesh(v3Quad[] grid, Material[] mapMaterials, MeshModifier meshModifier, v3Quad chosenQuad)
         {
         // generate mesh
             var i = FindIndexOfQuad(chosenQuad, grid);
             if(gridTiled[i])
             {
-                var go = new GameObject("quad - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(TileHolder), typeof(MeshCollider));
+                var go = new GameObject("quad - " + gridTiled[i].name, typeof(TileHolder));
                 go.transform.parent = transform;
                 go.transform.position = chosenQuad.Position;
                 go.layer = LayerMask.NameToLayer("Terrain");
-                var filter = go.GetComponent<MeshFilter>();
-                var rend = go.GetComponent<MeshRenderer>();
-                var col = go.GetComponent<MeshCollider>();
+
                 var holder = go.GetComponent<TileHolder>();
                 holder.Tile = gridTiled[i];
                 holder.Quad = quadTiled[i];
                 tileHolders.Add(holder);
                 tiles.Add(go);
-                rend.material = mapMaterial;
-                var modifiedMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].mesh, chosenQuad.Position);
-                holder.Tile.mesh = modifiedMesh;
-                filter.mesh = modifiedMesh;
-                col.sharedMesh = modifiedMesh;
+
+                if (gridTiled[i].meshGround)
+                {
+                    var goGround = new GameObject("ground - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+                    goGround.transform.parent = go.transform;
+                    goGround.transform.position = chosenQuad.Position;
+                    goGround.layer = LayerMask.NameToLayer("Terrain");
+
+                    var filterGround = goGround.GetComponent<MeshFilter>();
+                    var rendGround = goGround.GetComponent<MeshRenderer>();
+                    var colGround = goGround.GetComponent<MeshCollider>();
+                    rendGround.material = mapMaterials[0];
+                    var modifiedGroundMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].meshGround, chosenQuad.Position);
+                    holder.Tile.meshGround = modifiedGroundMesh;
+                    filterGround.mesh = modifiedGroundMesh;
+                    colGround.sharedMesh = modifiedGroundMesh;
+                    holder.meshHolders[0] = goGround;
+                }
+                if (gridTiled[i].meshHighground)
+                {
+                    var goHighround = new GameObject("highground - " + gridTiled[i].name, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+                    goHighround.transform.parent = go.transform;
+                    goHighround.transform.position = chosenQuad.Position;
+                    goHighround.layer = LayerMask.NameToLayer("Terrain");
+
+                    var filterHighground = goHighround.GetComponent<MeshFilter>();
+                    var rendHighground = goHighround.GetComponent<MeshRenderer>();
+                    var colHighGround = goHighround.GetComponent<MeshCollider>();
+                    rendHighground.material = mapMaterials[1];
+                    var modifiedHighgroundMesh = meshModifier.ModifyMesh(grid[i].pts, gridTiled[i].meshHighground, chosenQuad.Position);
+                    holder.Tile.meshHighground = modifiedHighgroundMesh;
+                    filterHighground.mesh = modifiedHighgroundMesh;
+                    colHighGround.sharedMesh = modifiedHighgroundMesh;
+                    holder.meshHolders[1] = goHighround;
+                }
             }
         }
 
@@ -543,11 +551,10 @@ namespace WCF
 
             if(autoComplete)
             {
-                var meshModifier = new MeshModifier();
                 foreach (var index in onlyOneAvailableIndexes)
                 {
                     if(availableTiles[index].Count == 1 && !AddTileToGrid(grid, treated, index, availableTiles[index][0])) 
-                        GenerateMesh(grid, mapMaterial, meshModifier, grid[index]);
+                        GenerateMesh(grid, mapMaterials, meshModifier, grid[index]);
                 }
             }
             return retry;
@@ -605,6 +612,22 @@ namespace WCF
                 if (!treated.Contains(i) && availableTiles[i].Count == lowestEntropy) result.Add(grid[i]);
             }
             return result;
+        }
+    }
+
+    public class InstanciableObject
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+        public GameObject prefab;
+        public Transform parent;
+
+        public InstanciableObject(GameObject prefab, Vector3 position, Quaternion rotation,  Transform parent = null)
+        { 
+            this.position = position;
+            this.rotation = rotation;
+            this.prefab = prefab;
+            this.parent = parent;
         }
     }
 

@@ -253,7 +253,7 @@ namespace GridGenerator
         {
             var edge1 = pts[0] - pts[2];
             var edge2 = pts[1] - pts[3];
-
+            var smoothingValue = 1f;
             //bool[] canMove = new bool[] { true,true,true,true };
             bool[] canMove = new bool[] { !haveCommonPoint(blackList, pts[0]), !haveCommonPoint(blackList, pts[1]), !haveCommonPoint(blackList, pts[2]), !haveCommonPoint(blackList, pts[3]) };
 
@@ -261,17 +261,25 @@ namespace GridGenerator
 
             if (edge1.magnitude > edge2.magnitude)
             {
-                if (canMove[0]) pts[0] -= edge1.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
+                /*if (canMove[0]) pts[0] -= edge1.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
                 if (canMove[1]) pts[1] += edge2.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
                 if (canMove[2]) pts[2] += edge1.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
-                if (canMove[3]) pts[3] -= edge2.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;
+                if (canMove[3]) pts[3] -= edge2.normalized * (edge1.magnitude - edge2.magnitude) * 0.5f;*/
+                if (canMove[0]) pts[0] -= edge1.normalized * smoothingValue;
+                if (canMove[1]) pts[1] += edge2.normalized * smoothingValue;
+                if (canMove[2]) pts[2] += edge1.normalized * smoothingValue;
+                if (canMove[3]) pts[3] -= edge2.normalized * smoothingValue;
             }
             else
             {
-                if (canMove[0]) pts[0] += edge1.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
+                /*if (canMove[0]) pts[0] += edge1.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
                 if (canMove[1]) pts[1] -= edge2.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
                 if (canMove[2]) pts[2] -= edge1.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
-                if (canMove[3]) pts[3] += edge2.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;
+                if (canMove[3]) pts[3] += edge2.normalized * (edge2.magnitude - edge1.magnitude) * 0.5f;*/
+                if (canMove[0]) pts[0] += edge1.normalized * smoothingValue;
+                if (canMove[1]) pts[1] -= edge2.normalized * smoothingValue;
+                if (canMove[2]) pts[2] -= edge1.normalized * smoothingValue;
+                if (canMove[3]) pts[3] += edge2.normalized * smoothingValue;
             }
         }
 

@@ -22,7 +22,8 @@ namespace WCF
         public TileConnector[] connectors = new TileConnector[4];
         public int id;
         public Symetry symetry;
-        public Mesh mesh;
+        public Mesh meshGround;
+        public Mesh meshHighground;
         private Vector3 center;
 
         public Vector3 Center { get => center; set => center = value; }
@@ -30,7 +31,8 @@ namespace WCF
         public Tile(Tile tile)
         {
             this.connectors = tile.connectors;
-            this.mesh = tile.mesh;
+            if (tile.meshGround) this.meshGround = tile.meshGround;
+            if (tile.meshHighground) this.meshHighground = tile.meshHighground;
             this.id = tile.id;
         }
         
@@ -39,18 +41,20 @@ namespace WCF
             if (nbRotation == 0)
             {
                 this.connectors = tile.connectors;
-                this.mesh = tile.mesh;
+                if (tile.meshGround) this.meshGround = tile.meshGround;
+                if (tile.meshHighground) this.meshHighground = tile.meshHighground;
                 this.id = tile.id;
             }
             else
             {
                 this.connectors = tile.RotateTile(nbRotation);
-                this.mesh = tile.RotateMesh(nbRotation);
+                if (tile.meshGround) this.meshGround = tile.RotateMesh(tile.meshGround, nbRotation);
+                if (tile.meshHighground) this.meshHighground = tile.RotateMesh(tile.meshHighground, nbRotation);
                 this.id = tile.id;
             }
         }
 
-        private Mesh RotateMesh(int rotation)
+        private Mesh RotateMesh(Mesh mesh, int rotation)
         {
             var rotatedMesh = new Mesh();
             var points = new Vector3[mesh.vertices.Length];

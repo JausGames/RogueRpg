@@ -22,4 +22,8 @@ public class WeaponAnimatorEvent : MonoBehaviour
         }
         //owner.CombatData.Weapon.ResetCombo();
     }
+    public void StopAttacking()
+    {
+        ((Player)owner).Attacking = false;
+    }
 }

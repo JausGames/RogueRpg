@@ -25,7 +25,7 @@ MonoBehaviour:
       time: 0.2
     origin: {fileID: 0}
     statusList: []
-    range: 1.4
+    range: 1.7
     triggerId: -551155163
     colliderId: 0
   - damage: 8
@@ -34,7 +34,7 @@ MonoBehaviour:
       time: 0.2
     origin: {fileID: 0}
     statusList: []
-    range: 1.7
+    range: 3
     triggerId: 1080829965
     colliderId: 1
   currentAttack:

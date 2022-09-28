@@ -12,6 +12,7 @@ public class AnimatorController : MonoBehaviour
     protected int animAttackTrigger;
 
     public Animator Animator { get => animator; set => animator = value; }
+    public bool WaitToAttack { get => waitToAttack; set => waitToAttack = value; }
 
     private void Update()
     {

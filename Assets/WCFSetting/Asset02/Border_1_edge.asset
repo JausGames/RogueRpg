@@ -27,4 +27,6 @@ MonoBehaviour:
     whiteList: []
   id: 7
   symetry: 1
-  mesh: {fileID: 6001449841411486646, guid: fa3fd1ea5947d27439c78235d6223f89, type: 3}
+  meshGround: {fileID: 0}
+  meshHighground: {fileID: -6447502083800641872, guid: ef486e7095dc2184ebd48596dd9561a8,
+    type: 3}

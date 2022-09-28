@@ -7,7 +7,7 @@ public class PlayerSettings : Settings
     private static int startMoney = 10;
     private static float pickableRadius = .2f;
     private static float fastRollAgilityValue = 5f;
-    private static float maxAnimationSpeed = 35f;
+    private static float maxAnimationSpeed = 60f;
     private static float maxWeaponDamageBoostByStrength = 1.5f;
     private static Dictionary<string, int> animatorLayers = new Dictionary<string, int>() { { "base", 0 }, { "walk", 1 }, { "block", 2 }, { "roll", 3 } };
 

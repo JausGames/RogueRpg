@@ -7,19 +7,25 @@ using static GridGenerator.MeshData;
 
 public class MeshModifier
 {
-    public Mesh mesh;
+    //public Mesh mesh;
     public MeshFilter filter;
-    public Dictionary<Vector3, PointOnMesh> dict = new Dictionary<Vector3, PointOnMesh>();
+    public Dictionary<Vector3, PointOnMesh> dictGround = new Dictionary<Vector3, PointOnMesh>();
+    public Dictionary<Vector3, PointOnMesh> dictHighground = new Dictionary<Vector3, PointOnMesh>();
     public List<PointOnMesh> ptOnMesh = new List<PointOnMesh>();
 
-    public Vector3[] newVerticies;
     private float height = 100f;
     private float noiseCoef = 20f;
 
+    private float xFactor = 0;
+    private float zFactor = 0;
+    private float xOffset = 0;
+    private float zOffset = 0;
+
     public Mesh ModifyMesh(Vector3[] irregularCell, Mesh mesh, Vector3 offset)
     {
+        if (mesh == null) return null;
         var modMesh = new Mesh();
-        newVerticies = ModifyMesh(irregularCell, mesh.vertices, offset);
+        var newVerticies = ModifyMesh(irregularCell, mesh.vertices, offset);
 
 
         float lenght = (irregularCell[0] - irregularCell[2]).magnitude > (irregularCell[1] - irregularCell[3]).magnitude ? (irregularCell[0] - irregularCell[2]).magnitude : (irregularCell[1] - irregularCell[3]).magnitude;
@@ -39,21 +45,13 @@ public class MeshModifier
         //modMesh.RecalculateUVDistributionMetrics();
         return modMesh;
     }
-    public Vector3[] ModifyMesh(Vector3[] irregularCell, Vector3[] points, Vector3 offset)
+    public void SetValuesToModMesh(Vector3[] points)
     {
-        var A = irregularCell[0];
-        var B = irregularCell[1];
-        var C = irregularCell[2];
-        var D = irregularCell[3];
 
-        //var modMesh = new Mesh();
-        //modMesh = mesh;
-        newVerticies = new Vector3[points.Length];
-        float minX, minZ;
-        minX = minZ = Mathf.Infinity;
-        float maxX, maxZ;
-        maxX = maxZ = -Mathf.Infinity;
-
+        float maxX = -Mathf.Infinity;
+        float minX = Mathf.Infinity;
+        float maxZ = -Mathf.Infinity;
+        float minZ = Mathf.Infinity;
         for (int i = 0; i < points.Length; i++)
         {
             var X = points[i].x;
@@ -66,10 +64,22 @@ public class MeshModifier
         }
 
 
-        float xFactor = 1f / (maxX - minX);
-        float zFactor = 1f / (maxZ - minZ);
-        float xOffset = -minX;
-        float zOffset = -minZ;
+        xFactor = 1f / (maxX - minX);
+        zFactor = 1f / (maxZ - minZ);
+        xOffset = -minX;
+        zOffset = -minZ;
+    }
+    public Vector3[] ModifyMesh(Vector3[] irregularCell, Vector3[] points, Vector3 offset)
+    {
+        var newVertices = new Vector3[points.Length];
+        var A = irregularCell[0];
+        var B = irregularCell[1];
+        var C = irregularCell[2];
+        var D = irregularCell[3];
+
+        //var modMesh = new Mesh();
+        //modMesh = mesh;
+
 
         for (int i = 0; i < points.Length; i++)
         {
@@ -82,18 +92,18 @@ public class MeshModifier
             var Q = Vector3.Lerp(A, B, X);
             var R = Vector3.Lerp(D, C, X);
             var P = Vector3.Lerp(R, Q, Z) + Y * Vector3.up;
-            newVerticies[i] = P - offset;
+            newVertices[i] = P - offset;
         }
 
-        return newVerticies;
+        return newVertices;
     }
 
-    public Mesh ModifyTileWithHeightMap(TileHolder holder, float[,] noise, float maxHeight, float terrainWidth, AnimationCurve heightCurve)
+    public Mesh ModifyTileWithHeightMap(TileHolder holder, Mesh mesh, float[,] noise, float maxHeight, float terrainWidth, AnimationCurve heightCurve)
     {
-        var mesh = holder.GetComponent<MeshFilter>().mesh;
+        if (mesh == null) return null;
         var offset = holder.transform.position;
         var width = noise.GetLength(0);
-        var ratio = width / (terrainWidth + 25);
+        var ratio = width / (terrainWidth + 50);
 
         var newMesh = new Mesh();
         newMesh.vertices = new Vector3[mesh.vertices.Length];
@@ -118,12 +128,13 @@ public class MeshModifier
         return newMesh;
     }
 
-    private Mesh CalculateNormal(TileHolder holder)
+    private Mesh CalculateNormal(TileHolder holder, int meshNb)
     {
-            var tile = holder.Tile;
-            var mesh = tile.mesh;
-            Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
-            Debug.Log("MeshModifier, CalculateNormal : Calculating Tile in " + tile.Center);
+        var tile = holder.Tile;
+        var mesh = meshNb == 0 ? tile.meshGround : tile.meshHighground;
+        Vector3[] vertexNormals = new Vector3[mesh.vertices.Length];
+        var dict = meshNb == 0 ? dictGround : dictHighground;
+        Debug.Log("MeshModifier, CalculateNormal : Calculating Tile in " + tile.Center);
         for (int i = 0; i < mesh.vertices.Length; i++)
             {
                 var pt = Round(mesh.vertices[i] + tile.Center);
@@ -134,7 +145,7 @@ public class MeshModifier
                     {
                         //if(tile != dict[pt].tile[x]) 
                         //{ 
-                            var connectedMesh = dict[pt].tile[x].mesh;
+                            var connectedMesh = meshNb == 0 ? dict[pt].tile[x].meshGround : dict[pt].tile[x].meshHighground;
                             Vector3 offset = dict[pt].tile[x].Center;
                             List<int[]> trisList = dict[pt].connectedTris[x];
 
@@ -191,24 +202,48 @@ public class MeshModifier
     public IEnumerator ModifyMeshWithHeightMap(List<TileHolder> tileHolders, float[,] noise, float maxHeight, float mapWidth, AnimationCurve heightCurve)
     {
 
-        dict.Clear();
+        dictGround.Clear();
+        dictHighground.Clear();
         foreach (var holder in tileHolders)
         {
-            var modMesh = ModifyTileWithHeightMap(holder, noise, maxHeight, mapWidth, heightCurve);
-            holder.GetComponent<MeshFilter>().mesh = modMesh;
-            holder.Tile.mesh = modMesh;
-            holder.GetComponent<MeshCollider>().sharedMesh = modMesh;
-            yield return null;
+            if(holder.Tile.meshGround)
+            {
+                var modGroundMesh = ModifyTileWithHeightMap(holder, holder.Tile.meshGround, noise, maxHeight, mapWidth, heightCurve);
+                holder.meshHolders[0].GetComponent<MeshFilter>().sharedMesh = modGroundMesh;
+                holder.Tile.meshGround = modGroundMesh;
+                holder.meshHolders[0].GetComponent<MeshCollider>().sharedMesh = modGroundMesh;
+            }
+
+            if (holder.Tile.meshHighground)
+            {
+                var modHighgroundMesh = ModifyTileWithHeightMap(holder, holder.Tile.meshHighground, noise, maxHeight, mapWidth, heightCurve);
+                holder.meshHolders[1].GetComponent<MeshFilter>().sharedMesh = modHighgroundMesh;
+                holder.Tile.meshHighground = modHighgroundMesh;
+                holder.meshHolders[1].GetComponent<MeshCollider>().sharedMesh = modHighgroundMesh;
+                yield return null;
+            }
+
+            var coroutWithdata = new CoroutineWithData(tileHolders[0], SetPointOnMesh(holder));
+            while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
+                yield return null;
         }
 
-        var coroutWithdata = new CoroutineWithData(tileHolders[0], SetPointOnMesh(tileHolders));
+        /*var coroutWithdata = new CoroutineWithData(tileHolders[0], SetPointOnMesh(tileHolders));
         while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
-            yield return null;
+            yield return null;*/
 
         foreach (var holder in tileHolders)
         {
-            holder.Tile.mesh = CalculateNormal(holder);
-            holder.GetComponent<MeshFilter>().mesh = holder.Tile.mesh;
+            if (holder.Tile.meshGround)
+            {
+                holder.meshHolders[0].GetComponent<MeshFilter>().mesh = holder.Tile.meshGround;
+                holder.Tile.meshGround = CalculateNormal(holder, 0);
+            }
+            if (holder.Tile.meshHighground)
+            {
+                holder.Tile.meshHighground = CalculateNormal(holder, 1);
+                holder.meshHolders[1].GetComponent<MeshFilter>().mesh = holder.Tile.meshHighground;
+            }
             yield return null;
         }
         yield return true;
@@ -226,56 +261,104 @@ public class MeshModifier
             Mathf.Round(vector.y * multiplier) / multiplier,
             Mathf.Round(vector.z * multiplier) / multiplier);
     }
-    private IEnumerator SetPointOnMesh(List<TileHolder> tileHolders)
+    private IEnumerator SetPointOnMesh(TileHolder holder)
     {
-        foreach (var holder in tileHolders)
-        {
+        /*foreach (var holder in tileHolders)
+        {*/
             var offset = holder.transform.position;
             holder.Tile.Center = offset;
-            var mesh = holder.Tile.mesh;
-
-            for (int v = 0; v < mesh.vertices.Length; v++)
+            var mesh = holder.Tile.meshGround;
+            if (holder.Tile.meshGround)
             {
-                var pointPosition = mesh.vertices[v];
-
-                if (!dict.ContainsKey(Round(pointPosition + offset, 2)))
+                for (int v = 0; v < mesh.vertices.Length; v++)
                 {
-                    var pt = new PointOnMesh(Round(pointPosition + offset, 2));
-                    dict.Add(Round(pointPosition + offset, 2), pt);
-                    ptOnMesh.Add(pt);
+                    var pointPosition = mesh.vertices[v];
 
-                }
-                var trisList = new List<int[]>();
-
-                int triangleCount = mesh.triangles.Length / 3;
-                for (int t = 0; t < triangleCount; t++)
-                {
-                    int TrisIndex = t * 3;
-                    int A = mesh.triangles[TrisIndex];
-                    int B = mesh.triangles[TrisIndex + 1];
-                    int C = mesh.triangles[TrisIndex + 2];
-
-                    /*if (mesh.vertices[A] == pointPosition
-                        || mesh.vertices[B] == pointPosition
-                        || mesh.vertices[C] == pointPosition)*/
-                    if ((mesh.vertices[A] - pointPosition).magnitude < 0.1f
-                        || (mesh.vertices[B] - pointPosition).magnitude < 0.1f
-                        || (mesh.vertices[C] - pointPosition).magnitude < 0.1f)
+                    if (!dictGround.ContainsKey(Round(pointPosition + offset, 2)))
                     {
-                        trisList.Add(new int[] { TrisIndex, TrisIndex + 1, TrisIndex + 2 });
-                    }
-                }
+                        var pt = new PointOnMesh(Round(pointPosition + offset, 2));
+                        dictGround.Add(Round(pointPosition + offset, 2), pt);
+                        ptOnMesh.Add(pt);
 
-                var pointOnMesh = dict[Round(pointPosition + offset, 2)];
-                pointOnMesh.tile.Add(holder.Tile);
-                pointOnMesh.ptNb.Add(v);
-                pointOnMesh.connectedTris.Add(trisList);
-                //dict[pointPosition + offset] = pointOnMesh;
+                    }
+                    var trisList = new List<int[]>();
+
+                    int triangleCount = mesh.triangles.Length / 3;
+                    for (int t = 0; t < triangleCount; t++)
+                    {
+                        int TrisIndex = t * 3;
+                        int A = mesh.triangles[TrisIndex];
+                        int B = mesh.triangles[TrisIndex + 1];
+                        int C = mesh.triangles[TrisIndex + 2];
+
+                        /*if (mesh.vertices[A] == pointPosition
+                            || mesh.vertices[B] == pointPosition
+                            || mesh.vertices[C] == pointPosition)*/
+                        if ((mesh.vertices[A] - pointPosition).magnitude < 0.1f
+                            || (mesh.vertices[B] - pointPosition).magnitude < 0.1f
+                            || (mesh.vertices[C] - pointPosition).magnitude < 0.1f)
+                        {
+                            trisList.Add(new int[] { TrisIndex, TrisIndex + 1, TrisIndex + 2 });
+                        }
+                    }
+
+                    var pointOnMesh = dictGround[Round(pointPosition + offset, 2)];
+                    pointOnMesh.tile.Add(holder.Tile);
+                    pointOnMesh.ptNb.Add(v);
+                    pointOnMesh.connectedTris.Add(trisList);
+                    //dict[pointPosition + offset] = pointOnMesh;
+
+                }
 
             }
-            yield return null;
-        }
-        yield return true;
+
+            if (holder.Tile.meshHighground)
+            {
+                mesh = holder.Tile.meshHighground;
+                for (int v = 0; v < mesh.vertices.Length; v++)
+                {
+                    var pointPosition = mesh.vertices[v];
+
+                    if (!dictHighground.ContainsKey(Round(pointPosition + offset, 2)))
+                    {
+                        var pt = new PointOnMesh(Round(pointPosition + offset, 2));
+                        dictHighground.Add(Round(pointPosition + offset, 2), pt);
+                        ptOnMesh.Add(pt);
+
+                    }
+                    var trisList = new List<int[]>();
+
+                    int triangleCount = mesh.triangles.Length / 3;
+                    for (int t = 0; t < triangleCount; t++)
+                    {
+                        int TrisIndex = t * 3;
+                        int A = mesh.triangles[TrisIndex];
+                        int B = mesh.triangles[TrisIndex + 1];
+                        int C = mesh.triangles[TrisIndex + 2];
+
+                        /*if (mesh.vertices[A] == pointPosition
+                            || mesh.vertices[B] == pointPosition
+                            || mesh.vertices[C] == pointPosition)*/
+                        if ((mesh.vertices[A] - pointPosition).magnitude < 0.1f
+                            || (mesh.vertices[B] - pointPosition).magnitude < 0.1f
+                            || (mesh.vertices[C] - pointPosition).magnitude < 0.1f)
+                        {
+                            trisList.Add(new int[] { TrisIndex, TrisIndex + 1, TrisIndex + 2 });
+                        }
+                    }
+
+                    var pointOnMesh = dictHighground[Round(pointPosition + offset, 2)];
+                    pointOnMesh.tile.Add(holder.Tile);
+                    pointOnMesh.ptNb.Add(v);
+                    pointOnMesh.connectedTris.Add(trisList);
+                    //dict[pointPosition + offset] = pointOnMesh;
+
+                }
+            }
+            
+            yield return true;
+        /*}
+        yield return true;*/
     }
 }
 

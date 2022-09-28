@@ -18,6 +18,7 @@ public class WeaponTrigger : MonoBehaviour
             if (value)
                 foreach (ParticleSystem prtcl in particles)
                 {
+                    if(prtcl.isPaused ||prtcl.isStopped) prtcl.Play();
                     var em = prtcl.emission;
                     em.enabled = true;
                 }

@@ -11,6 +11,7 @@ abstract public class Hitable : MonoBehaviour
     public UnityEvent dieEvent;
     [Header("Base - Status")]
     [SerializeField] protected bool moving = false;
+    [SerializeField] protected bool attacking = false;
     [SerializeField] protected bool frozen = false;
     [SerializeField] protected bool rolling = false;
     [SerializeField] protected bool canRotate = true;
@@ -35,6 +36,7 @@ abstract public class Hitable : MonoBehaviour
     protected bool Blocking { get => blockingShield.IsActive; set => blockingShield.IsActive = value; }
     protected bool Countering { get => blockingShield.IsCounter; set => blockingShield.IsCounter = value; }
     virtual public bool CanRotate { get => canRotate; set => canRotate = value; }
+    virtual public bool Attacking { get => attacking; set => attacking = value; }
 
     abstract public void Attack(Hitable victim);
 

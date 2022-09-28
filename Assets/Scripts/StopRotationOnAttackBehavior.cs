@@ -7,7 +7,7 @@ public class StopRotationOnAttackBehavior : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.GetComponentInParent<Hitable>().CanRotate = false;
+        animator.GetComponentInParent<Hitable>().Attacking = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -19,8 +19,9 @@ public class StopRotationOnAttackBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(!animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"))[0].clip.name.Contains("Attack"))
-            animator.GetComponentInParent<Hitable>().CanRotate = true;
+        string animationCurrentName = animator.GetCurrentAnimatorClipInfo(PlayerSettings.GetAnimatorLayers("base"))[0].clip.name;
+        if (!animationCurrentName.Contains("Attack"))
+            animator.GetComponentInParent<Hitable>().Attacking = false;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

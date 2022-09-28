@@ -25,9 +25,8 @@ namespace GridGenerator
 
         //texture
         float tiling = 1 / 10f;
-        public Material mapMaterial0;
-        public Material mapMaterial1;
-        public Material miniMapMaterial;
+        public Material[] mapMaterials;
+        public Material[] miniMapMaterials;
         public Camera minimapCamera = null;
         public Image minimapImage = null;
 
@@ -60,12 +59,12 @@ namespace GridGenerator
         }
         private IEnumerator StartWfc()
         {
-            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, miniMapMaterial));
+            var coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, miniMapMaterials));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false) || coroutWithdata.result.GetType() == typeof(WaitForSeconds))
             {
                 if (coroutWithdata.result != null && (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 {
-                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, miniMapMaterial));
+                    coroutWithdata = new CoroutineWithData(this, wcf.StartWave(meshData, miniMapMaterials));
                 }
                 yield return new WaitForEndOfFrame();
             }
@@ -98,16 +97,18 @@ namespace GridGenerator
             width = (farestX - closestX) > (farestZ - closestZ) ? (farestX - closestX) : (farestZ - closestZ);
 
 
-            var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 15f, width, heightCurve));
+            var coroutWithdata = new CoroutineWithData(this, meshModifier.ModifyMeshWithHeightMap(tiles, noise, 40f, width, heightCurve));
             while (coroutWithdata.result == null || (coroutWithdata.result.GetType() == typeof(bool) && (bool)coroutWithdata.result == false))
                 yield return new WaitForEndOfFrame();
 
+            wcf.SpawnObjects();
+
             SetUpMinimapPicture(width);
-            foreach(var holder in tiles)
+            /*foreach(var holder in tiles)
             {
-                holder.GetComponent<MeshRenderer>().materials[0] = mapMaterial0;
-                holder.GetComponent<MeshRenderer>().materials[1] = mapMaterial1;
-            }
+                holder.meshHolders[0].GetComponent<MeshRenderer>().sharedMaterial = mapMaterials[0];
+                holder.meshHolders[1].GetComponent<MeshRenderer>().sharedMaterial = mapMaterials[1];
+            }*/
             
         }
 
@@ -116,11 +117,10 @@ namespace GridGenerator
         {
             var cameraSaver = new CameraSaver();
             //minimapCamera.orthographicSize = (mapWidth + radius) * .5f;
-            minimapCamera.orthographicSize = 100f;
+            minimapCamera.enabled = true;
+            minimapCamera.orthographicSize = 170f;
             minimapImage.sprite = cameraSaver.CameraToSprite(minimapCamera);
-
-            
-
+            minimapCamera.enabled = false;
         }
         /*private IEnumerator WaitForMapEnd()
         {
@@ -293,85 +293,6 @@ namespace GridGenerator
             return subDivision > 0 ? result : corners;
         }
 
-        private void OnDrawGizmos()
-        {
-            return;
-            foreach (var pt in corners)
-            {
-                var color = Color.red;
-                Gizmos.color = color;
-                Gizmos.DrawSphere(pt, .3f);
-            }
-            if (meshData == null) return;
-
-            foreach (var pt in meshData.Vertices)
-            {
-                var color = Color.white;
-                Gizmos.color = color;
-                Gizmos.DrawSphere(pt, .01f);
-            }
-            if (meshData.processedTris == null) return;
-            foreach (var tris in meshData.TrianglesV3)
-            {
-                var inQuad = false;
-                foreach (var quad in meshData.Quads)
-                    if (quad.internalTris[0] == tris
-                        || quad.internalTris[1] == tris) inQuad = true;
-                if (!meshData.processedTris.Contains(tris)
-                    && !inQuad)
-                {
-                    var color = Color.cyan;
-                    Gizmos.color = color;
-                    var sum = new Vector3();
-                    for (int i = 0; i < tris.pts.Length; i++)
-                    {
-                        sum += tris.pts[i];
-                    }
-                    Gizmos.DrawSphere(sum / tris.pts.Length, .1f);
-                }
-
-            }
-            foreach (var tris in meshData.ToBeProcess)
-            {
-                var color = Color.cyan;
-                Gizmos.color = color;
-                var sum = new Vector3();
-                for (int i = 0; i < tris.pts.Length; i++)
-                {
-                    sum += tris.pts[i];
-                    Gizmos.DrawLine(tris.pts[i], tris.pts[i % tris.pts.Length]);
-                }
-                Gizmos.DrawSphere(sum / tris.pts.Length, .1f);
-            }
-            if (meshData.processedTris == null) return;
-            foreach (var tris in meshData.processedTris)
-            {
-                var color = Color.green;
-                Gizmos.color = color;
-                var sum = new Vector3();
-                for (int i = 0; i < tris.pts.Length; i++)
-                {
-                    sum += tris.pts[i];
-                    Gizmos.DrawLine(tris.pts[i], tris.pts[i % tris.pts.Length]);
-                }
-                Gizmos.DrawSphere(sum / tris.pts.Length, .3f);
-
-            }
-            if (meshData.Quads == null) return;
-            foreach (var quad in meshData.Quads)
-            {
-                var color = Color.yellow;
-                Gizmos.color = color;
-                var sum = new Vector3();
-                for (int i = 0; i < quad.pts.Length; i++)
-                {
-                    sum += quad.pts[i];
-                    Gizmos.DrawLine(quad.pts[i], quad.pts[i % quad.pts.Length]);
-                    //Gizmos.DrawSphere(quad.pts[i], .3f);
-                }
-                Gizmos.DrawSphere(sum / quad.pts.Length, .2f);
-            }
-        }
     }
 
 
