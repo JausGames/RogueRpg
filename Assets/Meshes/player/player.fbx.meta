@@ -108,6 +108,15 @@ ModelImporter:
   - first:
       74: 7732795588211996129
     second: rig|Walk_backward
+  - first:
+      74: 4365203883121862
+    second: rig|Run_backward
+  - first:
+      74: -3929251298189263136
+    second: rig|Run left
+  - first:
+      74: -470861284786259524
+    second: rig|Run right
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -357,7 +366,7 @@ ModelImporter:
       takeName: rig|Idle
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 75
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -365,7 +374,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -386,7 +395,7 @@ ModelImporter:
       takeName: rig|Walk
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 33
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -563,7 +572,7 @@ ModelImporter:
       takeName: rig|Blocking
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 41
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -571,7 +580,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -591,8 +600,8 @@ ModelImporter:
       name: rig|Roll_light
       takeName: rig|Roll_light
       internalID: 0
-      firstFrame: 4
-      lastFrame: 15
+      firstFrame: 10
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -644,8 +653,8 @@ ModelImporter:
       name: rig|Roll_heavy
       takeName: rig|Roll_heavy
       internalID: 0
-      firstFrame: 9
-      lastFrame: 20
+      firstFrame: 25
+      lastFrame: 50
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -690,7 +699,7 @@ ModelImporter:
       takeName: rig|Roll_light
       internalID: 0
       firstFrame: 0
-      lastFrame: 4
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -718,8 +727,8 @@ ModelImporter:
       name: rig|Roll_light OUT
       takeName: rig|Roll_light
       internalID: 0
-      firstFrame: 15
-      lastFrame: 22
+      firstFrame: 35
+      lastFrame: 42
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -748,7 +757,7 @@ ModelImporter:
       takeName: rig|Roll_heavy
       internalID: 0
       firstFrame: 0
-      lastFrame: 9
+      lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -776,8 +785,8 @@ ModelImporter:
       name: rig|Roll_heavy OUT
       takeName: rig|Roll_heavy
       internalID: 0
-      firstFrame: 20
-      lastFrame: 35
+      firstFrame: 50
+      lastFrame: 73
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -806,7 +815,7 @@ ModelImporter:
       takeName: rig|Walk_left
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -835,7 +844,7 @@ ModelImporter:
       takeName: rig|Walk_right
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 34
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -860,11 +869,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Run_left
-      takeName: rig|Run_left
+      name: rig|Walk_backward
+      takeName: rig|Walk_backward
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -889,11 +898,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Run_right
-      takeName: rig|Run_right
+      name: rig|Run_backward
+      takeName: rig|Run_backward
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -918,11 +927,40 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Attack_Horizontal (1)
-      takeName: rig|Attack_Horizontal
+      name: rig|Run left
+      takeName: rig|Run left
       internalID: 0
       firstFrame: 0
-      lastFrame: 72
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: rig|Run right
+      takeName: rig|Run right
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 21
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

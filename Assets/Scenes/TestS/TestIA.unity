@@ -231,6 +231,24 @@ Transform:
   m_Father: {fileID: 543450652932176779}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &372554609 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8111339762663884465, guid: d43e6f7601a77674b894eea49cff4939,
+    type: 3}
+  m_PrefabInstance: {fileID: 1719466075613143803}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: becbdd55febbdf143b079e5715597dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &372554612 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4060445195480170523, guid: d43e6f7601a77674b894eea49cff4939,
+    type: 3}
+  m_PrefabInstance: {fileID: 1719466075613143803}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &572336695
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,6 +841,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1719466076739687931, guid: d43e6f7601a77674b894eea49cff4939,
         type: 3}
+      propertyPath: ragdoll
+      value: 
+      objectReference: {fileID: 372554609}
+    - target: {fileID: 1719466076739687931, guid: d43e6f7601a77674b894eea49cff4939,
+        type: 3}
       propertyPath: combatData.speed
       value: 4
       objectReference: {fileID: 0}
@@ -851,6 +874,11 @@ PrefabInstance:
       propertyPath: orbitCamera
       value: 
       objectReference: {fileID: 319851327}
+    - target: {fileID: 1719466076739687935, guid: d43e6f7601a77674b894eea49cff4939,
+        type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 372554612}
     - target: {fileID: 1719466076805248646, guid: d43e6f7601a77674b894eea49cff4939,
         type: 3}
       propertyPath: m_RootOrder

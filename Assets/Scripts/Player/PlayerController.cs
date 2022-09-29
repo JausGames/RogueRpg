@@ -122,14 +122,15 @@ public class PlayerController : MoveHitable
     private void UpdateAnimator()
     {
         var velocity = body.velocity.sqrMagnitude / PlayerSettings.MaxAnimationSpeed;
-        /*var frontRatio = Vector3.Dot(body.velocity.normalized, transform.forward);
-        var sideRatio = Vector3.Dot(body.velocity.normalized, transform.right);*/
-        var frontRatio = body.velocity.sqrMagnitude / PlayerSettings.MaxAnimationSpeed;
-        var sideRatio = 0f;
+        var horizontalvelocity = new Vector3(body.velocity.x, 0f, body.velocity.z).normalized;
+        var horizontalForward = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+        var horizontalRight = new Vector3(transform.right.x, 0f, transform.right.z).normalized;
+        var frontDot = Vector3.Dot(horizontalvelocity, horizontalForward);
+        var sideDot = Vector3.Dot(horizontalvelocity, horizontalRight);
 
-        /*Debug.Log("PlayerControlelr, UpdateAnimator : ratio front = " + frontRatio);
-        Debug.Log("PlayerControlelr, UpdateAnimator : ratio side = " + sideRatio);*/
+        Debug.Log("Front dot = " + frontDot + ", side dot = " + sideDot);
+        var sideForwardRatio = Mathf.Abs(frontDot);
 
-        animator.SetControllerAnimator(velocity, input.magnitude > .1f && isMoving, frontRatio, sideRatio);
+        animator.SetControllerAnimator(velocity, input.magnitude > .1f && isMoving, frontDot, sideDot, sideForwardRatio);
     }
 }
