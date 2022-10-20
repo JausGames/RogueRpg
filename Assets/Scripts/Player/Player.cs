@@ -161,7 +161,7 @@ public class Player : Hitable
     public void StartRollingMovement()
     {
         var dir = motor.DesiredVelocity.magnitude > .1 ? motor.DesiredVelocity.normalized : transform.forward;
-        AddStatus(new Status(Status.Type.Rolling, 1f, 3 * dir * motor.MaxSpeed * (combatData.Agility / 10f)));
+        AddStatus(new Status(Status.Type.Rolling, .4f, 3 * dir * motor.MaxSpeed * (combatData.Agility / 10f)));
         Debug.Log("Player, StartRollingMovement");
         SetIsMoving(false);
     }

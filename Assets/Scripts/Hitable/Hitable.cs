@@ -51,7 +51,7 @@ abstract public class Hitable : MonoBehaviour
         dieEvent.Invoke();
         ragdoll.SetRagdollActive(true);
         this.enabled = false;
-        Destroy(gameObject, 1.5f);
+        Destroy(gameObject, 3f);
     }
     virtual protected void Die(Vector3 force)
     {
@@ -59,7 +59,7 @@ abstract public class Hitable : MonoBehaviour
         dieEvent.Invoke();
         ragdoll.SetRagdollActive(true, force);
         this.enabled = false;
-        Destroy(gameObject, 1.5f);
+        Destroy(gameObject, 3f);
     }
     virtual public void GetHit(float damage)
     {

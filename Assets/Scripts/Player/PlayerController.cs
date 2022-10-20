@@ -65,7 +65,14 @@ public class PlayerController : MoveHitable
         }
         else if (input.magnitude > 0.05f && !rotateWithLook)
         {
-            var move = (input.x * orbitCamera.transform.right + input.y * orbitCamera.transform.forward).normalized;
+            var right = orbitCamera.transform.right;
+            right.y = 0f;
+            right.Normalize();
+            var forward = orbitCamera.transform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+
+            var move = (input.x * right + input.y * forward).normalized;
             var angle = Vector3.SignedAngle(transform.forward, move, transform.up);
             var baseRot = transform.rotation;
             transform.Rotate(transform.up * angle * .2f);

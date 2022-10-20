@@ -7,7 +7,6 @@ using static UnityEngine.InputSystem.InputAction;
 public class PlayerInput : MonoBehaviour
 {
     [SerializeField] PlayerController motor = null;
-    [SerializeField] MoveHitable moveBody = null;
     [SerializeField] PlayerCombat combat = null;
     [SerializeField] Player player = null;
     [SerializeField] bool isAiming = false;
@@ -75,7 +74,7 @@ public class PlayerInput : MonoBehaviour
         if (motor == null) return;
         var move = context.ReadValue<Vector2>();
         //motor.SetMove(move);
-        moveBody.SetMovement(move.magnitude > .1f ? move : Vector2.zero);
+        motor.SetMovement(move.magnitude > .1f ? move : Vector2.zero);
     }
     public void OnLook(CallbackContext context)
     {

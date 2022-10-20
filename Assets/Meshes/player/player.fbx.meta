@@ -126,6 +126,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Gold
+    second: {fileID: 2100000, guid: d9b7643e12747a544be277570f49a9ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Hair
     second: {fileID: 2100000, guid: bedb27c4c47299a49862c5e398afb089, type: 2}
   - first:
@@ -163,6 +168,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Skin
     second: {fileID: 2100000, guid: 41ab317d4d7e4b54d87795cc18e6147c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Steel
+    second: {fileID: 2100000, guid: 29993659e2ab82a4387330ef67ef22a1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -283,7 +293,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.35958493
+      - time: 0.22667052
         functionName: SetTriggerActive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -291,7 +301,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.42060265
+      - time: 0.3080323
         functionName: SetTriggerInactive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -444,7 +454,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.10525451
+      - time: 0.47140202
         functionName: SetTriggerActive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -452,7 +462,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: 0.2702232
+      - time: 0.626696
         functionName: SetTriggerInactive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -489,7 +499,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.30826044
+      - time: 0.5106514
         functionName: SetTriggerActive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -497,7 +507,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 2
         messageOptions: 0
-      - time: 0.4224423
+      - time: 0.6228666
         functionName: SetTriggerInactive
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 1a90c879862b2b04cbf6ae07967a20e2,
@@ -1401,7 +1411,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: rig
+    rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
