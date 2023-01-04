@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 723522c0d2a85a04caded9165d9f3adc
 ModelImporter:
-  serializedVersion: 20200
+  serializedVersion: 20300
   internalIDToNameTable:
   - first:
       74: 4874111906645177484
@@ -117,6 +117,72 @@ ModelImporter:
   - first:
       74: -470861284786259524
     second: rig|Run right
+  - first:
+      74: 2865580905012350070
+    second: rig|COMBAT - Sword basic
+  - first:
+      74: -7505510633926123210
+    second: rig|MOTOR - Run forward
+  - first:
+      74: 5008805890727002927
+    second: rig|MOTOR - Idle
+  - first:
+      74: -1649344363195184472
+    second: rig|MOTOR - Walk forward
+  - first:
+      74: 7355903373943590622
+    second: rig|COMBAT - Sword backhand
+  - first:
+      74: -5023511289917269995
+    second: rig|COMBAT - 360 high
+  - first:
+      74: 295433357426492037
+    second: rig|COMBAT - Get hit
+  - first:
+      74: 3945306895267629320
+    second: rig|BLOCK - Idle
+  - first:
+      74: 691963483076151000
+    second: rig|MOTOR - Roll light
+  - first:
+      74: -1506657173864017197
+    second: rig|MOTOR - Roll heavy
+  - first:
+      74: 6472104586572499164
+    second: rig|MOTOR - Roll light (1)
+  - first:
+      74: 3857685853710183810
+    second: rig|MOTOR - Roll light OUT
+  - first:
+      74: -3457884865474763738
+    second: rig|MOTOR - Roll heavy IN
+  - first:
+      74: -2168904076953551077
+    second: rig|MOTOR - Roll heavy OUT
+  - first:
+      74: 7372183379916851666
+    second: rig|MOTOR - Walk left
+  - first:
+      74: -3989700556045772736
+    second: rig|MOTOR - Run right
+  - first:
+      74: -2878447492265038987
+    second: rig|MOTOR - Walk backward
+  - first:
+      74: 789746216347189342
+    second: rig|MOTOR - Run backward
+  - first:
+      74: -5557691554131650193
+    second: rig|MOTOR - Run left
+  - first:
+      74: 2037710254597654867
+    second: rig|MOTOR - Run right (1)
+  - first:
+      74: 9212139462663619702
+    second: rig|MOTOR - Roll light IN
+  - first:
+      74: 6651624689279449244
+    second: rig|MOTOR - Walk right
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -269,11 +335,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: rig|Attack_Horizontal
-      takeName: rig|Attack_Horizontal
+      name: rig|COMBAT - Sword basic
+      takeName: rig|COMBAT - Sword basic
       internalID: 0
       firstFrame: 0
-      lastFrame: 69
+      lastFrame: 45
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -314,11 +380,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Run
-      takeName: rig|Run
+      name: rig|MOTOR - Run forward
+      takeName: rig|MOTOR - Run forward
       internalID: 0
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 21
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -372,8 +438,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Idle
-      takeName: rig|Idle
+      name: rig|MOTOR - Idle
+      takeName: rig|MOTOR - Idle
       internalID: 0
       firstFrame: 0
       lastFrame: 75
@@ -401,8 +467,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Walk
-      takeName: rig|Walk
+      name: rig|MOTOR - Walk forward
+      takeName: rig|MOTOR - Walk forward
       internalID: 0
       firstFrame: 0
       lastFrame: 33
@@ -430,11 +496,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Attack_Horizontal_2
-      takeName: rig|Attack_Horizontal_2
+      name: rig|COMBAT - Sword backhand
+      takeName: rig|COMBAT - Sword backhand
       internalID: 0
       firstFrame: 0
-      lastFrame: 46
+      lastFrame: 47
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -475,8 +541,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Attack_Horizontal_3
-      takeName: rig|Attack_Horizontal_3
+      name: rig|COMBAT - 360 high
+      takeName: rig|COMBAT - 360 high
       internalID: 0
       firstFrame: 0
       lastFrame: 69
@@ -520,11 +586,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|GetHit
-      takeName: rig|GetHit
+      name: rig|COMBAT - Get hit
+      takeName: rig|COMBAT - Get hit
       internalID: 0
       firstFrame: 0
-      lastFrame: 25
+      lastFrame: 21
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -578,8 +644,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Blocking
-      takeName: rig|Blocking
+      name: rig|BLOCK - Idle
+      takeName: rig|BLOCK - Idle
       internalID: 0
       firstFrame: 0
       lastFrame: 41
@@ -607,8 +673,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Roll_light
-      takeName: rig|Roll_light
+      name: rig|MOTOR - Roll light
+      takeName: rig|MOTOR - Roll light
       internalID: 0
       firstFrame: 10
       lastFrame: 35
@@ -660,8 +726,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Roll_heavy
-      takeName: rig|Roll_heavy
+      name: rig|MOTOR - Roll heavy
+      takeName: rig|MOTOR - Roll heavy
       internalID: 0
       firstFrame: 25
       lastFrame: 50
@@ -705,8 +771,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Roll_light IN
-      takeName: rig|Roll_light
+      name: rig|MOTOR - Roll light IN
+      takeName: rig|MOTOR - Roll light
       internalID: 0
       firstFrame: 0
       lastFrame: 10
@@ -734,8 +800,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Roll_light OUT
-      takeName: rig|Roll_light
+      name: rig|MOTOR - Roll light OUT
+      takeName: rig|MOTOR - Roll light
       internalID: 0
       firstFrame: 35
       lastFrame: 42
@@ -763,8 +829,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Roll_heavy IN
-      takeName: rig|Roll_heavy
+      name: rig|MOTOR - Roll heavy IN
+      takeName: rig|MOTOR - Roll heavy
       internalID: 0
       firstFrame: 0
       lastFrame: 25
@@ -792,8 +858,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Roll_heavy OUT
-      takeName: rig|Roll_heavy
+      name: rig|MOTOR - Roll heavy OUT
+      takeName: rig|MOTOR - Roll heavy
       internalID: 0
       firstFrame: 50
       lastFrame: 73
@@ -821,8 +887,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Walk_left
-      takeName: rig|Walk_left
+      name: rig|MOTOR - Walk left
+      takeName: rig|MOTOR - Walk left
       internalID: 0
       firstFrame: 0
       lastFrame: 39
@@ -850,11 +916,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Walk_right
-      takeName: rig|Walk_right
+      name: rig|MOTOR - Run right
+      takeName: rig|MOTOR - Run right
       internalID: 0
       firstFrame: 0
-      lastFrame: 34
+      lastFrame: 21
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -879,8 +945,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Walk_backward
-      takeName: rig|Walk_backward
+      name: rig|MOTOR - Walk backward
+      takeName: rig|MOTOR - Walk backward
       internalID: 0
       firstFrame: 0
       lastFrame: 38
@@ -908,8 +974,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Run_backward
-      takeName: rig|Run_backward
+      name: rig|MOTOR - Run backward
+      takeName: rig|MOTOR - Run backward
       internalID: 0
       firstFrame: 0
       lastFrame: 16
@@ -937,8 +1003,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Run left
-      takeName: rig|Run left
+      name: rig|MOTOR - Run left
+      takeName: rig|MOTOR - Run left
       internalID: 0
       firstFrame: 0
       lastFrame: 20
@@ -966,18 +1032,18 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: rig|Run right
-      takeName: rig|Run right
+      name: rig|MOTOR - Walk right
+      takeName: rig|MOTOR - Walk right
       internalID: 0
       firstFrame: 0
-      lastFrame: 21
+      lastFrame: 34
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -1421,6 +1487,7 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
