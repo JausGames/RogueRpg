@@ -93,7 +93,7 @@ TextureImporter:
       213: 641471704727589843
     second: sprite_sheet_true_29
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -114,6 +114,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -152,6 +153,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -820,6 +822,37 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      sprite_sheet_true_0: -4355074685943263650
+      sprite_sheet_true_1: 796166361915678658
+      sprite_sheet_true_10: 1613925037474498715
+      sprite_sheet_true_11: -8865019428840415443
+      sprite_sheet_true_12: 1024038919352589735
+      sprite_sheet_true_13: 2723058148309898908
+      sprite_sheet_true_14: -7834364580742176388
+      sprite_sheet_true_15: 642724119468348119
+      sprite_sheet_true_16: 8007989138119108043
+      sprite_sheet_true_17: 4073310205324770050
+      sprite_sheet_true_18: 8708865622845746758
+      sprite_sheet_true_19: 1420679232585831526
+      sprite_sheet_true_2: -746195249633587084
+      sprite_sheet_true_20: 2133870362142796733
+      sprite_sheet_true_21: 2382717104272426820
+      sprite_sheet_true_22: 8172636511079674833
+      sprite_sheet_true_23: 2560100307880234297
+      sprite_sheet_true_24: 3708555507610460155
+      sprite_sheet_true_25: -2731610528987470528
+      sprite_sheet_true_26: 7165336198854295856
+      sprite_sheet_true_27: -3816580782773451254
+      sprite_sheet_true_28: 7243410732351811324
+      sprite_sheet_true_29: 641471704727589843
+      sprite_sheet_true_3: 1283060427906251203
+      sprite_sheet_true_4: -1459930315058119979
+      sprite_sheet_true_5: -7086146094923748643
+      sprite_sheet_true_6: -4770230102061694552
+      sprite_sheet_true_7: -2876757051566147564
+      sprite_sheet_true_8: -4358260876294006112
+      sprite_sheet_true_9: -46045402162184690
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
